@@ -121,5 +121,58 @@ module BigMath
     return BigDecimal::INFINITE if x.infinite? || y.infinite?
     sqrt(x * x + y * y, prec).round(prec)
   end
+
+  def lgamma(x, prec)
+
+    # Positive Argument Routine
+    positive = lambda do
+      log_2pi = BigMath.log(BigMath.PI(prec) * 2, prec)  # $\log 2\pi$ 
+      n = 8
+
+      b0 = 1r
+      b1 = -1/2r
+      b2 = 1/6r
+      b4 = -1/30r
+      b6 = 1/42r
+      b8 = -1/30r
+      b10 = 5/66r
+      b12 = -691/2730r
+      b14 = 7/6r
+      b16 = -3617/510r
+
+      v = 1
+      while (x < n);  v *= x;  x += 1;  end
+      w = 1 / (x * x).to_f
+
+      ans =  ((((((((b16 / (16 * 15))  * w + (b14 / (14 * 13))) * w\
+                  + (b12 / (12 * 11))) * w + (b10 / (10 *  9))) * w\
+                  + (b8  / ( 8 *  7))) * w + (b6  / ( 6 *  5))) * w\
+                  + (b4  / ( 4 *  3))) * w + (b2  / ( 2 *  1))) / x\
+                  + 0.5 * log_2pi - BigMath.log(v, prec) - x + (x - 0.5) * BigMath.log(x, prec)
+      ans.round(prec)
+    end
+    
+    # Negative Argument Routine
+    negative = lambda do
+      s = (1 / BigMath.sin(BigMath.PI(prec) * x, prec)).abs
+      return BigDecimal::INFINITY if s.exponent > prec
+      
+      x = 1 - x
+      ans = BigMath.log(s, prec) - positive.call + BigMath.log(BigMath.PI(prec), prec)
+      ans.round(prec)
+    end
+
+    case x
+    when BigDecimal::NAN
+      x
+    when BigDecimal::INFINITY
+      x.negative? ? BigDecimal::NAN : BigDecimal::INFINITY
+    when BigDecimal('0')
+      BigDecimal::INFINITY
+    else # Finite
+      x.negative? ? negative.call : positive.call
+    end
+  end
+
 end
 
