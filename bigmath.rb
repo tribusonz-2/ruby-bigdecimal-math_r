@@ -172,7 +172,7 @@ module BigMath
     x = x.to_d(prec) unless x.class == BigDecimal
 
     if x >= -1 && x <= 1
-      half = Rational(1, 2).to_d(prec)
+      half = 1/2r
       logp1 = (x + 1) == 0 ? -BigDecimal::INFINITY : log(x + 1, prec)
       logm1 = (1 - x) == 0 ? -BigDecimal::INFINITY : log(1 - x, prec)
       y = half * logp1 - half * logm1
@@ -244,8 +244,7 @@ module BigMath
     when BigDecimal('0')
       BigDecimal::INFINITY
     else # BigDecimal # Finite
-      y = x.negative? ? negative.call : positive.call
-      y.round(prec)
+      x.negative? ? negative.call : positive.call
     end
   end
 end
