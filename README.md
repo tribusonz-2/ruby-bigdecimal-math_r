@@ -7,7 +7,7 @@ BigMath module extension for Ruby
 拡張されるモジュール関数:  
 - #log2 (二進対数)
 - #log10 (常用対数)
-- #cbrt (実数としての三条根)
+- #cbrt (実数としての三乗根)
 - #exp2 (二進指数)
 - #tan (タンジェント)
 - #asin (逆サイン)
