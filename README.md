@@ -1,4 +1,4 @@
-# bigmath
+# BigMath Extension
 BigMath module extension for Ruby
 
 標準送付の`bigdecimal`に付属のBigMathモジュールに初等関数を拡張するライブラリです。  
