@@ -8,8 +8,6 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-
     return -BigDecimal::INFINITY if x.zero?
     if x.positive?
       return BigDecimal::INFINITY if x.infinite?
@@ -22,8 +20,6 @@ module BigMath
   def log10(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     return -BigDecimal::INFINITY if x.zero?
     if x.positive?
@@ -38,9 +34,7 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-
-    return x if x.nan? || x.infinite?
+    return x if (x.respond_to?(:nan?) && x.nan?) || x.infinite?
     sign = x.negative? ? -1 : 1
     y = sign * BigDecimal((sign * x).to_s, prec) ** Rational(1, 3).to_d(prec)
     y
@@ -50,9 +44,7 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-
-    return x if x.nan?
+    return x if x.respond_to?(:nan?) && x.nan?
     x *= log(BigDecimal('2'), prec) 
     y = exp(x, prec)
     y
@@ -62,9 +54,7 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-
-    return x if x.nan? || x.infinite?
+    return x if (x.respond_to?(:nan?) && x.nan?) || x.infinite?
     y = sin(x, prec) / cos(x, prec)
     y
   end
@@ -72,8 +62,6 @@ module BigMath
   def asin(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     if (x >= -1 && x <= 1)
       atan((x / sqrt(1 - x * x, prec)), prec)
@@ -85,8 +73,6 @@ module BigMath
   def acos(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     if (x >= -1 && x <= 1)
       if x == 1
@@ -105,9 +91,7 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-
-    return x if (x.nan? || x.infinite?)
+    return x if ((x.respond_to?(:nan?) && x.nan?) || x.infinite?)
     exppx = exp( x, prec)
     expmx = exp(-x, prec)
     exppx / 2 - expmx / 2
@@ -116,8 +100,6 @@ module BigMath
   def cosh(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     return x if x.nan?
     return BigDecimal::INFINITY if x.infinite?
@@ -129,8 +111,6 @@ module BigMath
   def tanh(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     return x if x.nan?
     if x.infinite?
@@ -145,17 +125,13 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-
-    return x if (x.nan? || x.infinite?)
+    return x if ((x.respond_to?(:nan?) && x.nan?) || x.infinite?)
     log(sqrt(x * x + 1, prec) + x, prec)
   end
 
   def acosh(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     if x >= 1
       return x if x.infinite?
@@ -168,8 +144,6 @@ module BigMath
   def atanh(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     if x >= -1 && x <= 1
       half = 1/2r
@@ -185,10 +159,7 @@ module BigMath
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
 
-    x = x.to_d(prec) unless x.class == BigDecimal
-    y = y.to_d(prec) unless y.class == BigDecimal
-
-    return BigDecimal::NAN if x.nan? || y.nan?
+    return BigDecimal::NAN if (x.respond_to?(:nan?) && x.nan?) || (y.respond_to?(:nan?) && y.nan?)
     return BigDecimal::INFINITE if x.infinite? || y.infinite?
     sqrt(x * x + y * y, prec)
   end
@@ -196,8 +167,6 @@ module BigMath
   def lgamma(x, prec)
     raise ArgumentError, "precision must be an Integer" unless prec.class == Integer
     raise ArgumentError, "Zero or negative precision for #{__method__}" if prec <= 0
-
-    x = x.to_d(prec) unless x.class == BigDecimal
 
     return BigDecimal('0', prec) if x == 1 or x == 2
 
