@@ -105,8 +105,14 @@ rb_bigmath_hypot(VALUE a, VALUE b, VALUE prec)
 static VALUE
 nucomp_math_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
 {
-	a = rb_bigmath_canonicalize(a, prec, ARG_REAL, ARG_RAWVALUE);
-	b = rb_bigmath_canonicalize(b, prec, ARG_REAL, ARG_RAWVALUE);
+	if (rb_num_real_p(a))
+		a = rb_bigmath_canonicalize(a, prec, ARG_REAL, ARG_RAWVALUE);
+	else
+		a = rb_bigmath_canonicalize(a, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	if (rb_num_real_p(b))
+		b = rb_bigmath_canonicalize(b, prec, ARG_REAL, ARG_RAWVALUE);
+	else
+		b = rb_bigmath_canonicalize(b, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_hypot(a, b, prec);
 }
 
