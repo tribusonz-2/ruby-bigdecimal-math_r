@@ -1,5 +1,5 @@
 /*******************************************************************************
-	logsqrt.c -- Logarithm & Square Root
+	power_root.c -- Power Root
 
 	Author: tribusonz
 	Licence: MIT
