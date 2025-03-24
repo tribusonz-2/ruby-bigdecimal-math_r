@@ -410,7 +410,6 @@ logsqrt_math_acsch(VALUE unused_obj, VALUE x, VALUE prec)
 	return rb_bigmath_acsch(x, prec);
 }
 
-/** ‚±‚±‚©‚ç‚Ç‚¤‚·‚é‚© **/
 static VALUE
 asech_domain(VALUE x, VALUE prec)
 {
@@ -1300,11 +1299,33 @@ logsqrt_math_cacoth(VALUE unused_obj, VALUE z, VALUE prec)
 
 
 /**
- * Document-module:  BigMathR::LogSqrt
- * 
- * A module that provides using square root and logarithmic function. 
- * It is used internally.
- * <br>
+ *  Document-module:  BigMathR::LogSqrt
+ *  
+ *  A module that provides using square root and logarithmic function. 
+ *  It is used internally.
+ *  <br>
+ *  == Synopsis
+ *  The function names defined are the same as those in the C/C++ standard.
+ *  <br>
+ *  - Natural logarithm:                     +:clog+ <br>
+ *  - Binary logarithm:                      +:clog2+ <br>
+ *  - Common logarithm:                      +:clog10+ <br>
+ *  - Inverse sine:                 +:asin+  +:casin+ <br>
+ *  - Inverse cosine:               +:acos+  +:cacos+ <br>
+ *  - Inverse tangent:              +:atan+  +:catan+ <br>
+ *  - Inverse hyperbolic sine:      +:asinh+ +:casinh+ <br>
+ *  - Inverse hyperbolic cosine:    +:acosh+ +:cacosh+ <br>
+ *  - Inverse hyperbolic tangent:   +:atanh+ +:catanh+ <br>
+ *  Follow, the name defined in C/C++ standard though, the function names are different.
+ *  <br>
+ *  - Inverse cosecant:             +:acsc+  +:cacsc+ <br>
+ *  - Inverse secant:               +:asec+  +:casec+ <br>
+ *  - Inverse cotangent:            +:acot+  +:cacot+ <br>
+ *  - Inverse hyperbolic cosecant:  +:acsch+ +:cacsch+ <br>
+ *  - Inverse hyperbolic secant:    +:asech+ +:casech+ <br>
+ *  - Inverse hyperbolic cotangent: +:acoth+ +:cacoth+ <br>
+ *  Reference::
+ *  {https://mathworld.wolfram.com/NaturalLogarithm.html Wolfram Mathworld - Natural Logarithm}
  */
 
 void

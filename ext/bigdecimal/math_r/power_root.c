@@ -239,7 +239,23 @@ powerroot_math_ccbrt(VALUE unused_obj, VALUE z, VALUE prec)
         return rb_bigmath_ccbrt(z, prec);
 }
 
-
+/**
+ *  Document-module:  BigMathR::PowerRoot
+ *  
+ *  A module that provides the power-root functions. 
+ *  It is used internally.
+ *  <br>
+ *  == Synopsis
+ *  The function names defined are the same as those in the C/C++ standard.
+ *  <br>
+ *  - Square root:          +:sqrt+ +:csqrt+ <br>
+ *  - Cubic root:           +:ccbrt+ <br>
+ *  Follow, the name defined in C/C++ standard though, the function names are different.
+ *  <br>
+ *  - Cubic root:           +:cuberoot+ ( +cbrt()+ for C/C++ ) <br>
+ *  Reference::
+ *  C-gengo ni yoru hyoujun algorithm jiten (Japanese) - Haruhiko Okumura (Gijutu Hyouron-sha)
+ */
 void
 InitVM_PowerRoot(void)
 {

@@ -687,17 +687,24 @@ trig_math_cot(VALUE unused_obj, VALUE x, VALUE prec)
  *  A module that provide the trigonometric functions.
  *  It is used internally.
  *  <br>
+ *  All module functions are implemented by +:sincos+.
  *  <br>
+ *  == Synopsis
  *  The function names defined are the same as those in the C/C++ standard.
  *  <br>
- *  Sine:                +sin()+ <br>
- *  Cosine:              +cos()+ <br>
- *  Tangent:             +tan()+ <br>
+ *  - Sine:                +:sin+ <br>
+ *  - Cosine:              +:cos+ <br>
+ *  - Tangent:             +:tan+ <br>
  *  Follow, those reciprocals of not defined in C/C++ standard.
  *  <br>
- *  Cosecant:            +csc()+ <br>
- *  Secant:              +sec()+ <br>
- *  Cotangent:           +cot()+ <br>
+ *  - Cosecant:            +:csc+ <br>
+ *  - Secant:              +:sec+ <br>
+ *  - Cotangent:           +:cot+ <br>
+ *  The following are GNU extensions:
+ *  <br>
+ *  - sincos():            +:sincos+ <br>
+ *  Reference::
+ *  Kiso kara hatten made Sankaku kansuu (Japanese) - Michimasa Kobayashi (Beret Shuppan)
  */
 void
 InitVM_Trigonometric(void)

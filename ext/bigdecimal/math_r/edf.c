@@ -249,18 +249,33 @@ rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
 
 
 /**
- * Exponentially decompose into the form of [a ** x.floor, x % 1]
+ * Exponentially-decompose into the form of
+ * [a ** x.floor, x % 1].
  * <br>
  * Where `escalb' mean "Exponential SCALe Binary".
+ * <br>
+ * It behaves as if the decomposition target of +frexp()+ in C/C++ is an exponential function.
+ * 
+ * @param a [Numeric] Base of exponential decomposition
+ * @param x [Numeric] X-axis
+ * @param prec [Integer] Arbitrary precision
+ * @return [Array] Decomposed values as [a ** x.floor, x % 1]
+ * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ * @raise [TypeError] Occurs when +x+ is not a numeric class.
+ * @example
+ *  BigMathR::EDF.escalb(BigMathR.E(20), 2, 20)
+ *  #=> [0.73890560989306502274e1, 0.0]
+ * @since 0.1.0
  */
 static VALUE
 edf_escalb(VALUE unused_obj, VALUE a, VALUE x, VALUE prec)
 {
 	VALUE exp = Qundef, fra = Qundef;
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	rb_bigmath_escalb(a, x, prec, &exp, &fra);
 	if (exp == Qundef || fra == Qundef)
 		rb_raise(rb_eRuntimeError, "no solution");
+	exp = rb_bigmath_round_inline(exp, prec);
+	fra = rb_bigmath_round_inline(fra, prec);
 	return rb_assoc_new(exp, fra);
 }
 
@@ -290,6 +305,8 @@ rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
 	VALUE xt = rb_funcall1(x, '*', t);
 	VALUE e = BIG_ZERO;
 	long n = 0;
+	if (rb_num_zero_p(xt))
+		return e;
 	while (!check_eps(a, m))
 	{
 		e = rb_funcall(e, add, 2, a, m);
@@ -299,7 +316,18 @@ rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
 	return rb_bigmath_round_inline(e, prec);
 }
 
-
+/**
+ * Calculate the exponential function of +x+ with base +t+.
+ * 
+ * @param x [Numeric] Numerical Argument. Domain as 0<=x<1.
+ * @param t [Numeric] Base of +x+. 1 = e, log2 = 2
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Fraction number
+ * @example
+ *  BigMathR::EDF.expxt(0.5, BigMathR.LOG2(20), 20)
+ *  #=> 0.14142135623730950488e1
+ * @since 0.1.0
+ */
 static VALUE
 edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 {
@@ -309,7 +337,7 @@ edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 	    rb_num_negative_p(x) || 
 	    NUM2INT(rb_num_cmpeql(x, INT2FIX(1))) != -1)
 		rb_raise(rb_eRangeError, "Argument x is out of range: (0 <= x < 1)");
-	t = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	t = rb_bigmath_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
 	if (rb_num_notequal_p(t, t) ||
 	    rb_num_negative_p(t) ||
 	    NUM2INT(rb_num_cmpeql(t, INT2FIX(1))) == 1)
@@ -338,7 +366,19 @@ rb_bigmath_exp(VALUE x, VALUE prec)
 	return rb_funcall(exp, mult, 2, fra, prec);
 }
 
-
+/**
+ * Computes exponential function of +x+.
+ * 
+ * @param x [Numeric] Numerical argument
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Real solution
+ * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ * @raise [TypeError] Occurs when +x+ is not a numeric class.
+ * @example
+ *  BigMathR::EDF.exp(1, 20)
+ *  #=> 0.27182818284590452354e1
+ * @since 0.1.0
+ */
 static VALUE
 edf_math_exp(VALUE unused_obj, VALUE x, VALUE prec)
 {
@@ -367,7 +407,19 @@ rb_bigmath_exp2(VALUE x, VALUE prec)
 	return rb_funcall(exp, mult, 2, fra, prec);
 }
 
-
+/**
+ * Computes binary exponent of +x+.
+ * 
+ * @param x [Numeric] Numerical argument
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Real solution
+ * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ * @raise [TypeError] Occurs when +x+ is not a numeric class.
+ * @example
+ *  BigMathR::EDF.exp2(1/2r, 20)
+ *  #=> 0.14142135623730950488e1
+ * @since 0.1.0
+ */
 static VALUE
 edf_math_exp2(VALUE unused_obj, VALUE x, VALUE prec)
 {
@@ -448,6 +500,16 @@ rcm2_inline(VALUE x, VALUE *reso)
  * However, if +x+ is negative finite, it will return a value range of -2 lt +y+ leq -1.
  * @param x [Numeric] Numerical argument
  * @return [Array] Decomposed values as [fraction, exponent]
+ * @example
+ *  fra, exp = BigMathR::EDF.rcm2(3)
+ *  #=> [(3/2), 1]
+ *  fra = BigMathR::EDF.logxt(fra, 2, 20)
+ *  #=> 0.58496250072115618145e0
+ *  log2_3 = exp + fra
+ *  #=> 0.158496250072115618145e1
+ *  Math.log2(3) == log2_3.to_f
+ *  #=> true
+ * @since 0.1.0
  */
 static VALUE
 edf_rcm2(VALUE unused_obj, VALUE x)
@@ -529,6 +591,16 @@ rcm10_inline(VALUE x, VALUE *reso)
  * However, if +x+ is negative finite, it will return a value range of -10 lt +y+ leq -1.
  * @param x [Numeric] Numerical argument
  * @return [Array] Decomposed values as [fraction, exponent]
+ * @example
+ *  fra, exp = BigMathR::EDF.rcm10(3)
+ *  #=> [(3/1), 0]
+ *  fra = BigMathR::EDF.logxt(fra, 10, 20)
+ *  #=> 0.4771212547196624373e0
+ *  log10_3 = exp + fra
+ *  #=> 0.4771212547196624373e0
+ *  Math.log10(3) == log10_3.to_f
+ *  #=> true
+ * @since 0.1.0
  */
 static VALUE
 edf_rcm10(VALUE unused_obj, VALUE x)
@@ -596,6 +668,7 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
  * Complement is equal to the base +x+, and the decomposition varies depending on the value given.
  * <br>
  * This equation is difficult in physics, but the implementation is very simple: 'x*t'.
+ * @note Since it takes a long time to converge for large-precision calculations, internally it is calculated using the Mercator series.
  * @example
  *  BigMathR::EDF.logxt(2, 10, 20) #=> 0.30102999566398119521e0
  *  BigMathR::EDF.logxt(2, 2, 20) #=> 0.1e1
@@ -604,6 +677,7 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
  * @param t [Numeric] Complement of +x+. e = ln(x), 2 = log_2(x), 10 = log_10(x)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Fraction number
+ * @since 0.1.0
  */
 static VALUE
 edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
@@ -892,16 +966,17 @@ edf_math_log10(VALUE unused_obj, VALUE x, VALUE prec)
  *  A module that treats the exponential decomposition formula.
  *  It is used internally.
  *  <br>
- *  This formula assumes that the variable +x+ follows the resolution.
+ *  This formula was discovered by the author shortly afterwards. It will be proven in time.
  *  <br>
- *  <br>
+ *  == Synopsis:
  *  The function names defined are the same as those in the C/C++ standard.
  *  <br>
- *  exponential function:     +exp()+ +cexp()+ <br>
- *  binary exponent:          +exp2()+ +cexp2()+ <br>
- *  natural logatithm:        +log()+ +clog()+ <br>
- *  binary logatithm:         +log2()+ +clog2()+ <br>
- *  common logatithm:         +log10()+ +clog10()+ <br>
+ *  Exponential function:     +exp()+ <br>
+ *  Base-2 (binary) exponent: +exp2()+ <br>
+ *  Natural logatithm:        +log()+  <br>
+ *  Binary logatithm:         +log2()+ <br>
+ *  Common logatithm:         +log10()+ <br>
+ *  
  */
 void
 InitVM_EDF(void)

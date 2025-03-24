@@ -562,7 +562,7 @@ const_math_sqrt3(VALUE unused_obj, VALUE prec)
 }
 
 
-// Entrypoint:
+/* :nodoc: */
 void
 InitVM_Constant(void)
 {

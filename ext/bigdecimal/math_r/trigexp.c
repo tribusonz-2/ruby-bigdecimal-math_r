@@ -1088,9 +1088,9 @@ trigexp_math_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
  *  - Sine:                         +:csin+ <br>
  *  - Cosine:                       +:ccos+ <br>
  *  - Tangent:                      +:ctan+ <br>
- *  - Hyperbolic sine:     +:sinh+ +:csinh+ <br>
- *  - Hyperbolic cosine:   +:cosh+ +:ccosh+ <br>
- *  - Hyperbolic tangent:  +:tanh+ +:ctanh+ <br>
+ *  - Hyperbolic sine:      +:sinh+ +:csinh+ <br>
+ *  - Hyperbolic cosine:    +:cosh+ +:ccosh+ <br>
+ *  - Hyperbolic tangent:   +:tanh+ +:ctanh+ <br>
  *  Follow, those reciprocals of not defined in C/C++ standard.
  *  <br>
  *  - Cosecant:                     +:ccsc+ <br>
