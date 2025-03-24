@@ -1075,30 +1075,32 @@ trigexp_math_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
  *  A module that provides using trigonometric and exponential function. 
  *  It is used internally.
  *  <br>
- *  "TrigExp" is, simply put, a module that uses Euler's formula.
+ *  "TrigExp" is, simply say, a module that uses Euler's formula.
  *  <br>
  *  By using this formula for complex analysis, 
  *  it can be applied to differential equations and Fourier transforms.
  *  <br>
- *  <br>
+ *  == Synopsis
  *  The function names defined are the same as those in the C/C++ standard.
  *  <br>
- *  Exponential function:         +cexp()+ <br>
- *  Base-2 (Binary) exponent:     +cexp2()+ <br>
- *  Sine:                         +csin()+ <br>
- *  Cosine:                       +ccos()+ <br>
- *  Tangent:                      +ctan()+ <br>
- *  Hyperbolic sine:     +sinh()+ +csinh()+ <br>
- *  Hyperbolic cosine:   +cosh()+ +ccosh()+ <br>
- *  Hyperbolic tangent:  +tanh()+ +ctanh()+ <br>
+ *  - Exponential function:         +:cexp+ <br>
+ *  - Base-2 (Binary) exponent:     +:cexp2+ <br>
+ *  - Sine:                         +:csin+ <br>
+ *  - Cosine:                       +:ccos+ <br>
+ *  - Tangent:                      +:ctan+ <br>
+ *  - Hyperbolic sine:     +:sinh+ +:csinh+ <br>
+ *  - Hyperbolic cosine:   +:cosh+ +:ccosh+ <br>
+ *  - Hyperbolic tangent:  +:tanh+ +:ctanh+ <br>
  *  Follow, those reciprocals of not defined in C/C++ standard.
  *  <br>
- *  Cosecant:                     +ccsc()+ <br>
- *  Secant:                       +csec()+ <br>
- *  Cotangent:                    +ccot()+ <br>
- *  Hyperbolic cosecant  +csch()+ +ccsch()+ <br>
- *  Hyperbolic secant:   +sech()+ +csech()+ <br>
- *  Hyperbolic cotangent +coth()+ +ccoth()+ <br>
+ *  - Cosecant:                     +:ccsc+ <br>
+ *  - Secant:                       +:csec+ <br>
+ *  - Cotangent:                    +:ccot+ <br>
+ *  - Hyperbolic cosecant:  +:csch+ +:ccsch+ <br>
+ *  - Hyperbolic secant:    +:sech+ +:csech+ <br>
+ *  - Hyperbolic cotangent: +:coth+ +:ccoth+ <br>
+ *  Reference::
+ *  Kiso kara hatten made Sankaku kansuu (Japanese) - Michimasa Kobayashi (Beret Shuppan)
  */
 void
 InitVM_TrigExp(void)
