@@ -94,9 +94,45 @@
  *  @!attribute [r] exp2
  *    @return [BigDecimal] Solve of hooked function +exp2(x, prec)+
  *  @!attribute [r] cexp
- *    @return [Complex] Solve of hooked function +exp(x, prec)+
+ *    @return [Complex] Solve of hooked function +cexp(x, prec)+
  *  @!attribute [r] cexp2
- *    @return [Complex] Solve of hooked function +exp2(x, prec)+
+ *    @return [Complex] Solve of hooked function +cexp2(x, prec)+
+ *  @!attribute [r] log
+ *    @return [BigDecimal] Solve of hooked function +log(x, prec)+
+ *  @!attribute [r] log2
+ *    @return [BigDecimal] Solve of hooked function +log2(x, prec)+
+ *  @!attribute [r] log10
+ *    @return [BigDecimal] Solve of hooked function +log10(x, prec)+
+ *  @!attribute [r] clog
+ *    @return [Complex] Solve of hooked function +clog(x, prec)+
+ *  @!attribute [r] clog2
+ *    @return [Complex] Solve of hooked function +clog2(x, prec)+
+ *  @!attribute [r] clog10
+ *    @return [Complex] Solve of hooked function +clog10(x, prec)+
+ *  @!attribute [r] sin
+ *    @return [BigDecimal] Solve of hooked function +sin(x, prec)+
+ *  @!attribute [r] cos
+ *    @return [BigDecimal] Solve of hooked function +cos(x, prec)+
+ *  @!attribute [r] tan
+ *    @return [BigDecimal] Solve of hooked function +tan(x, prec)+
+ *  @!attribute [r] csc
+ *    @return [BigDecimal] Solve of hooked function +csc(x, prec)+
+ *  @!attribute [r] sec
+ *    @return [BigDecimal] Solve of hooked function +sec(x, prec)+
+ *  @!attribute [r] cot
+ *    @return [BigDecimal] Solve of hooked function +cot(x, prec)+
+ *  @!attribute [r] csin
+ *    @return [Complex] Solve of hooked function +csin(z, prec)+
+ *  @!attribute [r] ccos
+ *    @return [Complex] Solve of hooked function +ccos(z, prec)+
+ *  @!attribute [r] ctan
+ *    @return [Complex] Solve of hooked function +ctan(z, prec)+
+ *  @!attribute [r] ccsc
+ *    @return [Complex] Solve of hooked function +ccsc(z, prec)+
+ *  @!attribute [r] csec
+ *    @return [Complex] Solve of hooked function +csec(z, prec)+
+ *  @!attribute [r] ccot
+ *    @return [Complex] Solve of hooked function +ccot(z, prec)+
  *  @!attribute [r] sinh
  *    @return [BigDecimal] Solve of hooked function +sinh(x, prec)+
  *  @!attribute [r] cosh
@@ -121,6 +157,18 @@
  *    @return [Complex] Solve of hooked function +csech(z, prec)+
  *  @!attribute [r] ccoth
  *    @return [Complex] Solve of hooked function +ccoth(z, prec)+
+ *  @!attribute [r] sqrt
+ *    @return [BigDecimal] Solve of hooked function +sqrt(x, prec)+
+ *  @!attribute [r] csqrt
+ *    @return [Complex] Solve of hooked function +csqrt(x, prec)+
+ *  @!attribute [r] cbrt
+ *    @return [BigDecimal] Solve of hooked function +cbrt(x, prec)+
+ *  @!attribute [r] ccbrt
+ *    @return [Complex] Solve of hooked function +ccbrt(x, prec)+
+ *  @!attribute [r] cabs
+ *    @return [BigDecimal] Solve of hooked function +cabs(z, prec)+
+ *  @!attribute [r] carg
+ *    @return [BigDecimal] Solve of hooked function +carg(z, prec)+
  */
 void
 InitVM_Solver(void)
