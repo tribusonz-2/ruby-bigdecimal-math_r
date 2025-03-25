@@ -63,7 +63,20 @@ rb_bigmath_l2norm(VALUE vec, VALUE prec)
 	return num_l2norm(vec, prec);
 }
 
-
+/**
+ * @overload l2norm(*args, prec)
+ *  Return solve of L2-norm for argument as numerical sequence.
+ *  
+ *  @param *args [Array] Numerical sequence
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @example
+ *   BigMathR::ComplexPlane.l2norm(2, 4, 5, 20)
+ *   #=> 0.670820393249936908923e1
+ *  @since 0.1.0
+ */
 static VALUE
 nucomp_l2norm(VALUE unused_obj, VALUE args)
 {
@@ -124,7 +137,16 @@ rb_bigmath_cabs(VALUE z, VALUE prec)
 	return num_l2norm(rb_assoc_new(rb_num_real(z), rb_num_imag(z)), prec);
 }
 
-
+/**
+ *  Return complex absolute of +z+.
+ *  
+ *  @param z [Numeric] Complex variable
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.1.0
+ */
 static VALUE
 nucomp_cabs(VALUE unused_obj, VALUE z, VALUE prec)
 {
@@ -604,53 +626,20 @@ nucomp_carg(VALUE unused_obj, VALUE z, VALUE prec)
 }
 
 
-VALUE
-rb_bigmath_polar_to(VALUE z, VALUE prec)
-{
-	return rb_Complex(rb_bigmath_cabs(z, prec), rb_bigmath_carg(z, prec));
-}
-
-
-static VALUE
-nucomp_polar_to(VALUE unused_obj, VALUE z, VALUE prec)
-{
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
-	return rb_bigmath_polar_to(z, prec);
-}
-
-
-VALUE
-rb_bigmath_polar_from(VALUE r, VALUE theta, VALUE prec)
-{
-	const ID mult = rb_intern("mult");
-	VALUE sin, cos, t;
-
-	r = rb_bigmath_canonicalize(r, prec, ARG_REAL, ARG_RAWVALUE);
-	theta = rb_bigmath_canonicalize(theta, prec, ARG_REAL, ARG_RAWVALUE);
-
-	theta = rb_sincos_to_radian(theta, prec, rb_bigmath_pi(prec), &t);
-	if (rb_degree_sparg(t, prec, &sin, &cos) == -1)
-		rb_bigmath_sincos(theta, prec, &sin, &cos);
-	return rb_Complex(
-		rb_funcall(r, mult, 2, cos, prec),
-		rb_funcall(r, mult, 2, sin, prec)
-	);
-}
-
-
-static VALUE
-nucomp_polar_from(VALUE unused_obj, VALUE r, VALUE theta, VALUE prec)
-{
-	return rb_bigmath_polar_from(r, theta, prec);
-}
-
-
 /**
  *  Document-module:  BigMathR::ComplexPlane
  *  
  *  A module that provides whole of functions related to the complex plane. 
  *  It is used internally.
  *  <br>
+ *  == Synopsis
+ *  The function names defined are the same as those in the C/C++ standard.
+ *  <br>
+ *  - Complex argument:    +:carg+ <br>
+ *  - Complex absolute:    +:cabs+ <br>
+ *  Follow, the name defined in C/C++ standard though, the function names are different.
+ *  <br>
+ *  - Quadrant XY:         +:quadrant+ ( +:atan2+ in C/C++ ) <br>
  */
 void
 InitVM_ComplexPlane(void)
@@ -659,8 +648,6 @@ InitVM_ComplexPlane(void)
 	rb_define_module_function(rb_mComplexPlane, "cabs", nucomp_cabs, 2);
 	rb_define_module_function(rb_mComplexPlane, "quadrant", nucomp_quadrant, 3);
 	rb_define_module_function(rb_mComplexPlane, "carg", nucomp_carg, 2);
-	rb_define_module_function(rb_mComplexPlane, "polar_to", nucomp_polar_to, 2);
-	rb_define_module_function(rb_mComplexPlane, "polar_from", nucomp_polar_from, 3);
 
 	rb_define_module_function(rb_mBigMathR, "hypot", nucomp_math_hypot, 3);
 	rb_define_module_function(rb_mBigMathR, "atan2", nucomp_math_atan2, 3);

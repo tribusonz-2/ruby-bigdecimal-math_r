@@ -18,10 +18,13 @@ void InitVM_PowerRoot(void);
 void InitVM_Solver(void);
 
 /**
- *  Document-module:  BigMathR
+ * Document-module:  BigMathR
+ * 
+ * Refined BigMath module.
+ * It is a total solution for mathematics that also supports complex numbers.
  *  
- *  Refined BigMath module.
- *  It is a total solution for mathematics that also supports complex numbers.
+ * Reference::
+ * Utsukusii Suugaku wo egaku π, ｅ, to Euler no teisuu γ (Japanese) - WAKAHARA Tatsuhiko (Kohdan-sha Editorial)
  */
 void
 Init_math_r(void)
