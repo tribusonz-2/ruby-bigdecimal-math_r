@@ -735,10 +735,11 @@ log_mercator_ser(VALUE x, VALUE prec)
 static VALUE
 log_mercator_ser_x(VALUE x, VALUE prec)
 {
+	const ID div = rb_intern("div");
 	VALUE y;
 	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	y = rb_funcall1(x, '-', INT2FIX(1));
-	y = rb_funcall1(y, '/', x);
+	y = rb_funcall(y, div, 2, x, prec);
 	y = rb_num_uminus(y);
 	return y;
 }
