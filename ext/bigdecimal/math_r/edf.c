@@ -634,9 +634,9 @@ static VALUE
 logxt_inline(VALUE x, VALUE t, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
-	VALUE b, s, one_half, n, m;
+	VALUE a, b, s, one_half, n, m;
 	n = rb_numdiff_make_n(prec);
-	double a = NUM2DBL(x), dbl_t = NUM2DBL(t);
+	a = rb_bigmath_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
 	b = BIG_ONE;
 	s = BIG_ZERO;
 	one_half = rb_BigDecimal1(rb_str_new_cstr("0.5"));
@@ -647,12 +647,12 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
 	while (rb_numdiff_condition_p(s, b, n, &m))
 	{
 		rb_numdiff_keep_fig(&m);
-		a *= a;
+		a = rb_funcall(a, mult, 2, a, m);
 		b = rb_funcall(one_half, mult, 2, b, m);
-		if (a >= dbl_t)
+		if (RTEST(rb_num_coerce_cmp(a, t, rb_intern(">="))))
 		{
 			s = rb_funcall1(s, '+', b);
-			a /= dbl_t;
+			a = rb_funcall1(a, '/', t);
 		}
 	}
 	RB_GC_GUARD(b);
@@ -665,9 +665,6 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
  * Computes fraction of +x+ with its complement +t+ in the exponential decomposition.
  * <br>
  * Complement is equal to the base +x+, and the decomposition varies depending on the value given.
- * <br>
- * This equation is difficult in physics, but the implementation is very simple: 'x*t'.
- * @note Since it takes a long time to converge for large-precision calculations, internally it is calculated using the Mercator series.
  * @example
  *  BigMathR::EDF.logxt(2, 10, 20) #=> 0.30102999566398119521e0
  *  BigMathR::EDF.logxt(2, 2, 20) #=> 0.1e1
@@ -675,8 +672,10 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
  * @param x [Numeric] Numerical Argument. Domain as 1<=x<=t.
  * @param t [Numeric] Complement of +x+. e = ln(x), 2 = log_2(x), 10 = log_10(x)
  * @param prec [Integer] Arbitrary precision
- * @return [BigDecimal] Fraction number
+ * @return [BigDecimal] Solution of log_t(x)
+ * @raise [FloatDomainError] Numerical arguments are out of range
  * @since 0.1.0
+ * @see Programming in Oberon - Niklaus Wirth
  */
 static VALUE
 edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
@@ -685,12 +684,12 @@ edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	if (rb_num_notequal_p(x, x) ||
 	    rb_num_negative_p(x) || 
-	    NUM2INT(rb_num_cmpeql(INT2FIX(1), x)) != -1 || 
+	    NUM2INT(rb_num_cmpeql(INT2FIX(1), x)) == 1 || 
 	    NUM2INT(rb_num_cmpeql(x, t)) != -1)
 	{
 		if (rb_num_equal_p(x, t))
 			return BIG_ONE;
-		rb_raise(rb_eRangeError, "Numerical arguments are out of range: (1 <= x <= t)");
+		rb_raise(rb_eFloatDomainError, "Numerical arguments are out of range: (1 <= x <= t)");
 	}
 	t = rb_bigmath_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
 	return logxt_inline(x, t, prec);
