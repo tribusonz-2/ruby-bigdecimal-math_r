@@ -634,9 +634,9 @@ static VALUE
 logxt_inline(VALUE x, VALUE t, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
-	VALUE a, b, s, one_half, n, m;
+	VALUE b, s, one_half, n, m;
 	n = rb_numdiff_make_n(prec);
-	a = rb_Float(x); t = rb_Float(t);
+	double a = NUM2DBL(x), dbl_t = NUM2DBL(t);
 	b = BIG_ONE;
 	s = BIG_ZERO;
 	one_half = rb_BigDecimal1(rb_str_new_cstr("0.5"));
@@ -647,12 +647,12 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
 	while (rb_numdiff_condition_p(s, b, n, &m))
 	{
 		rb_numdiff_keep_fig(&m);
-		a = rb_num_coerce_bin(a, a, '*');
+		a *= a;
 		b = rb_funcall(one_half, mult, 2, b, m);
-		if (RTEST(rb_num_coerce_cmp(a, t, rb_intern(">="))))
+		if (a >= dbl_t)
 		{
 			s = rb_funcall1(s, '+', b);
-			a = rb_funcall1(a, '/', t);
+			a /= dbl_t;
 		}
 	}
 	RB_GC_GUARD(b);
