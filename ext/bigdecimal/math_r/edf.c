@@ -662,42 +662,6 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
 	return rb_funcall( rb_cObject, rb_intern("BigDecimal"), 2, s, prec);
 }
 
-/**
- * Computes fraction of +x+ with its complement +t+ in the exponential decomposition.
- * <br>
- * Complement is equal to the base +x+, and the decomposition varies depending on the value given.
- * <br>
- * This equation is difficult in physics, but the implementation is very simple: 'x*t'.
- * @note Since it takes a long time to converge for large-precision calculations, internally it is calculated using the Mercator series.
- * @example
- *  BigMathR::EDF.logxt(2, 10, 20) #=> 0.30102999566398119521e0
- *  BigMathR::EDF.logxt(2, 2, 20) #=> 0.1e1
- *  BigMathR::EDF.logxt(2, Math::E, Float::DIG) #=> 0.693147180559945e0
- * @param x [Numeric] Numerical Argument. Domain as 1<=x<2.
- * @param t [Numeric] Complement of +x+. e = ln(x), 2 = log_2(x), 10 = log_10(x)
- * @param prec [Integer] Arbitrary precision
- * @return [BigDecimal] Fraction number
- * @since 0.1.0
- */
-static VALUE
-edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
-{
-	rb_check_precise(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	if (rb_num_notequal_p(x, x) ||
-	    rb_num_negative_p(x) || 
-	    (NUM2INT(rb_num_cmpeql(INT2FIX(1), x)) != -1 && NUM2INT(rb_num_cmpeql(x, INT2FIX(2))) != -1))
-		rb_raise(rb_eRangeError, "Argument x is out of range: (1 <= x < 2)");
-	t = rb_bigmath_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
-	if (rb_num_negative_p(t) || !rb_num_finite_p(t))
-		rb_raise(rb_eRangeError, "Argument t is out of range: (0 < t < Infinity)");
-
-
-	return logxt_inline(x, t, prec);
-}
-
-
-
 static VALUE
 log_mercator_ser(VALUE x, VALUE prec)
 {
@@ -783,13 +747,9 @@ rb_bigmath_log(VALUE x, VALUE prec)
 		{
 			VALUE fra = Qundef, exp = Qundef;
 			fra = rcm2_inline(x, &exp);
-#if 0
-			fra = logxt_inline(fra, INT2FIX(2), prec);
-#else
 			fra = log_mercator_ser(log_mercator_ser_x(fra, prec), prec);
 			fra = rb_num_uminus(fra);
 			exp = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
-#endif
 			y = rb_funcall1(exp, '+', fra);
 			y = rb_bigmath_round_inline(y, prec);
 		}
@@ -853,13 +813,9 @@ rb_bigmath_log2(VALUE x, VALUE prec)
 		{
 			VALUE fra = Qundef, exp = Qundef;
 			fra = rcm2_inline(x, &exp);
-#if 0
-			fra = logxt_inline(fra, INT2FIX(2), prec);
-#else
 			fra = log_mercator_ser(log_mercator_ser_x(fra, prec), prec);
 			fra = rb_num_uminus(fra);
 			fra = rb_funcall(fra, div, 2, rb_bigmath_const_log2(prec), prec);
-#endif
 			y = rb_funcall1(exp, '+', fra);
 			y = rb_bigmath_round_inline(y, prec);
 		}
@@ -923,13 +879,9 @@ rb_bigmath_log10(VALUE x, VALUE prec)
 		{
 			VALUE fra = Qundef, exp = Qundef;
 			fra = rcm10_inline(x, &exp);
-#if 0
-			fra = logxt_inline(fra, INT2FIX(10), prec);
-#else
 			fra = log_mercator_ser(log_mercator_ser_x(fra, prec), prec);
 			fra = rb_num_uminus(fra);
 			fra = rb_funcall(fra, div, 2, rb_bigmath_const_log10(prec), prec);
-#endif
 			y = rb_funcall1(exp, '+', fra);
 			y = rb_bigmath_round_inline(y, prec);
 		}
@@ -989,8 +941,6 @@ InitVM_EDF(void)
 	rb_define_module_function(rb_mEDF, "rcm2", edf_rcm2, 1);
 	rb_define_module_function(rb_mEDF, "rcm10", edf_rcm10, 1);
 
-	rb_define_module_function(rb_mEDF, "logxt", edf_logxt, 3);
-
 	rb_define_module_function(rb_mEDF, "exp", edf_math_exp, 2);
 	rb_define_module_function(rb_mEDF, "exp2", edf_math_exp2, 2);
 
@@ -999,3 +949,92 @@ InitVM_EDF(void)
 	rb_define_module_function(rb_mEDF, "log10", edf_math_log10, 2);
 
 }
+
+#if 0
+
+/**
+ * Entity of logxt(). It is equivalent to the following Ruby code:
+ * 
+ * ```ruby
+ *  def logxt(x, t, prec)
+ *    eps = 10 ** (-prec-1)
+ *    a = Rational(x); b = 1r; s = 0r;
+ *    loop do
+ *      a = (a * a).round(prec);  b = 0.5r * b;
+ *      if a >= t
+ *        s = s + b; a = a / t; 
+ *      end
+ *      break unless (b >= eps)
+ *    end
+ *    BigDecimal(s, prec)
+ *  end
+ *
+ * ```
+ */
+static VALUE
+logxt_inline(VALUE x, VALUE t, VALUE prec)
+{
+	VALUE eps, a, b, s;
+	
+	eps = rb_num_coerce_bin(
+		INT2FIX(10), LONG2NUM(-NUM2LONG(prec)-1),
+		rb_intern("**"));
+	a = rb_Rational1(x); 
+	b = rb_Rational1(INT2FIX(1));
+	s = rb_Rational1(INT2FIX(0));
+	if (rb_num_zero_p(x))
+		return BIG_ZERO;
+	else if (rb_num_equal_p(x, INT2FIX(1)))
+		return BIG_ZERO;
+	for ( ; ; )
+	{
+		a = rb_num_coerce_bin(a, a, '*');
+		a = rb_funcall(a, rb_intern("round"), 1, prec);
+		b = rb_num_coerce_bin(rb_Rational(INT2FIX(1), INT2FIX(2)), b, '*');
+		if (RTEST(rb_num_coerce_cmp(a, t, rb_intern(">="))))
+		{
+			s = rb_funcall1(s, '+', b);
+			a = rb_funcall1(a, '/', t);
+
+		}
+		if (!RTEST(rb_num_coerce_cmp(b, eps, rb_intern(">="))))
+			break;
+	} 
+	return rb_funcall( rb_cObject, rb_intern("BigDecimal"), 2, s, prec);
+}
+
+/**
+ * Computes fraction of +x+ with its complement +t+ in the exponential decomposition.
+ * <br>
+ * Complement is equal to the base +x+, and the decomposition varies depending on the value given.
+ * <br>
+ * This equation is difficult in physics, but the implementation is very simple: 'x*t'.
+ * @note Since it takes a long time to converge for large-precision calculations, internally it is calculated using the Mercator series.
+ * @example
+ *  BigMathR::EDF.logxt(2, 10, 20) #=> 0.30102999566398119521e0
+ *  BigMathR::EDF.logxt(2, 2, 20) #=> 0.1e1
+ *  BigMathR::EDF.logxt(2, Math::E, Float::DIG) #=> 0.693147180559945e0
+ * @param x [Numeric] Numerical Argument. Domain as 1<=x<=t.
+ * @param t [Numeric] Complement of +x+. e = ln(x), 2 = log_2(x), 10 = log_10(x)
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Fraction number
+ * @since 0.1.0
+ */
+static VALUE
+edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
+{
+	rb_check_precise(prec);
+	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	if (rb_num_notequal_p(x, x) ||
+	    rb_num_negative_p(x) || 
+	    NUM2INT(rb_num_cmpeql(INT2FIX(1), x)) != -1 || 
+	    NUM2INT(rb_num_cmpeql(x, t)) != -1)
+	{
+		if (rb_num_equal_p(x, t))
+			return BIG_ONE;
+		rb_raise(rb_eRangeError, "Numerical arguments are out of range: (1 <= x <= t)");
+	}
+	t = rb_bigmath_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
+	return logxt_inline(x, t, prec);
+}
+#endif
