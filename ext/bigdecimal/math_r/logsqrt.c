@@ -6,7 +6,7 @@
 *******************************************************************************/
 #include <ruby.h>
 #include "math_r/globals.h"
-#include "internal/solver/bigmath_r.h"
+#include "math_r/bigmath_r.h"
 
 #define rb_Complex_I rb_Complex(INT2FIX(0), INT2FIX(1))
 #define rb_Complex_mI rb_Complex(INT2FIX(0), INT2FIX(-1))

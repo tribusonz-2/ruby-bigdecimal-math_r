@@ -5,7 +5,7 @@
 	Licence: MIT
 *******************************************************************************/
 #include <ruby.h>
-#include "internal/solver/bigmath_r.h"
+#include "math_r/bigmath_r.h"
 
 VALUE
 rb_num_uminus(VALUE x)

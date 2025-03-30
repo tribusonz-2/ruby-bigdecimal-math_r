@@ -6,7 +6,7 @@
 *******************************************************************************/
 #include <ruby.h>
 #include "math_r/globals.h"
-#include "internal/solver/bigmath_r.h"
+#include "math_r/bigmath_r.h"
 
 #define DEF_PREC 1000
 #define BIGMATH_PI     "$M_PI"
