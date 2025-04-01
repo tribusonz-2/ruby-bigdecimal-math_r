@@ -25,7 +25,7 @@
  *  @since 0.1.0
  */
 static VALUE
-nucomp_l2norm(VALUE unused_obj, VALUE args)
+__impl_nucomp_l2norm(VALUE unused_obj, VALUE args)
 {
 	if (RARRAY_LEN(args) < 2)
 		rb_raise(rb_eArgError, 
@@ -63,7 +63,7 @@ rb_bigmath_hypot(VALUE a, VALUE b, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-nucomp_math_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
+__impl_nucomp_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
 {
 	if (rb_num_real_p(a))
 		a = rb_num_canonicalize(a, prec, ARG_REAL, ARG_RAWVALUE);
@@ -91,7 +91,7 @@ nucomp_math_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-nucomp_cabs(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_nucomp_cabs(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_cabs(z, prec);
@@ -114,7 +114,7 @@ nucomp_cabs(VALUE unused_obj, VALUE z, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-nucomp_quadrant(VALUE unused_obj, VALUE x, VALUE y, VALUE prec)
+__impl_nucomp_quadrant(VALUE unused_obj, VALUE x, VALUE y, VALUE prec)
 {
 	return rb_bigmath_quadrant(x, y, prec);
 }
@@ -132,7 +132,7 @@ nucomp_quadrant(VALUE unused_obj, VALUE x, VALUE y, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-nucomp_math_atan2(VALUE unused_obj, VALUE y, VALUE x, VALUE prec)
+__impl_nucomp_atan2(VALUE unused_obj, VALUE y, VALUE x, VALUE prec)
 {
 	return rb_bigmath_quadrant(x, y, prec);
 }
@@ -152,7 +152,7 @@ nucomp_math_atan2(VALUE unused_obj, VALUE y, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-nucomp_carg(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_nucomp_carg(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_carg(z, prec);
@@ -177,11 +177,11 @@ nucomp_carg(VALUE unused_obj, VALUE z, VALUE prec)
 void
 InitVM_ComplexPlane(void)
 {
-	rb_define_module_function(rb_mComplexPlane, "l2norm", nucomp_l2norm, -2);
-	rb_define_module_function(rb_mComplexPlane, "cabs", nucomp_cabs, 2);
-	rb_define_module_function(rb_mComplexPlane, "quadrant", nucomp_quadrant, 3);
-	rb_define_module_function(rb_mComplexPlane, "carg", nucomp_carg, 2);
+	rb_define_module_function(rb_mComplexPlane, "l2norm", __impl_nucomp_l2norm, -2);
+	rb_define_module_function(rb_mComplexPlane, "cabs", __impl_nucomp_cabs, 2);
+	rb_define_module_function(rb_mComplexPlane, "quadrant", __impl_nucomp_quadrant, 3);
+	rb_define_module_function(rb_mComplexPlane, "carg", __impl_nucomp_carg, 2);
 
-	rb_define_module_function(rb_mBigMathR, "hypot", nucomp_math_hypot, 3);
-	rb_define_module_function(rb_mBigMathR, "atan2", nucomp_math_atan2, 3);
+	rb_define_module_function(rb_mBigMathR, "hypot", __impl_nucomp_hypot, 3);
+	rb_define_module_function(rb_mBigMathR, "atan2", __impl_nucomp_atan2, 3);
 }

@@ -427,7 +427,7 @@ rb_bigmath_sincos(VALUE x, VALUE prec, VALUE *sin, VALUE *cos)
  * @since 0.1.0
  */
 static VALUE
-trig_math_sincos(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_sincos(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	VALUE sin, cos, pi, t;
 	rb_check_precise(prec);
@@ -476,7 +476,7 @@ rb_bigmath_sin(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trig_math_sin(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_sin(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sin(x, prec);
@@ -515,7 +515,7 @@ rb_bigmath_cos(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trig_math_cos(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_cos(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_cos(x, prec);
@@ -556,7 +556,7 @@ rb_bigmath_tan(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trig_math_tan(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_tan(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_tan(x, prec);
@@ -595,7 +595,7 @@ rb_bigmath_csc(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trig_math_csc(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_csc(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_csc(x, prec);
@@ -634,7 +634,7 @@ rb_bigmath_sec(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trig_math_sec(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_sec(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sec(x, prec);
@@ -675,7 +675,7 @@ rb_bigmath_cot(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trig_math_cot(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trig_cot(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_cot(x, prec);
@@ -709,11 +709,11 @@ trig_math_cot(VALUE unused_obj, VALUE x, VALUE prec)
 void
 InitVM_Trigonometric(void)
 {
-	rb_define_module_function(rb_mTrigonometric, "sincos", trig_math_sincos, 2);
-	rb_define_module_function(rb_mTrigonometric, "sin", trig_math_sin, 2);
-	rb_define_module_function(rb_mTrigonometric, "cos", trig_math_cos, 2);
-	rb_define_module_function(rb_mTrigonometric, "tan", trig_math_tan, 2);
-	rb_define_module_function(rb_mTrigonometric, "csc", trig_math_csc, 2);
-	rb_define_module_function(rb_mTrigonometric, "sec", trig_math_sec, 2);
-	rb_define_module_function(rb_mTrigonometric, "cot", trig_math_cot, 2);
+	rb_define_module_function(rb_mTrigonometric, "sincos", __impl_trig_sincos, 2);
+	rb_define_module_function(rb_mTrigonometric, "sin", __impl_trig_sin, 2);
+	rb_define_module_function(rb_mTrigonometric, "cos", __impl_trig_cos, 2);
+	rb_define_module_function(rb_mTrigonometric, "tan", __impl_trig_tan, 2);
+	rb_define_module_function(rb_mTrigonometric, "csc", __impl_trig_csc, 2);
+	rb_define_module_function(rb_mTrigonometric, "sec", __impl_trig_sec, 2);
+	rb_define_module_function(rb_mTrigonometric, "cot", __impl_trig_cot, 2);
 }

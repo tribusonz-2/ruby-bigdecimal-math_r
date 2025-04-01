@@ -378,7 +378,7 @@ rb_bigmath_cexp(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_cexp(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_cexp(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_cexp(z, prec);
@@ -398,7 +398,7 @@ trigexp_math_cexp(VALUE unused_obj, VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_cexp2(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_cexp2(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	VALUE log2 = rb_bigmath_const_log2(prec);
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
@@ -436,7 +436,7 @@ rb_bigmath_csin(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_csin(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_csin(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csin(z, prec);
@@ -471,7 +471,7 @@ rb_bigmath_ccos(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ccos(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ccos(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccos(z, prec);
@@ -507,7 +507,7 @@ rb_bigmath_ctan(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ctan(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ctan(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ctan(z, prec);
@@ -544,7 +544,7 @@ rb_bigmath_ccsc(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ccsc(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ccsc(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccsc(z, prec);
@@ -581,7 +581,7 @@ rb_bigmath_csec(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_csec(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_csec(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csec(z, prec);
@@ -618,7 +618,7 @@ rb_bigmath_ccot(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ccot(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ccot(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccot(z, prec);
@@ -655,7 +655,7 @@ rb_bigmath_sinh(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_sinh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trigexp_sinh(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sinh(x, prec);
@@ -692,7 +692,7 @@ rb_bigmath_cosh(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_cosh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trigexp_cosh(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_cosh(x, prec);
@@ -730,7 +730,7 @@ rb_bigmath_tanh(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_tanh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trigexp_tanh(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_tanh(x, prec);
@@ -769,7 +769,7 @@ rb_bigmath_csch(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_csch(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trigexp_csch(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_csch(x, prec);
@@ -808,7 +808,7 @@ rb_bigmath_sech(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_sech(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trigexp_sech(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sech(x, prec);
@@ -847,7 +847,7 @@ rb_bigmath_coth(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_coth(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_trigexp_coth(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_coth(x, prec);
@@ -882,7 +882,7 @@ rb_bigmath_csinh(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_csinh(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_csinh(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csinh(z, prec);
@@ -917,7 +917,7 @@ rb_bigmath_ccosh(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ccosh(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ccosh(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccosh(z, prec);
@@ -952,7 +952,7 @@ rb_bigmath_ctanh(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ctanh(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ctanh(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ctanh(z, prec);
@@ -988,7 +988,7 @@ rb_bigmath_ccsch(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ccsch(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ccsch(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccsch(z, prec);
@@ -1025,7 +1025,7 @@ rb_bigmath_csech(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_csech(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_csech(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csech(z, prec);
@@ -1062,7 +1062,7 @@ rb_bigmath_ccoth(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-trigexp_math_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_trigexp_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccoth(z, prec);
@@ -1105,27 +1105,27 @@ trigexp_math_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
 void
 InitVM_TrigExp(void)
 {
-	rb_define_module_function(rb_mTrigExp, "cexp", trigexp_math_cexp, 2);
-	rb_define_module_function(rb_mTrigExp, "cexp2", trigexp_math_cexp2, 2);
+	rb_define_module_function(rb_mTrigExp, "cexp", __impl_trigexp_cexp, 2);
+	rb_define_module_function(rb_mTrigExp, "cexp2", __impl_trigexp_cexp2, 2);
 
-	rb_define_module_function(rb_mTrigExp, "csin", trigexp_math_csin, 2);
-	rb_define_module_function(rb_mTrigExp, "ccos", trigexp_math_ccos, 2);
-	rb_define_module_function(rb_mTrigExp, "ctan", trigexp_math_ctan, 2);
-	rb_define_module_function(rb_mTrigExp, "ccsc", trigexp_math_ccsc, 2);
-	rb_define_module_function(rb_mTrigExp, "csec", trigexp_math_csec, 2);
-	rb_define_module_function(rb_mTrigExp, "ccot", trigexp_math_ccot, 2);
+	rb_define_module_function(rb_mTrigExp, "csin", __impl_trigexp_csin, 2);
+	rb_define_module_function(rb_mTrigExp, "ccos", __impl_trigexp_ccos, 2);
+	rb_define_module_function(rb_mTrigExp, "ctan", __impl_trigexp_ctan, 2);
+	rb_define_module_function(rb_mTrigExp, "ccsc", __impl_trigexp_ccsc, 2);
+	rb_define_module_function(rb_mTrigExp, "csec", __impl_trigexp_csec, 2);
+	rb_define_module_function(rb_mTrigExp, "ccot", __impl_trigexp_ccot, 2);
 
-	rb_define_module_function(rb_mTrigExp, "sinh", trigexp_math_sinh, 2);
-	rb_define_module_function(rb_mTrigExp, "cosh", trigexp_math_cosh, 2);
-	rb_define_module_function(rb_mTrigExp, "tanh", trigexp_math_tanh, 2);
-	rb_define_module_function(rb_mTrigExp, "csch", trigexp_math_csch, 2);
-	rb_define_module_function(rb_mTrigExp, "sech", trigexp_math_sech, 2);
-	rb_define_module_function(rb_mTrigExp, "coth", trigexp_math_coth, 2);
+	rb_define_module_function(rb_mTrigExp, "sinh", __impl_trigexp_sinh, 2);
+	rb_define_module_function(rb_mTrigExp, "cosh", __impl_trigexp_cosh, 2);
+	rb_define_module_function(rb_mTrigExp, "tanh", __impl_trigexp_tanh, 2);
+	rb_define_module_function(rb_mTrigExp, "csch", __impl_trigexp_csch, 2);
+	rb_define_module_function(rb_mTrigExp, "sech", __impl_trigexp_sech, 2);
+	rb_define_module_function(rb_mTrigExp, "coth", __impl_trigexp_coth, 2);
 
-	rb_define_module_function(rb_mTrigExp, "csinh", trigexp_math_csinh, 2);
-	rb_define_module_function(rb_mTrigExp, "ccosh", trigexp_math_ccosh, 2);
-	rb_define_module_function(rb_mTrigExp, "ctanh", trigexp_math_ctanh, 2);
-	rb_define_module_function(rb_mTrigExp, "ccsch", trigexp_math_ccsch, 2);
-	rb_define_module_function(rb_mTrigExp, "csech", trigexp_math_csech, 2);
-	rb_define_module_function(rb_mTrigExp, "ccoth", trigexp_math_ccoth, 2);
+	rb_define_module_function(rb_mTrigExp, "csinh", __impl_trigexp_csinh, 2);
+	rb_define_module_function(rb_mTrigExp, "ccosh", __impl_trigexp_ccosh, 2);
+	rb_define_module_function(rb_mTrigExp, "ctanh", __impl_trigexp_ctanh, 2);
+	rb_define_module_function(rb_mTrigExp, "ccsch", __impl_trigexp_ccsch, 2);
+	rb_define_module_function(rb_mTrigExp, "csech", __impl_trigexp_csech, 2);
+	rb_define_module_function(rb_mTrigExp, "ccoth", __impl_trigexp_ccoth, 2);
 }

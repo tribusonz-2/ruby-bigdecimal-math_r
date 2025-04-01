@@ -131,10 +131,6 @@ check_eps(VALUE x, VALUE prec)
 static VALUE
 calc_pi(VALUE prec)
 {
-#if 0
-        const ID _PI = rb_intern("PI");
-	return rb_funcall(rb_mBigMath, _PI, 1, prec);
-#else
 	const ID div = rb_intern("div");
 	VALUE m, n, one, two, m25, m57121, pi, k, t, d;
 	rb_check_precise(prec);
@@ -175,7 +171,6 @@ calc_pi(VALUE prec)
 	RB_GC_GUARD(t);
 	RB_GC_GUARD(d);
 	return rb_num_round(pi, prec);
-#endif
 }
 /**
  * Compare implementations:
@@ -240,7 +235,7 @@ rb_bigmath_const_pi(VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-const_math_pi(VALUE unused_obj, VALUE prec)
+__impl_const_pi(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_pi(prec);
 }
@@ -265,10 +260,6 @@ const_math_pi(VALUE unused_obj, VALUE prec)
 static VALUE
 calc_e(VALUE prec)
 {
-#if 0
-	const ID _E = rb_intern("E");
-	return rb_funcall(rb_mBigMath, _E, 1, prec);
-#else
 	const ID div = rb_intern("div");
 	VALUE n = rb_numdiff_make_n(prec);
 	VALUE a = BIG_ONE;
@@ -282,7 +273,6 @@ calc_e(VALUE prec)
 	RB_GC_GUARD(a);
 	RB_GC_GUARD(e);
         return rb_num_round(e, prec);
-#endif
 }
 
 static VALUE
@@ -322,7 +312,7 @@ rb_bigmath_const_e(VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-const_math_e(VALUE unused_obj, VALUE prec)
+__impl_const_e(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_e(prec);
 }
@@ -413,7 +403,7 @@ rb_bigmath_const_log2(VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-const_math_log2(VALUE unused_obj, VALUE prec)
+__impl_const_log2(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_log2(prec);
 }
@@ -459,7 +449,7 @@ rb_bigmath_const_log10(VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-const_math_log10(VALUE unused_obj, VALUE prec)
+__const_log10(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_log10(prec);
 }
@@ -507,7 +497,7 @@ rb_bigmath_const_sqrt2(VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-const_math_sqrt2(VALUE unused_obj, VALUE prec)
+__impl_const_sqrt2(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_sqrt2(prec);
 }
@@ -556,7 +546,7 @@ rb_bigmath_const_sqrt3(VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-const_math_sqrt3(VALUE unused_obj, VALUE prec)
+__impl_const_sqrt3(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_sqrt3(prec);
 }
@@ -569,22 +559,22 @@ InitVM_Constant(void)
 
 
 	rb_gv_set(BIGMATH_PI, Qnil);
-	rb_define_module_function(rb_mBigMathR, "PI", const_math_pi, 1);
+	rb_define_module_function(rb_mBigMathR, "PI", __impl_const_pi, 1);
 
 	rb_gv_set(BIGMATH_E, Qnil);
-	rb_define_module_function(rb_mBigMathR, "E", const_math_e, 1);
+	rb_define_module_function(rb_mBigMathR, "E", __impl_const_e, 1);
 
 	rb_gv_set(BIGMATH_LOG2, Qnil);
-	rb_define_module_function(rb_mBigMathR, "LOG2", const_math_log2, 1);
+	rb_define_module_function(rb_mBigMathR, "LOG2", __impl_const_log2, 1);
 
 	rb_gv_set(BIGMATH_LOG10, Qnil);
-	rb_define_module_function(rb_mBigMathR, "LOG10", const_math_log10, 1);
+	rb_define_module_function(rb_mBigMathR, "LOG10", __const_log10, 1);
 
 	rb_gv_set(BIGMATH_SQRT2, Qnil);
-	rb_define_module_function(rb_mBigMathR, "SQRT2", const_math_sqrt2, 1);
+	rb_define_module_function(rb_mBigMathR, "SQRT2", __impl_const_sqrt2, 1);
 
 	rb_gv_set(BIGMATH_SQRT3, Qnil);
-	rb_define_module_function(rb_mBigMathR, "SQRT3", const_math_sqrt3, 1);
+	rb_define_module_function(rb_mBigMathR, "SQRT3", __impl_const_sqrt3, 1);
 
 
 }

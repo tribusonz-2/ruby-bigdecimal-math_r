@@ -104,7 +104,7 @@ rb_bigmath_intpower(VALUE x, VALUE n, VALUE exp)
  * @since 0.1.0
  */
 static VALUE
-edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
+__impl_edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
 {
 	VALUE y;
 	
@@ -269,7 +269,7 @@ rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
  * @since 0.1.0
  */
 static VALUE
-edf_escalb(VALUE unused_obj, VALUE a, VALUE x, VALUE prec)
+__impl_edf_escalb(VALUE unused_obj, VALUE a, VALUE x, VALUE prec)
 {
 	VALUE exp = Qundef, fra = Qundef;
 	rb_bigmath_escalb(a, x, prec, &exp, &fra);
@@ -330,7 +330,7 @@ rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
+__impl_edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 {
 	rb_check_precise(prec);
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
@@ -381,7 +381,7 @@ rb_bigmath_exp(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-edf_math_exp(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_math_exp(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_exp(x, prec);
@@ -422,7 +422,7 @@ rb_bigmath_exp2(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-edf_math_exp2(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_math_exp2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_exp2(x, prec);
@@ -513,7 +513,7 @@ rcm2_inline(VALUE x, VALUE *reso)
  * @since 0.1.0
  */
 static VALUE
-edf_rcm2(VALUE unused_obj, VALUE x)
+__impl_edf_rcm2(VALUE unused_obj, VALUE x)
 {
 	VALUE exp, fra;
 	fra = rcm2_inline(x, &exp);
@@ -604,7 +604,7 @@ rcm10_inline(VALUE x, VALUE *reso)
  * @since 0.1.0
  */
 static VALUE
-edf_rcm10(VALUE unused_obj, VALUE x)
+__impl_edf_rcm10(VALUE unused_obj, VALUE x)
 {
 	VALUE exp, fra;
 	fra = rcm10_inline(x, &exp);
@@ -678,7 +678,7 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
  * @see Programming in Oberon - Niklaus Wirth
  */
 static VALUE
-edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
+__impl_edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 {
 	rb_check_precise(prec);
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
@@ -814,7 +814,7 @@ rb_bigmath_log(VALUE x, VALUE prec)
  * @raise [RangeError] +prec+ is zero or negative number
  */
 static VALUE
-edf_math_log(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_math_log(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log(x, prec);
@@ -887,7 +887,7 @@ rb_bigmath_log2(VALUE x, VALUE prec)
  * @raise [RangeError] +prec+ is zero or negative number
  */
 static VALUE
-edf_math_log2(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_math_log2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log2(x, prec);
@@ -959,7 +959,7 @@ rb_bigmath_log10(VALUE x, VALUE prec)
  * @raise [RangeError] +prec+ is zero or negative number
  */
 static VALUE
-edf_math_log10(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_math_log10(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log10(x, prec);
@@ -989,20 +989,20 @@ edf_math_log10(VALUE unused_obj, VALUE x, VALUE prec)
 void
 InitVM_EDF(void)
 {
-	rb_define_module_function(rb_mEDF, "integer_power", edf_integer_power, 3);
-	rb_define_module_function(rb_mEDF, "escalb", edf_escalb, 3);
-	rb_define_module_function(rb_mEDF, "expxt", edf_expxt, 3);
+	rb_define_module_function(rb_mEDF, "integer_power", __impl_edf_integer_power, 3);
+	rb_define_module_function(rb_mEDF, "escalb", __impl_edf_escalb, 3);
+	rb_define_module_function(rb_mEDF, "expxt", __impl_edf_expxt, 3);
 
-	rb_define_module_function(rb_mEDF, "rcm2", edf_rcm2, 1);
-	rb_define_module_function(rb_mEDF, "rcm10", edf_rcm10, 1);
+	rb_define_module_function(rb_mEDF, "rcm2", __impl_edf_rcm2, 1);
+	rb_define_module_function(rb_mEDF, "rcm10", __impl_edf_rcm10, 1);
 
-	rb_define_module_function(rb_mEDF, "logxt", edf_logxt, 3);
+	rb_define_module_function(rb_mEDF, "logxt", __impl_edf_logxt, 3);
 
-	rb_define_module_function(rb_mEDF, "exp", edf_math_exp, 2);
-	rb_define_module_function(rb_mEDF, "exp2", edf_math_exp2, 2);
+	rb_define_module_function(rb_mEDF, "exp", __impl_edf_math_exp, 2);
+	rb_define_module_function(rb_mEDF, "exp2", __impl_edf_math_exp2, 2);
 
-	rb_define_module_function(rb_mEDF, "log", edf_math_log, 2);
-	rb_define_module_function(rb_mEDF, "log2", edf_math_log2, 2);
-	rb_define_module_function(rb_mEDF, "log10", edf_math_log10, 2);
+	rb_define_module_function(rb_mEDF, "log", __impl_edf_math_log, 2);
+	rb_define_module_function(rb_mEDF, "log2", __impl_edf_math_log2, 2);
+	rb_define_module_function(rb_mEDF, "log10", __impl_edf_math_log10, 2);
 
 }

@@ -24,7 +24,7 @@
  * @since 0.1.0
  */
 static VALUE
-powerroot_math_sqrt(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_powerroot_sqrt(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	VALUE y;
 	y = rb_bigmath_sqrt(x, prec);
@@ -47,7 +47,7 @@ powerroot_math_sqrt(VALUE unused_obj, VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-powerroot_math_csqrt(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_powerroot_csqrt(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
         return rb_bigmath_csqrt(z, prec);
@@ -125,7 +125,7 @@ rb_bigmath_cuberoot(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-powerroot_math_cuberoot(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_powerroot_cuberoot(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_cuberoot(x, prec);
 }
@@ -163,7 +163,7 @@ rb_bigmath_ccbrt(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-powerroot_math_ccbrt(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_powerroot_ccbrt(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
         return rb_bigmath_ccbrt(z, prec);
@@ -189,8 +189,8 @@ powerroot_math_ccbrt(VALUE unused_obj, VALUE z, VALUE prec)
 void
 InitVM_PowerRoot(void)
 {
-	rb_define_module_function(rb_mPowerRoot, "sqrt", powerroot_math_sqrt, 2);
-	rb_define_module_function(rb_mPowerRoot, "csqrt", powerroot_math_csqrt, 2);
-	rb_define_module_function(rb_mPowerRoot, "cuberoot", powerroot_math_cuberoot, 2);
-	rb_define_module_function(rb_mPowerRoot, "ccbrt", powerroot_math_ccbrt, 2);
+	rb_define_module_function(rb_mPowerRoot, "sqrt", __impl_powerroot_sqrt, 2);
+	rb_define_module_function(rb_mPowerRoot, "csqrt", __impl_powerroot_csqrt, 2);
+	rb_define_module_function(rb_mPowerRoot, "cuberoot", __impl_powerroot_cuberoot, 2);
+	rb_define_module_function(rb_mPowerRoot, "ccbrt", __impl_powerroot_ccbrt, 2);
 }

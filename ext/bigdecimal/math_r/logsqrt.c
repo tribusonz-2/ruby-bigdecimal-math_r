@@ -18,104 +18,7 @@ domain_p(VALUE x, VALUE range)
 	return RTEST(rb_funcall(range, cover_p, 1, x));
 }
 
-
-
-static VALUE
-atan_euler_ser(VALUE x, VALUE prec)
-{
-	const ID add = rb_intern("add");
-	const ID mult = rb_intern("mult");
-	const ID div = rb_intern("div");
-	const ID exponent = rb_intern("exponent");
-	const ID double_fig = rb_intern("double_fig");
-	VALUE m, y, w, t, s;
-	long n = 1;
-	if (rb_num_zero_p(x))
-		return BIG_ZERO;
-	m = rb_funcall1(rb_funcall(rb_cBigDecimal, double_fig, 0), '+', prec);
-	y = rb_funcall(
-		rb_funcall(x, mult, 2, x, m), div, 2,
-		rb_funcall(BIG_ONE, add, 2, rb_funcall(x, mult, 2, x, m),
-		m), m);
-	w = BIG_ONE;
-	t = BIG_ONE;
-	s = BIG_ZERO;
-	for ( ; ; )
-	{
-		VALUE a = rb_funcall(t, mult, 2, w, m);
-
-		if (rb_num_negative_p(rb_funcall1(m, '+', rb_funcall(a, exponent, 0))))
-			break;
-		s = rb_funcall(s, add, 2, a, m);
-		t = rb_funcall(t, mult, 2, LONG2NUM(++n), m);
-		t = rb_funcall(t, div, 2, LONG2NUM(++n), m);
-		w = rb_funcall(w, mult, 2, y, m);
-	};
-	return rb_funcall(rb_funcall(y, div, 2, x, prec), mult, 2, s, prec);
-}
-
-
-VALUE
-rb_bigmath_atan_cb(VALUE x, VALUE prec, VALUE (*atan_func)(VALUE x, VALUE prec))
-{
-#if 0
-	const ID atan = rb_intern("atan");
-	return rb_funcall(rb_mBigMath, atan, 2, x, prec);
-#else
-	const ID add = rb_intern("add");
-	const ID sub = rb_intern("sub");
-	const ID div = rb_intern("div");
-	const ID round = rb_intern("round");
-	const ID sqrt = rb_intern("sqrt");
-	bool neg, dbl, inv;
-	VALUE pi;
-	if (!atan_func)
-		atan_func = atan_euler_ser;
-	rb_check_precise(prec);
-	if (rb_num_notequal_p(x, x))
-		return BIG_NAN;
-	if (rb_num_zero_p(x))
-		return rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	pi = rb_bigmath_const_pi(prec);
-	neg = rb_num_negative_p(x);
-	if (neg)
-		x = rb_num_uminus(x);
-	if (rb_num_infinite_p(x) != 0)
-		return rb_funcall(pi, div, 2,
-			neg ? INT2NUM(-2) : INT2NUM(2), prec);
-	if (rb_num_equal_p(rb_funcall(x, round, 1, prec), INT2FIX(1)))
-		return rb_funcall(pi, div, 2,
-			neg ? INT2NUM(-4) : INT2NUM(4), prec);
-	inv = RTEST(rb_num_coerce_cmp(x, INT2FIX(1), '>'));
-	if (inv)
-		x = rb_funcall(BIG_ONE, div, 2, x, prec);
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	dbl = RTEST(rb_num_coerce_cmp(x, DBL2NUM(0.5), '>'));
-	if (dbl)
-		// x = (-1 + sqrt(1 + x**2, prec))/x
-		x = rb_funcall1(
-			rb_funcall1(INT2FIX(-1), '+', 
-			rb_funcall(rb_funcall1(INT2FIX(1), '+', 
-			rb_funcall1(x, '*', x)), sqrt, 1, prec)), '/', x);
-	x = atan_func(x, prec);
-	if (dbl)
-		x = rb_funcall(x, add, 2, x, prec);
-	if (inv)
-		x = rb_funcall(
-			rb_funcall(pi, div, 2, INT2FIX(2), prec),
-		sub, 2, x, prec);
-	if (neg)
-		x = rb_num_uminus(x);
-	return x;
-#endif
-}
-
-VALUE
-rb_bigmath_atan(VALUE x, VALUE prec)
-{
-	return rb_bigmath_atan_cb(x, prec, atan_euler_ser);
-}
-
+#include "api/bigmath/atan.h"
 
 /**
  * Computes the inverse tangent of +x+.
@@ -131,7 +34,7 @@ rb_bigmath_atan(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_atan(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_atan(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_atan(x, prec);
 }
@@ -162,7 +65,7 @@ rb_bigmath_acot(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_acot(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_acot(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_acot(x, prec);
 }
@@ -224,7 +127,7 @@ rb_bigmath_asin(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_asin(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_asin(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_asin(x, prec);
 }
@@ -259,7 +162,7 @@ rb_bigmath_acsc(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_acsc(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_acsc(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_acsc(x, prec);
 }
@@ -289,7 +192,7 @@ rb_bigmath_acos(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_acos(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_acos(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_acos(x, prec);
 }
@@ -323,7 +226,7 @@ rb_bigmath_asec(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_asec(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_asec(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_asec(x, prec);
 }
@@ -380,7 +283,7 @@ rb_bigmath_asinh(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_asinh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_asinh(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_asinh(x, prec);
 }
@@ -405,7 +308,7 @@ rb_bigmath_acsch(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_acsch(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_acsch(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_acsch(x, prec);
 }
@@ -452,7 +355,7 @@ rb_bigmath_asech(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_asech(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_asech(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_asech(x, prec);
 }
@@ -484,7 +387,7 @@ rb_bigmath_acosh(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_acosh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_acosh(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_acosh(x, prec);
 }
@@ -530,7 +433,7 @@ rb_bigmath_atanh(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_atanh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_atanh(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_atanh(x, prec);
 }
@@ -568,7 +471,7 @@ rb_bigmath_acoth(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_acoth(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_logsqrt_acoth(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return rb_bigmath_acoth(x, prec);
 }
@@ -597,7 +500,7 @@ rb_bigmath_clog(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_clog(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_clog(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_clog(z, prec);
 }
@@ -616,7 +519,7 @@ logsqrt_math_clog(VALUE unused_obj, VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_clog2(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_clog2(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	VALUE w = rb_bigmath_clog(z, prec);
 	w = rb_funcall1(w, '/', rb_bigmath_const_log2(prec));
@@ -637,7 +540,7 @@ logsqrt_math_clog2(VALUE unused_obj, VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_clog10(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_clog10(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	VALUE w = rb_bigmath_clog(z, prec);
 	w = rb_funcall1(w, '/', rb_bigmath_const_log10(prec));
@@ -705,7 +608,7 @@ rb_bigmath_casin(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_casin(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_casin(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_casin(z, prec);
 }
@@ -770,7 +673,7 @@ rb_bigmath_cacsc(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_cacsc(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_cacsc(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_cacsc(z, prec);
 }
@@ -838,7 +741,7 @@ rb_bigmath_cacos(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_cacos(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_cacos(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_cacos(z, prec);
 }
@@ -905,7 +808,7 @@ rb_bigmath_casec(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_casec(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_casec(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_casec(z, prec);
 }
@@ -985,7 +888,7 @@ rb_bigmath_catan(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_catan(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_catan(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_catan(z, prec);
 }
@@ -1056,7 +959,7 @@ rb_bigmath_cacot(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_cacot(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_cacot(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_cacot(z, prec);
 }
@@ -1085,7 +988,7 @@ rb_bigmath_casinh(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_casinh(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_casinh(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_casinh(z, prec);
 }
@@ -1115,7 +1018,7 @@ rb_bigmath_cacsch(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_cacsch(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_cacsch(VALUE unused_obj, VALUE z, VALUE prec)
 {
 
 	return rb_bigmath_cacsch(z, prec);
@@ -1183,7 +1086,7 @@ rb_bigmath_cacosh(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_cacosh(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_cacosh(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_cacosh(z, prec);
 }
@@ -1236,7 +1139,7 @@ rb_bigmath_casech(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_casech(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_casech(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_casech(z, prec);
 }
@@ -1264,7 +1167,7 @@ rb_bigmath_catanh(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_catanh(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_catanh(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_catanh(z, prec);
 }
@@ -1292,7 +1195,7 @@ rb_bigmath_cacoth(VALUE z, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-logsqrt_math_cacoth(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_logsqrt_cacoth(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return rb_bigmath_cacoth(z, prec);
 }
@@ -1331,36 +1234,36 @@ logsqrt_math_cacoth(VALUE unused_obj, VALUE z, VALUE prec)
 void
 InitVM_LogSqrt(void)
 {
-	rb_define_module_function(rb_mLogSqrt, "clog", logsqrt_math_clog, 2);
-	rb_define_module_function(rb_mLogSqrt, "clog2", logsqrt_math_clog2, 2);
-	rb_define_module_function(rb_mLogSqrt, "clog10", logsqrt_math_clog10, 2);
+	rb_define_module_function(rb_mLogSqrt, "clog", __impl_logsqrt_clog, 2);
+	rb_define_module_function(rb_mLogSqrt, "clog2", __impl_logsqrt_clog2, 2);
+	rb_define_module_function(rb_mLogSqrt, "clog10", __impl_logsqrt_clog10, 2);
 
-	rb_define_module_function(rb_mLogSqrt, "asin", logsqrt_math_asin, 2);
-	rb_define_module_function(rb_mLogSqrt, "acos", logsqrt_math_acos, 2);
-	rb_define_module_function(rb_mLogSqrt, "atan", logsqrt_math_atan, 2);
-	rb_define_module_function(rb_mLogSqrt, "acsc", logsqrt_math_acsc, 2);
-	rb_define_module_function(rb_mLogSqrt, "asec", logsqrt_math_asec, 2);
-	rb_define_module_function(rb_mLogSqrt, "acot", logsqrt_math_acot, 2);
+	rb_define_module_function(rb_mLogSqrt, "asin", __impl_logsqrt_asin, 2);
+	rb_define_module_function(rb_mLogSqrt, "acos", __impl_logsqrt_acos, 2);
+	rb_define_module_function(rb_mLogSqrt, "atan", __impl_logsqrt_atan, 2);
+	rb_define_module_function(rb_mLogSqrt, "acsc", __impl_logsqrt_acsc, 2);
+	rb_define_module_function(rb_mLogSqrt, "asec", __impl_logsqrt_asec, 2);
+	rb_define_module_function(rb_mLogSqrt, "acot", __impl_logsqrt_acot, 2);
 
-	rb_define_module_function(rb_mLogSqrt, "asinh", logsqrt_math_asinh, 2);
-	rb_define_module_function(rb_mLogSqrt, "acosh", logsqrt_math_acosh, 2);
-	rb_define_module_function(rb_mLogSqrt, "atanh", logsqrt_math_atanh, 2);
-	rb_define_module_function(rb_mLogSqrt, "acsch", logsqrt_math_acsch, 2);
-	rb_define_module_function(rb_mLogSqrt, "asech", logsqrt_math_asech, 2);
-	rb_define_module_function(rb_mLogSqrt, "acoth", logsqrt_math_acoth, 2);
+	rb_define_module_function(rb_mLogSqrt, "asinh", __impl_logsqrt_asinh, 2);
+	rb_define_module_function(rb_mLogSqrt, "acosh", __impl_logsqrt_acosh, 2);
+	rb_define_module_function(rb_mLogSqrt, "atanh", __impl_logsqrt_atanh, 2);
+	rb_define_module_function(rb_mLogSqrt, "acsch", __impl_logsqrt_acsch, 2);
+	rb_define_module_function(rb_mLogSqrt, "asech", __impl_logsqrt_asech, 2);
+	rb_define_module_function(rb_mLogSqrt, "acoth", __impl_logsqrt_acoth, 2);
 
-	rb_define_module_function(rb_mLogSqrt, "casin", logsqrt_math_casin, 2);
-	rb_define_module_function(rb_mLogSqrt, "cacos", logsqrt_math_cacos, 2);
-	rb_define_module_function(rb_mLogSqrt, "catan", logsqrt_math_catan, 2);
-	rb_define_module_function(rb_mLogSqrt, "cacsc", logsqrt_math_cacsc, 2);
-	rb_define_module_function(rb_mLogSqrt, "casec", logsqrt_math_casec, 2);
-	rb_define_module_function(rb_mLogSqrt, "cacot", logsqrt_math_cacot, 2);
+	rb_define_module_function(rb_mLogSqrt, "casin", __impl_logsqrt_casin, 2);
+	rb_define_module_function(rb_mLogSqrt, "cacos", __impl_logsqrt_cacos, 2);
+	rb_define_module_function(rb_mLogSqrt, "catan", __impl_logsqrt_catan, 2);
+	rb_define_module_function(rb_mLogSqrt, "cacsc", __impl_logsqrt_cacsc, 2);
+	rb_define_module_function(rb_mLogSqrt, "casec", __impl_logsqrt_casec, 2);
+	rb_define_module_function(rb_mLogSqrt, "cacot", __impl_logsqrt_cacot, 2);
 
-	rb_define_module_function(rb_mLogSqrt, "casinh", logsqrt_math_casinh, 2);
-	rb_define_module_function(rb_mLogSqrt, "cacosh", logsqrt_math_cacosh, 2);
-	rb_define_module_function(rb_mLogSqrt, "catanh", logsqrt_math_catanh, 2);
-	rb_define_module_function(rb_mLogSqrt, "cacsch", logsqrt_math_cacsch, 2);
-	rb_define_module_function(rb_mLogSqrt, "casech", logsqrt_math_casech, 2);
-	rb_define_module_function(rb_mLogSqrt, "cacoth", logsqrt_math_cacoth, 2);
+	rb_define_module_function(rb_mLogSqrt, "casinh", __impl_logsqrt_casinh, 2);
+	rb_define_module_function(rb_mLogSqrt, "cacosh", __impl_logsqrt_cacosh, 2);
+	rb_define_module_function(rb_mLogSqrt, "catanh", __impl_logsqrt_catanh, 2);
+	rb_define_module_function(rb_mLogSqrt, "cacsch", __impl_logsqrt_cacsch, 2);
+	rb_define_module_function(rb_mLogSqrt, "casech", __impl_logsqrt_casech, 2);
+	rb_define_module_function(rb_mLogSqrt, "cacoth", __impl_logsqrt_cacoth, 2);
 
 }
