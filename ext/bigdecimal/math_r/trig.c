@@ -67,11 +67,11 @@ rb_sincos_to_radian(VALUE x, VALUE prec, VALUE pi, VALUE *t)
 	}
 	else
 	{
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	}
 	if (t != NULL)
 	{
-		*t = rb_bigmath_round_inline(
+		*t = rb_num_round(
 			rb_funcall1(x, '/', twopi), prec);
 		if (rb_num_negative_p(*t))
 			rb_funcall1(x, '+', INT2FIX(1));
@@ -433,13 +433,13 @@ trig_math_sincos(VALUE unused_obj, VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return rb_assoc_new(BIG_NAN, BIG_NAN);
-	pi = rb_bigmath_pi(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	pi = rb_bigmath_const_pi(prec);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, &sin, &cos) == -1)
 		rb_bigmath_sincos(x, prec, &sin, &cos);
-	sin = rb_bigmath_round_inline(sin, prec);
-	cos = rb_bigmath_round_inline(cos, prec);
+	sin = rb_num_round(sin, prec);
+	cos = rb_num_round(cos, prec);
 	return rb_assoc_new(sin, cos);
 }
 
@@ -451,11 +451,11 @@ rb_bigmath_sin(VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, &sin, NULL) == -1)
 		rb_bigmath_sincos(x, prec, &sin, NULL);
-	sin = rb_bigmath_round_inline(sin, prec);
+	sin = rb_num_round(sin, prec);
 	return sin;
 }
 
@@ -478,7 +478,7 @@ rb_bigmath_sin(VALUE x, VALUE prec)
 static VALUE
 trig_math_sin(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sin(x, prec);
 }
 
@@ -490,11 +490,11 @@ rb_bigmath_cos(VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, NULL, &cos) == -1)
 		rb_bigmath_sincos(x, prec, NULL, &cos);
-	cos = rb_bigmath_round_inline(cos, prec);
+	cos = rb_num_round(cos, prec);
 	return cos;
 }
 
@@ -517,7 +517,7 @@ rb_bigmath_cos(VALUE x, VALUE prec)
 static VALUE
 trig_math_cos(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_cos(x, prec);
 }
 
@@ -530,12 +530,12 @@ rb_bigmath_tan(VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, &sin, &cos) == -1)
 		rb_bigmath_sincos(x, prec, &sin, &cos);
-	sin = rb_bigmath_round_inline(sin, prec);
-	cos = rb_bigmath_round_inline(cos, prec);
+	sin = rb_num_round(sin, prec);
+	cos = rb_num_round(cos, prec);
 	return rb_funcall(sin, div, 2, cos, prec);
 }
 
@@ -558,7 +558,7 @@ rb_bigmath_tan(VALUE x, VALUE prec)
 static VALUE
 trig_math_tan(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_tan(x, prec);
 }
 
@@ -570,12 +570,12 @@ rb_bigmath_csc(VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, &sin, NULL) == -1)
 		rb_bigmath_sincos(x, prec, &sin, NULL);
-	sin = rb_bigmath_round_inline(sin, prec);
-	return rb_bigmath_canonicalize(sin, prec, ARG_REAL, ARG_RECIPROCAL);
+	sin = rb_num_round(sin, prec);
+	return rb_num_canonicalize(sin, prec, ARG_REAL, ARG_RECIPROCAL);
 }
 
 
@@ -597,7 +597,7 @@ rb_bigmath_csc(VALUE x, VALUE prec)
 static VALUE
 trig_math_csc(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_csc(x, prec);
 }
 
@@ -609,12 +609,12 @@ rb_bigmath_sec(VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, NULL, &cos) == -1)
 		rb_bigmath_sincos(x, prec, NULL, &cos);
-	cos = rb_bigmath_round_inline(cos, prec);
-	return rb_bigmath_canonicalize(cos, prec, ARG_REAL, ARG_RECIPROCAL);
+	cos = rb_num_round(cos, prec);
+	return rb_num_canonicalize(cos, prec, ARG_REAL, ARG_RECIPROCAL);
 }
 
 
@@ -636,7 +636,7 @@ rb_bigmath_sec(VALUE x, VALUE prec)
 static VALUE
 trig_math_sec(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sec(x, prec);
 }
 
@@ -649,12 +649,12 @@ rb_bigmath_cot(VALUE x, VALUE prec)
 	rb_check_precise(prec);
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	x = rb_sincos_to_radian(x, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, &sin, &cos) == -1)
 		rb_bigmath_sincos(x, prec, &sin, &cos);
-	sin = rb_bigmath_round_inline(sin, prec);
-	cos = rb_bigmath_round_inline(cos, prec);
+	sin = rb_num_round(sin, prec);
+	cos = rb_num_round(cos, prec);
 	return rb_funcall(cos, div, 2, sin, prec);
 }
 
@@ -677,7 +677,7 @@ rb_bigmath_cot(VALUE x, VALUE prec)
 static VALUE
 trig_math_cot(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_cot(x, prec);
 }
 

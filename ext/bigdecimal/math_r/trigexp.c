@@ -14,7 +14,7 @@ f_euler(VALUE theta, VALUE prec)
 	VALUE sin, cos, pi, t, y;
 	if (!rb_num_finite_p(theta))
 		return rb_Complex(BIG_NAN, BIG_NAN);
-	pi = rb_bigmath_pi(prec);
+	pi = rb_bigmath_const_pi(prec);
 	y = rb_sincos_to_radian(theta, prec, pi, &t);
 	if (rb_degree_sparg(t, prec, &sin, &cos) == -1)
 		rb_bigmath_sincos(y, prec, &sin, &cos);
@@ -30,13 +30,13 @@ f_euler2(VALUE theta, VALUE prec, VALUE *exppz, VALUE *expmz)
 }
 
 static VALUE
-f_euler_e(VALUE z, VALUE prec)
+f_euler_exp(VALUE z, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
 	VALUE theta, r;
 	if (!rb_num_finite_p(rb_num_imag(z)))
 		return rb_Complex(BIG_NAN, BIG_NAN);
-	r = rb_bigmath_canonicalize(rb_num_real(z), prec, ARG_REAL, ARG_RAWVALUE);
+	r = rb_num_canonicalize(rb_num_real(z), prec, ARG_REAL, ARG_RAWVALUE);
 	r = rb_bigmath_exp(r, prec);
 	if (rb_num_notequal_p(r, r))
 		return rb_Complex(BIG_NAN, BIG_NAN);
@@ -52,7 +52,7 @@ f_euler_e2(VALUE theta, VALUE prec, VALUE *exppz, VALUE *expmz)
 {
 	const ID div = rb_intern("div");
 	VALUE r = rb_num_real(theta);
-	r = rb_bigmath_canonicalize(r, prec, ARG_REAL, ARG_RAWVALUE);
+	r = rb_num_canonicalize(r, prec, ARG_REAL, ARG_RAWVALUE);
 	r = rb_bigmath_exp(r, prec);
 	if (rb_num_notequal_p(r, r))
 	{
@@ -197,7 +197,7 @@ f_euler_sc(const ID func, VALUE theta, VALUE prec)
 	{
 		y = f_euler_tan(exppz, expmz);
 	}
-	return rb_bigmath_round_inline(y, prec);
+	return rb_num_round(y, prec);
 }
 
 // For real of tangent's exponent, tanh(x), coth(x) or tan(i x) or cot(i x)
@@ -211,7 +211,7 @@ f_euler_t(VALUE theta, VALUE prec)
 	const ID succ = rb_intern("succ");
 	VALUE y = Qundef;
 	theta = rb_num_real(theta);
-	theta = rb_bigmath_canonicalize(theta, prec, ARG_REAL, ARG_RAWVALUE);
+	theta = rb_num_canonicalize(theta, prec, ARG_REAL, ARG_RAWVALUE);
 	if (!rb_num_finite_p(theta))
 	{
 		switch (NUM2INT(rb_BigDecimal_sign(theta))) {
@@ -280,7 +280,7 @@ f_euler_h(const ID func, VALUE theta, VALUE prec)
 	{
 		y = f_euler_sin(exppz, expmz);
 	}
-	return rb_bigmath_round_inline(y, prec);
+	return rb_num_round(y, prec);
 }
 
 static VALUE
@@ -313,7 +313,7 @@ f_euler_esc(ID func, VALUE z, VALUE prec)
 	{
 		y = f_euler_tan(exppz, expmz);
 	}
-	return rb_bigmath_round_inline(y, prec);
+	return rb_num_round(y, prec);
 }
 
 
@@ -353,7 +353,7 @@ f_euler_trig(ID func, VALUE theta, VALUE prec)
 /**
  *  ```Ruby
  *  def cexp(z, prec)
- *    f_euler_e(z, prec)
+ *    f_euler_exp(z, prec)
  *  end
  *  ```
  */
@@ -361,7 +361,7 @@ VALUE
 rb_bigmath_cexp(VALUE z, VALUE prec)
 {
 	rb_check_precise(prec);
-	return f_euler_e(z, prec);
+	return f_euler_exp(z, prec);
 }
 
 /**
@@ -380,7 +380,7 @@ rb_bigmath_cexp(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_cexp(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_cexp(z, prec);
 }
 
@@ -401,7 +401,7 @@ static VALUE
 trigexp_math_cexp2(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	VALUE log2 = rb_bigmath_const_log2(prec);
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	z = rb_funcall1(z, '*', log2);
 	return rb_bigmath_cexp(z, prec);
 }
@@ -438,7 +438,7 @@ rb_bigmath_csin(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_csin(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csin(z, prec);
 }
 
@@ -473,7 +473,7 @@ rb_bigmath_ccos(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ccos(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccos(z, prec);
 }
 
@@ -509,7 +509,7 @@ rb_bigmath_ctan(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ctan(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ctan(z, prec);
 }
 
@@ -527,7 +527,7 @@ rb_bigmath_ccsc(VALUE z, VALUE prec)
 {
 	const ID sin = rb_intern("sin");
 	VALUE w = f_euler_trig(sin, rb_ImaginaryZ(z, SIGN_PLUS), prec);
-	return rb_bigmath_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+	return rb_num_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 }
 
 /**
@@ -546,7 +546,7 @@ rb_bigmath_ccsc(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ccsc(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccsc(z, prec);
 }
 
@@ -564,7 +564,7 @@ rb_bigmath_csec(VALUE z, VALUE prec)
 {
 	const ID cos = rb_intern("cos");
 	VALUE w = f_euler_trig(cos, rb_ImaginaryZ(z, SIGN_PLUS), prec);
-	return rb_bigmath_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+	return rb_num_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 }
 
 /**
@@ -583,7 +583,7 @@ rb_bigmath_csec(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_csec(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csec(z, prec);
 }
 
@@ -601,7 +601,7 @@ rb_bigmath_ccot(VALUE z, VALUE prec)
 {
 	const ID tan = rb_intern("tan");
 	VALUE w = f_euler_trig(tan, rb_ImaginaryZ(z, SIGN_PLUS), prec);
-	return rb_bigmath_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+	return rb_num_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 }
 
 /**
@@ -620,7 +620,7 @@ rb_bigmath_ccot(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ccot(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccot(z, prec);
 }
 
@@ -657,7 +657,7 @@ rb_bigmath_sinh(VALUE x, VALUE prec)
 static VALUE
 trigexp_math_sinh(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sinh(x, prec);
 }
 
@@ -694,7 +694,7 @@ rb_bigmath_cosh(VALUE x, VALUE prec)
 static VALUE
 trigexp_math_cosh(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_cosh(x, prec);
 }
 
@@ -732,7 +732,7 @@ rb_bigmath_tanh(VALUE x, VALUE prec)
 static VALUE
 trigexp_math_tanh(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_tanh(x, prec);
 }
 
@@ -752,7 +752,7 @@ rb_bigmath_csch(VALUE x, VALUE prec)
 	const ID sin = rb_intern("sin");
 	VALUE y;
 	y = rb_ImaginaryZ(f_euler_trig(sin, x, prec), SIGN_PLUS);
-	return rb_bigmath_canonicalize(y, prec, ARG_REAL, ARG_RECIPROCAL);
+	return rb_num_canonicalize(y, prec, ARG_REAL, ARG_RECIPROCAL);
 }
 
 /**
@@ -771,7 +771,7 @@ rb_bigmath_csch(VALUE x, VALUE prec)
 static VALUE
 trigexp_math_csch(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_csch(x, prec);
 }
 
@@ -791,7 +791,7 @@ rb_bigmath_sech(VALUE x, VALUE prec)
 	const ID cos = rb_intern("cos");
 	VALUE y;
 	y = f_euler_trig(cos, x, prec);
-	return rb_bigmath_canonicalize(y, prec, ARG_REAL, ARG_RECIPROCAL);
+	return rb_num_canonicalize(y, prec, ARG_REAL, ARG_RECIPROCAL);
 }
 
 /**
@@ -810,7 +810,7 @@ rb_bigmath_sech(VALUE x, VALUE prec)
 static VALUE
 trigexp_math_sech(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_sech(x, prec);
 }
 
@@ -830,7 +830,7 @@ rb_bigmath_coth(VALUE x, VALUE prec)
 	const ID tan = rb_intern("tan");
 	VALUE y;
 	y = rb_ImaginaryZ(f_euler_trig(tan, x, prec), SIGN_PLUS);
-	return rb_bigmath_canonicalize(y, prec, ARG_REAL, ARG_RECIPROCAL);
+	return rb_num_canonicalize(y, prec, ARG_REAL, ARG_RECIPROCAL);
 }
 
 /**
@@ -849,7 +849,7 @@ rb_bigmath_coth(VALUE x, VALUE prec)
 static VALUE
 trigexp_math_coth(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_coth(x, prec);
 }
 
@@ -884,7 +884,7 @@ rb_bigmath_csinh(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_csinh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csinh(z, prec);
 }
 
@@ -919,7 +919,7 @@ rb_bigmath_ccosh(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ccosh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccosh(z, prec);
 }
 
@@ -954,7 +954,7 @@ rb_bigmath_ctanh(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ctanh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ctanh(z, prec);
 }
 
@@ -971,7 +971,7 @@ rb_bigmath_ccsch(VALUE z, VALUE prec)
 {
 	const ID sin = rb_intern("sin");
 	VALUE w = rb_ImaginaryZ(f_euler_trig(sin, z, prec), SIGN_PLUS);
-	return rb_bigmath_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+	return rb_num_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 }
 
 /**
@@ -990,7 +990,7 @@ rb_bigmath_ccsch(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ccsch(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccsch(z, prec);
 }
 
@@ -1008,7 +1008,7 @@ rb_bigmath_csech(VALUE z, VALUE prec)
 {
 	const ID cos = rb_intern("cos");
 	VALUE w = f_euler_trig(cos, z, prec);
-	return rb_bigmath_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+	return rb_num_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 }
 
 /**
@@ -1027,7 +1027,7 @@ rb_bigmath_csech(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_csech(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_csech(z, prec);
 }
 
@@ -1045,7 +1045,7 @@ rb_bigmath_ccoth(VALUE z, VALUE prec)
 {
 	const ID tan = rb_intern("tan");
 	VALUE w = rb_ImaginaryZ(f_euler_trig(tan, z, prec), SIGN_PLUS);
-	return rb_bigmath_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+	return rb_num_canonicalize(w, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 }
 
 /**
@@ -1064,7 +1064,7 @@ rb_bigmath_ccoth(VALUE z, VALUE prec)
 static VALUE
 trigexp_math_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_ccoth(z, prec);
 }
 

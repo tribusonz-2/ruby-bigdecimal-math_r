@@ -53,7 +53,7 @@ rb_bigmath_intpower(VALUE x, VALUE n, VALUE exp)
 	VALUE abs_n = Qundef, r = Qundef;
 	if (!rb_num_finite_p(x))
 		return BIG_NAN;
-	x = rb_bigmath_canonicalize(x, exp, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, exp, ARG_REAL, ARG_RAWVALUE);
 	abs_n = n;
 	if (rb_num_negative_p(n))  abs_n = rb_num_uminus(abs_n); // abs()
 	r = BIG_ONE;
@@ -109,7 +109,7 @@ edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
 	VALUE y;
 	
 	rb_check_precise(exp);
-	x = rb_bigmath_canonicalize(x, exp, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, exp, ARG_REAL, ARG_RAWVALUE);
 	if (!(TYPE(n) == T_FIXNUM || TYPE(n) == T_BIGNUM))
 		rb_raise(rb_eTypeError, "right-hand side must be an Integer");
 	
@@ -223,7 +223,7 @@ rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
 			else
 				rb_raise(rb_eTypeError, "unknown numeric type");
 		}
-		rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 		break;
 	}
 	if (!rb_num_finite_p(x))
@@ -244,7 +244,7 @@ rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
 	}
 	*exp = rb_bigmath_intpower(a, *exp,
 		NUM2INT(rb_num_cmpeql(prec, max_10_exp)) == 1 ? prec : max_10_exp);
-	*exp = rb_bigmath_round_inline(*exp,
+	*exp = rb_num_round(*exp,
 		NUM2INT(rb_num_cmpeql(prec, max_10_exp)) == 1 ? prec : max_10_exp);
 }
 
@@ -275,8 +275,8 @@ edf_escalb(VALUE unused_obj, VALUE a, VALUE x, VALUE prec)
 	rb_bigmath_escalb(a, x, prec, &exp, &fra);
 	if (exp == Qundef || fra == Qundef)
 		rb_raise(rb_eRuntimeError, "no solution");
-	exp = rb_bigmath_round_inline(exp, prec);
-	fra = rb_bigmath_round_inline(fra, prec);
+	exp = rb_num_round(exp, prec);
+	fra = rb_num_round(fra, prec);
 	return rb_assoc_new(exp, fra);
 }
 
@@ -314,7 +314,7 @@ rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
 		a = rb_funcall(a, div, 2, LONG2NUM(++n), m);
 		a = rb_funcall(a, mult, 2, xt, m);
 	}
-	return rb_bigmath_round_inline(e, prec);
+	return rb_num_round(e, prec);
 }
 
 /**
@@ -333,12 +333,12 @@ static VALUE
 edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 {
 	rb_check_precise(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	if (rb_num_notequal_p(x, x) ||
 	    rb_num_negative_p(x) || 
 	    NUM2INT(rb_num_cmpeql(x, INT2FIX(1))) != -1)
 		rb_raise(rb_eRangeError, "Argument x is out of range: (0 <= x < 1)");
-	t = rb_bigmath_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
+	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
 	if (rb_num_notequal_p(t, t) ||
 	    rb_num_negative_p(t) ||
 	    NUM2INT(rb_num_cmpeql(t, INT2FIX(1))) == 1)
@@ -354,16 +354,16 @@ rb_bigmath_exp(VALUE x, VALUE prec)
 	VALUE exp = Qundef, fra = Qundef;
 	if (rb_num_notequal_p(x, x))
 		return BIG_NAN;
-	rb_bigmath_escalb(rb_bigmath_e(prec), x, prec, &exp, &fra);
+	rb_bigmath_escalb(rb_bigmath_const_e(prec), x, prec, &exp, &fra);
 	if (exp == Qundef || fra == Qundef)
 		rb_raise(rb_eRuntimeError, "no solution");
 	if (rb_num_infinite_p(exp) ||
 	    rb_num_zero_p(exp) ||
 	    rb_num_zero_p(fra))
-		return rb_bigmath_round_inline(exp, prec);
+		return rb_num_round(exp, prec);
 	fra = rb_bigmath_expxt(fra, INT2FIX(1), prec);
 	if (CLASS_OF(exp) != rb_cBigDecimal)
-		exp = rb_bigmath_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
+		exp = rb_num_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_funcall(exp, mult, 2, fra, prec);
 }
 
@@ -383,7 +383,7 @@ rb_bigmath_exp(VALUE x, VALUE prec)
 static VALUE
 edf_math_exp(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_exp(x, prec);
 }
 
@@ -401,10 +401,10 @@ rb_bigmath_exp2(VALUE x, VALUE prec)
 	if (rb_num_infinite_p(exp) ||
 	    rb_num_zero_p(exp) ||
 	    rb_num_zero_p(fra))
-		return rb_bigmath_round_inline(exp, prec);
+		return rb_num_round(exp, prec);
 	fra = rb_bigmath_expxt(fra, rb_bigmath_const_log2(prec), prec);
 	if (CLASS_OF(exp) != rb_cBigDecimal)
-		exp = rb_bigmath_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
+		exp = rb_num_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_funcall(exp, mult, 2, fra, prec);
 }
 
@@ -424,7 +424,7 @@ rb_bigmath_exp2(VALUE x, VALUE prec)
 static VALUE
 edf_math_exp2(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_exp2(x, prec);
 }
 
@@ -636,7 +636,7 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE a, b, s, one_half, n, m;
 	n = rb_numdiff_make_n(prec);
-	a = rb_bigmath_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
+	a = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
 	b = BIG_ONE;
 	s = BIG_ZERO;
 	one_half = rb_BigDecimal1(rb_str_new_cstr("0.5"));
@@ -681,7 +681,7 @@ static VALUE
 edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 {
 	rb_check_precise(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	if (rb_num_notequal_p(x, x) ||
 	    rb_num_negative_p(x) || 
 	    NUM2INT(rb_num_cmpeql(INT2FIX(1), x)) == 1 || 
@@ -691,7 +691,7 @@ edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 			return BIG_ONE;
 		rb_raise(rb_eFloatDomainError, "Numerical arguments are out of range: (1 <= x <= t)");
 	}
-	t = rb_bigmath_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
+	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
 	return logxt_inline(x, t, prec);
 }
 
@@ -703,7 +703,7 @@ log_mercator_ser(VALUE x, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE n = rb_numdiff_make_n(prec);
 	VALUE one = BIG_ONE;
-	VALUE w = rb_bigmath_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
+	VALUE w = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
 	VALUE t = one;
 	VALUE d = BIG_ONE;
 	VALUE y = BIG_ZERO;
@@ -727,7 +727,7 @@ log_mercator_ser(VALUE x, VALUE prec)
 	RB_GC_GUARD(d);
 	RB_GC_GUARD(x);
 	RB_GC_GUARD(y);
-	return rb_bigmath_round_inline(y, prec);
+	return rb_num_round(y, prec);
 }
 
 static VALUE
@@ -735,7 +735,7 @@ log_mercator_ser_x(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
 	VALUE y;
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	y = rb_funcall1(x, '-', INT2FIX(1));
 	y = rb_funcall(y, div, 2, x, prec);
 	y = rb_num_uminus(y);
@@ -755,7 +755,7 @@ rb_bigmath_log(VALUE x, VALUE prec)
 	VALUE y = Qundef;
 
 	rb_check_precise(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 
 	if (!rb_num_finite_p(x))
 	{
@@ -791,7 +791,7 @@ rb_bigmath_log(VALUE x, VALUE prec)
 			exp = rb_funcall1(exp, '+', fra);
 			y = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
 #endif
-			y = rb_bigmath_round_inline(y, prec);
+			y = rb_num_round(y, prec);
 		}
 		else
 			y = BIG_NAN;
@@ -816,7 +816,7 @@ rb_bigmath_log(VALUE x, VALUE prec)
 static VALUE
 edf_math_log(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log(x, prec);
 }
 
@@ -830,7 +830,7 @@ rb_bigmath_log2(VALUE x, VALUE prec)
 	VALUE y = Qundef;
 
 	rb_check_precise(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 
 	if (!rb_num_finite_p(x))
 	{
@@ -864,7 +864,7 @@ rb_bigmath_log2(VALUE x, VALUE prec)
 			fra = logxt_inline(fra, INT2FIX(2), prec);
 #endif
 			y = rb_funcall1(exp, '+', fra);
-			y = rb_bigmath_round_inline(y, prec);
+			y = rb_num_round(y, prec);
 		}
 		else
 			y = BIG_NAN;
@@ -889,7 +889,7 @@ rb_bigmath_log2(VALUE x, VALUE prec)
 static VALUE
 edf_math_log2(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log2(x, prec);
 }
 
@@ -902,7 +902,7 @@ rb_bigmath_log10(VALUE x, VALUE prec)
 	VALUE y = Qundef;
 
 	rb_check_precise(prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 
 	if (!rb_num_finite_p(x))
 	{
@@ -936,7 +936,7 @@ rb_bigmath_log10(VALUE x, VALUE prec)
 			fra = logxt_inline(fra, INT2FIX(10), prec);
 #endif
 			y = rb_funcall1(exp, '+', fra);
-			y = rb_bigmath_round_inline(y, prec);
+			y = rb_num_round(y, prec);
 		}
 		else
 			y = BIG_NAN;
@@ -961,7 +961,7 @@ rb_bigmath_log10(VALUE x, VALUE prec)
 static VALUE
 edf_math_log10(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log10(x, prec);
 }
 

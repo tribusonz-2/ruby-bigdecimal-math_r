@@ -75,8 +75,8 @@ rb_bigmath_atan_cb(VALUE x, VALUE prec, VALUE (*atan_func)(VALUE x, VALUE prec))
 	if (rb_num_notequal_p(x, x))
 		return BIG_NAN;
 	if (rb_num_zero_p(x))
-		return rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	pi = rb_bigmath_pi(prec);
+		return rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	pi = rb_bigmath_const_pi(prec);
 	neg = rb_num_negative_p(x);
 	if (neg)
 		x = rb_num_uminus(x);
@@ -89,7 +89,7 @@ rb_bigmath_atan_cb(VALUE x, VALUE prec, VALUE (*atan_func)(VALUE x, VALUE prec))
 	inv = RTEST(rb_num_coerce_cmp(x, INT2FIX(1), '>'));
 	if (inv)
 		x = rb_funcall(BIG_ONE, div, 2, x, prec);
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	dbl = RTEST(rb_num_coerce_cmp(x, DBL2NUM(0.5), '>'));
 	if (dbl)
 		// x = (-1 + sqrt(1 + x**2, prec))/x
@@ -142,9 +142,9 @@ rb_bigmath_acot(VALUE x, VALUE prec)
 	if (rb_num_zero_p(x))
 	{
 		const ID div = rb_intern("div");
-		return rb_funcall(rb_bigmath_pi(prec), div, 2, INT2FIX(2), prec);
+		return rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 	}
-	x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
 	return rb_bigmath_atan(x, prec);
 }
 
@@ -177,9 +177,9 @@ asinacos_domain(ID func, VALUE x, VALUE prec, bool inversion)
 	const ID sub = rb_intern("sub");
 	VALUE t;
 	if (inversion)
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
 	else
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	t = rb_funcall1(x, '*', x);
 	t = rb_funcall1(INT2FIX(1), '-', t);
 	t = rb_bigmath_sqrt(t, prec);
@@ -192,7 +192,7 @@ asinacos_domain(ID func, VALUE x, VALUE prec, bool inversion)
 	else if (func == cos)
 	{
 		VALUE pi_2 = rb_funcall(
-			rb_bigmath_pi(prec), div, 2, INT2FIX(2), prec);
+			rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 		t = rb_funcall(pi_2, sub, 2, t, prec);
 		return t;
 	}
@@ -236,9 +236,9 @@ rb_bigmath_acsc(VALUE x, VALUE prec)
 	const ID div = rb_intern("div");
 	VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
 	if (rb_num_equal_p(x, INT2FIX(-1)))
-		return rb_funcall(rb_bigmath_pi(prec), div, 2, INT2FIX(-2), prec);
+		return rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(-2), prec);
 	else if (rb_num_equal_p(x, INT2FIX(1)))
-		return rb_funcall(rb_bigmath_pi(prec), div, 2, INT2FIX(2), prec);
+		return rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 	else if (domain_p(x, domain))
 		return BIG_NAN;
 	else
@@ -300,7 +300,7 @@ rb_bigmath_asec(VALUE x, VALUE prec)
 	const ID cos = rb_intern("cos");
 	VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
 	if (rb_num_equal_p(x, INT2FIX(-1)))
-		return rb_bigmath_pi(prec);
+		return rb_bigmath_const_pi(prec);
 	else if (rb_num_equal_p(x, INT2FIX(1)))
 		return BIG_ZERO;
 	else if (domain_p(x, domain))
@@ -333,9 +333,9 @@ static VALUE
 asinh_domain(VALUE x, VALUE prec, bool inversion)
 {
 	if (inversion)
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
 	else
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	if (rb_num_finite_p(x))
 	{
 		const ID add = rb_intern("add");
@@ -431,7 +431,7 @@ rb_bigmath_asech(VALUE x, VALUE prec)
 	VALUE domain = rb_range_new(INT2FIX(0), INT2FIX(1), 0);
 	if (domain_p(x, domain))
 	{
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 		return asech_domain(x, prec);
 	}
 	else
@@ -463,7 +463,7 @@ rb_bigmath_acosh(VALUE x, VALUE prec)
 	VALUE domain = rb_range_new(INT2FIX(0), DBL2NUM(HUGE_VAL), 0);
 	if (domain_p(x, domain))
 	{
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
 		return asech_domain(x, prec);
 	}
 	else
@@ -500,7 +500,7 @@ atanh_domain(VALUE x, VALUE prec)
 	r3 = rb_funcall(r1, sqrt, 1, prec);
 	r4 = rb_funcall1(r2, '/', r3);
 	r5 = rb_bigmath_log(r4, prec);
-	return rb_bigmath_round_inline(r5, prec);
+	return rb_num_round(r5, prec);
 }
 
 static VALUE
@@ -509,7 +509,7 @@ rb_bigmath_atanh(VALUE x, VALUE prec)
 	VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
 	if (domain_p(x, domain))
 	{
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 		return atanh_domain(x, prec);
 	}
 	else
@@ -547,7 +547,7 @@ rb_bigmath_acoth(VALUE x, VALUE prec)
 	{
 		if (rb_num_notequal_p(x, x))
 			return BIG_NAN;
-		x = rb_bigmath_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RECIPROCAL);
 		return atanh_domain(x, prec);
 	}
 	else
@@ -577,7 +577,7 @@ logsqrt_math_acoth(VALUE unused_obj, VALUE x, VALUE prec)
 VALUE
 rb_bigmath_clog(VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	VALUE real = rb_bigmath_log(rb_bigmath_cabs(z, prec), prec);
 	VALUE imag = rb_bigmath_carg(z, prec);
 	return rb_Complex(real, imag);
@@ -620,7 +620,7 @@ logsqrt_math_clog2(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	VALUE w = rb_bigmath_clog(z, prec);
 	w = rb_funcall1(w, '/', rb_bigmath_const_log2(prec));
-	return rb_bigmath_round_inline(w, prec);
+	return rb_num_round(w, prec);
 }
 
 /**
@@ -641,7 +641,7 @@ logsqrt_math_clog10(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	VALUE w = rb_bigmath_clog(z, prec);
 	w = rb_funcall1(w, '/', rb_bigmath_const_log10(prec));
-	return rb_bigmath_round_inline(w, prec);
+	return rb_num_round(w, prec);
 }
 
 static VALUE
@@ -668,7 +668,7 @@ rb_bigmath_casin(VALUE z, VALUE prec)
 		if (z_re_inf != 0 && z_im_inf == 0)
 		{
 			VALUE real = rb_num_zero_p(rb_num_imag(z)) ?
-				rb_funcall(rb_bigmath_pi(prec), div, 2, 
+				rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
 					INT2FIX(z_re_inf * 2), prec) :
 				BIG_ZERO;
 			VALUE imag = z_re_inf == 1 ? BIG_MINUS_INF : BIG_INF;
@@ -685,7 +685,7 @@ rb_bigmath_casin(VALUE z, VALUE prec)
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 		return casin_domain(z, prec);
 	}
 }
@@ -722,7 +722,7 @@ cacsc_domain(VALUE z, VALUE prec)
 	c5 = rb_funcall1(c4, '+', rb_funcall1(rb_Complex_I, '/', z));
 	c6 = rb_bigmath_clog(c5, prec);
 	c7 = rb_funcall1(rb_Complex_mI, '*', c6);
-	return rb_bigmath_round_inline(c7, prec);
+	return rb_num_round(c7, prec);
 }
 #endif
 
@@ -731,7 +731,7 @@ rb_bigmath_cacsc(VALUE z, VALUE prec)
 {
 	int z_re_inf = rb_num_infinite_p(rb_num_real(z));
 	int z_im_inf = rb_num_infinite_p(rb_num_imag(z));
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	if (rb_num_nan_p(z))
 		return rb_Complex(BIG_NAN, BIG_NAN);
 	else if (z_re_inf || z_im_inf)
@@ -743,14 +743,14 @@ rb_bigmath_cacsc(VALUE z, VALUE prec)
 		const ID div = rb_intern("div");
 		int zero_sign = NUM2INT(rb_BigDecimal_sign(rb_num_real(z)));
 		VALUE real = rb_num_nonzero_p(rb_num_imag(z)) ?
-			BIG_ZERO : rb_funcall(rb_bigmath_pi(prec), div, 2, 
+			BIG_ZERO : rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
 			INT2FIX(zero_sign * 2), prec);
 		VALUE imag = 1 == zero_sign ? BIG_MINUS_INF : BIG_INF;
 		return rb_Complex(real, imag);
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 		return casin_domain(z, prec);
 	}
 }
@@ -784,9 +784,9 @@ cacos_domain(VALUE z, VALUE prec)
 		rb_funcall1(z, '*', z)), prec);
 	VALUE c3 = rb_bigmath_clog(rb_funcall1(c1, '+', c2), prec);
 	VALUE c4 = rb_funcall1(rb_Complex_I, '*', c3);
-	VALUE c5 = rb_funcall(rb_bigmath_pi(prec), div, 2, INT2FIX(2), prec);
+	VALUE c5 = rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 	VALUE c6 = rb_funcall1(c5, '+', c4);
-	return rb_bigmath_round_inline(c6, prec);
+	return rb_num_round(c6, prec);
 }
 
 
@@ -804,7 +804,7 @@ rb_bigmath_cacos(VALUE z, VALUE prec)
 			VALUE real = 
 				(rb_num_zero_p(rb_num_imag(z)) &&
 			         z_re_inf == 1) ?
-				BIG_ZERO : rb_bigmath_pi(prec);
+				BIG_ZERO : rb_bigmath_const_pi(prec);
 			VALUE imag = z_re_inf == 1 ? BIG_MINUS_INF : BIG_INF;
 			return rb_Complex(real, imag);
 		}
@@ -819,7 +819,7 @@ rb_bigmath_cacos(VALUE z, VALUE prec)
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 		return cacos_domain(z, prec);
 	}
 }
@@ -856,10 +856,10 @@ casec_domain(VALUE z, VALUE prec)
 	VALUE c5 = rb_funcall1(c4, '+', rb_funcall1(rb_Complex_I, '/', z));
 	VALUE c6 = rb_bigmath_clog(c5, prec);
 	VALUE c7 = rb_funcall1(rb_Complex_I, '*', c6);
-	VALUE c8 = rb_funcall(rb_bigmath_pi(prec), div, 2, INT2FIX(2), prec);
+	VALUE c8 = rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 	VALUE c9 = rb_funcall1(c8, '+', c7);
 
-	return rb_bigmath_round_inline(c9, prec);
+	return rb_num_round(c9, prec);
 }
 #endif
 
@@ -868,7 +868,7 @@ rb_bigmath_casec(VALUE z, VALUE prec)
 {
 	int z_re_inf = rb_num_infinite_p(rb_num_real(z));
 	int z_im_inf = rb_num_infinite_p(rb_num_imag(z));
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	if (rb_num_nan_p(z))
 		return rb_Complex(BIG_NAN, BIG_NAN);
 	else if (z_re_inf || z_im_inf)
@@ -880,13 +880,13 @@ rb_bigmath_casec(VALUE z, VALUE prec)
 		int zero_sign = NUM2INT(rb_BigDecimal_sign(rb_num_real(z)));
 		VALUE real = 
 			(rb_num_nonzero_p(rb_num_imag(z)) || zero_sign == -1) ?
-			BIG_ZERO : rb_bigmath_pi(prec);
+			BIG_ZERO : rb_bigmath_const_pi(prec);
 		VALUE imag = 1 == zero_sign ? BIG_MINUS_INF : BIG_INF;
 		return rb_Complex(real, imag);
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 		return cacos_domain(z, prec);
 	}
 }
@@ -926,7 +926,7 @@ catan_domain(VALUE z, VALUE prec)
 	c1 = rb_funcall1(c3, '-', c4);
 	c2 = rb_Complex(INT2FIX(0), rb_Rational(INT2FIX(1), INT2FIX(2)));
 	c3 = rb_funcall1(c2, '*', c1);
-	return rb_bigmath_round_inline(c3, prec);
+	return rb_num_round(c3, prec);
 }
 
 static VALUE
@@ -942,7 +942,7 @@ rb_bigmath_catan(VALUE z, VALUE prec)
 		if (z_re_inf != 0 && z_im_inf == 0)
 		{
 			VALUE real = 
-				rb_funcall(rb_bigmath_pi(prec), div, 2, 
+				rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
 				INT2FIX(z_re_inf * 2), prec);
 			VALUE imag = BIG_ZERO;
 			return rb_Complex(real, imag);
@@ -950,7 +950,7 @@ rb_bigmath_catan(VALUE z, VALUE prec)
 		else if (z_re_inf == 0 && z_im_inf != 0)
 		{
 			VALUE real = 
-				rb_funcall(rb_bigmath_pi(prec), div, 2, 
+				rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
 				INT2FIX(z_im_inf * 2), prec);
 			VALUE imag = BIG_ZERO;
 			return rb_Complex(real, imag);
@@ -966,7 +966,7 @@ rb_bigmath_catan(VALUE z, VALUE prec)
 		return rb_Complex(BIG_ZERO, BIG_MINUS_INF);
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 		return catan_domain(z, prec);
 	}
 }
@@ -1004,7 +1004,7 @@ cacot_domain(VALUE z, VALUE prec)
 	c2 = rb_funcall1(c3, '-', c4);
 	c1 = rb_funcall1(rb_BigDecimal1(rb_str_new_cstr("0.5")), '*', rb_Complex_I);
 	c3 = rb_funcall1(c1, '*', c2);
-	return rb_bigmath_round_inline(c3, prec);
+	return rb_num_round(c3, prec);
 }
 #endif
 
@@ -1013,7 +1013,7 @@ rb_bigmath_cacot(VALUE z, VALUE prec)
 {
 	int z_re_inf = rb_num_infinite_p(rb_num_real(z));
 	int z_im_inf = rb_num_infinite_p(rb_num_imag(z));
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	if (rb_num_nan_p(z))
 		return rb_Complex(BIG_NAN, BIG_NAN);
 	else if (z_re_inf || z_im_inf)
@@ -1032,12 +1032,12 @@ rb_bigmath_cacot(VALUE z, VALUE prec)
 	{
 		const ID div = rb_intern("div");
 		VALUE real = 
-			rb_funcall(rb_bigmath_pi(prec), div, 2, INT2FIX(2), prec);
+			rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 		return rb_Complex(real, BIG_ZERO);
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 		return catan_domain(z, prec);
 	}
 }
@@ -1065,7 +1065,7 @@ logsqrt_math_cacot(VALUE unused_obj, VALUE z, VALUE prec)
 static VALUE
 rb_bigmath_casinh(VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	z = rb_ImaginaryZ(z, SIGN_PLUS);
 	z = rb_bigmath_casin(z, prec);
 	return rb_ImaginaryZ(z, SIGN_MINUS);
@@ -1093,7 +1093,7 @@ logsqrt_math_casinh(VALUE unused_obj, VALUE z, VALUE prec)
 static VALUE
 rb_bigmath_cacsch(VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	if (rb_num_zero_p(rb_num_imag(z)))
 		return rb_Complex(rb_bigmath_acsch(z, prec), BIG_ZERO);
 	z = rb_ImaginaryZ(z, SIGN_PLUS);
@@ -1148,7 +1148,7 @@ rb_bigmath_cacosh(VALUE z, VALUE prec)
 		{
 			VALUE real = BIG_INF;
 			VALUE imag = (z_re_inf == -1 && rb_num_zero_p(rb_num_imag(z))) ? 
-				rb_bigmath_pi(prec) : BIG_ZERO;
+				rb_bigmath_const_pi(prec) : BIG_ZERO;
 			return rb_Complex(real, imag);
 		}
 		else if (z_re_inf == 0 && z_im_inf != 0)
@@ -1164,7 +1164,7 @@ rb_bigmath_cacosh(VALUE z, VALUE prec)
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 		return cacosh_domain(z, prec);
 	}
 }
@@ -1200,13 +1200,13 @@ rb_bigmath_casech(VALUE z, VALUE prec)
 		const ID div = rb_intern("div");
 		if (z_re_inf != 0 && z_im_inf == 0)
 		{
-			VALUE imag = rb_funcall(rb_bigmath_pi(prec), div, 
+			VALUE imag = rb_funcall(rb_bigmath_const_pi(prec), div, 
 				2, INT2FIX(2), prec);
 			return rb_Complex(BIG_ZERO, imag);
 		}
 		else if (z_re_inf == 0 && z_im_inf != 0)
 		{
-			VALUE imag = rb_funcall(rb_bigmath_pi(prec), div, 
+			VALUE imag = rb_funcall(rb_bigmath_const_pi(prec), div, 
 				2, INT2FIX(-2 * z_im_inf), prec);
 			return rb_Complex(BIG_ZERO, imag);
 		}
@@ -1217,7 +1217,7 @@ rb_bigmath_casech(VALUE z, VALUE prec)
 	}
 	else
 	{
-		z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RECIPROCAL);
 		return cacosh_domain(z, prec);
 	}
 }
@@ -1244,7 +1244,7 @@ logsqrt_math_casech(VALUE unused_obj, VALUE z, VALUE prec)
 static VALUE
 rb_bigmath_catanh(VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	z = rb_ImaginaryZ(z, SIGN_PLUS);
 	z = rb_bigmath_catan(z, prec);
 	return rb_ImaginaryZ(z, SIGN_MINUS);
@@ -1272,7 +1272,7 @@ logsqrt_math_catanh(VALUE unused_obj, VALUE z, VALUE prec)
 static VALUE
 rb_bigmath_cacoth(VALUE z, VALUE prec)
 {
-	z = rb_bigmath_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	z = rb_ImaginaryZ(z, SIGN_MINUS);
 	z = rb_bigmath_cacot(z, prec);
 	return rb_ImaginaryZ(z, SIGN_MINUS);

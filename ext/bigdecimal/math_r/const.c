@@ -174,7 +174,7 @@ calc_pi(VALUE prec)
 	RB_GC_GUARD(k);
 	RB_GC_GUARD(t);
 	RB_GC_GUARD(d);
-	return rb_bigmath_round_inline(pi, prec);
+	return rb_num_round(pi, prec);
 #endif
 }
 /**
@@ -210,7 +210,7 @@ math_pi_set_inline(VALUE prec)
 }
 
 VALUE
-rb_bigmath_pi(VALUE prec)
+rb_bigmath_const_pi(VALUE prec)
 {
 	static int def_prec = DEF_PREC;
 	VALUE m_pi = rb_gv_get(BIGMATH_PI);
@@ -225,7 +225,7 @@ rb_bigmath_pi(VALUE prec)
 	if (NIL_P(m_pi))
 		m_pi = math_pi_set_inline(INT2FIX(def_prec));
 
-        return rb_bigmath_round_inline(m_pi, prec);
+        return rb_num_round(m_pi, prec);
 }
 
 
@@ -242,7 +242,7 @@ rb_bigmath_pi(VALUE prec)
 static VALUE
 const_math_pi(VALUE unused_obj, VALUE prec)
 {
-	return rb_bigmath_pi(prec);
+	return rb_bigmath_const_pi(prec);
 }
 
 
@@ -281,7 +281,7 @@ calc_e(VALUE prec)
 	}
 	RB_GC_GUARD(a);
 	RB_GC_GUARD(e);
-        return rb_bigmath_round_inline(e, prec);
+        return rb_num_round(e, prec);
 #endif
 }
 
@@ -292,7 +292,7 @@ math_e_set_inline(VALUE prec)
 }
 
 VALUE
-rb_bigmath_e(VALUE prec)
+rb_bigmath_const_e(VALUE prec)
 {
 	static int def_prec = DEF_PREC;
 	VALUE m_e = rb_gv_get(BIGMATH_E);
@@ -307,7 +307,7 @@ rb_bigmath_e(VALUE prec)
 	if (NIL_P(m_e))
 		m_e = math_e_set_inline(INT2FIX(def_prec));
 
-        return rb_bigmath_round_inline(m_e, prec);
+        return rb_num_round(m_e, prec);
 }
 
 
@@ -324,7 +324,7 @@ rb_bigmath_e(VALUE prec)
 static VALUE
 const_math_e(VALUE unused_obj, VALUE prec)
 {
-	return rb_bigmath_e(prec);
+	return rb_bigmath_const_e(prec);
 }
 
 
@@ -398,7 +398,7 @@ rb_bigmath_const_log2(VALUE prec)
 	if (NIL_P(m_log2))
 		m_log2 = math_log2_set_inline(INT2FIX(def_prec));
 
-        return rb_bigmath_round_inline(m_log2, prec);
+        return rb_num_round(m_log2, prec);
 }
 
 
@@ -445,7 +445,7 @@ rb_bigmath_const_log10(VALUE prec)
 	if (NIL_P(m_log10))
 		m_log10 = math_log10_set_inline(INT2FIX(def_prec));
 
-        return rb_bigmath_round_inline(m_log10, prec);
+        return rb_num_round(m_log10, prec);
 }
 
 /**
@@ -492,7 +492,7 @@ rb_bigmath_const_sqrt2(VALUE prec)
 	if (NIL_P(m_sqrt2))
 		m_sqrt2 = math_sqrt2_set_inline(INT2FIX(def_prec));
 	
-        return rb_bigmath_round_inline(m_sqrt2, prec);
+        return rb_num_round(m_sqrt2, prec);
 }
 
 
@@ -541,7 +541,7 @@ rb_bigmath_const_sqrt3(VALUE prec)
 	if (NIL_P(m_sqrt3))
 		m_sqrt3 = math_sqrt3_set_inline(INT2FIX(def_prec));
 	
-        return rb_bigmath_round_inline(m_sqrt3, prec);
+        return rb_num_round(m_sqrt3, prec);
 }
 
 
