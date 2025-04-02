@@ -82,7 +82,7 @@ __impl_powerroot_csqrt(VALUE unused_obj, VALUE z, VALUE prec)
  * ```
  */
 static VALUE
-rb_bigmath_cuberoot(VALUE x, VALUE prec)
+cuberoot_newton(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
 	VALUE s = Qundef, t = Qundef, prev = Qundef;
@@ -109,6 +109,13 @@ rb_bigmath_cuberoot(VALUE x, VALUE prec)
 	RB_GC_GUARD(t);
 	RB_GC_GUARD(prev);
 	return positive ? prev : rb_num_uminus(prev);
+}
+
+
+static VALUE
+rb_bigmath_cuberoot(VALUE x, VALUE prec)
+{
+	return cuberoot_newton(x, prec);
 }
 
 /**

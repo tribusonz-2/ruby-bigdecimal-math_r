@@ -1,5 +1,5 @@
-#ifndef INTERNAL_SOLVER_BIGMATH
-#define INTERNAL_SOLVER_BIGMATH
+#ifndef INTERNAL_API_BIGMATH
+#define INTERNAL_API_BIGMATH
 
 /* API for BigMath */
 VALUE rb_bigmath_const_pi(VALUE prec);
@@ -31,20 +31,12 @@ VALUE rb_bigmath_l2norm(VALUE vec, VALUE prec);
 VALUE rb_bigmath_cabs(VALUE z, VALUE prec);
 VALUE rb_bigmath_carg(VALUE z, VALUE prec);
 
-/**
- * Rounds the argument +x+ to an arbitrary precision +prec+. <br>
- * It targets real numbers, but also supports Complex class. <br>
- * 
- */
-VALUE rb_num_round(VALUE x, VALUE prec);
+typedef VALUE (*bigmath_func1)(VALUE x, VALUE prec);
 
-#define ARG_REAL        false
-#define ARG_COMPLEX     true
-#define ARG_RAWVALUE    false
-#define ARG_RECIPROCAL  true
+VALUE rb_bigmath_api_call1(VALUE x, VALUE prec, bigmath_func1 func_ptr);
 
-VALUE rb_num_canonicalize(VALUE x, VALUE prec, 
-	bool complex_form, bool inversion);
+typedef VALUE (*bigmath_func2)(VALUE x, VALUE y, VALUE prec);
 
+VALUE rb_bigmath_api_call2(VALUE x, VALUE y, VALUE prec, bigmath_func2 func_ptr);
 
-#endif /* INTERNAL_SOLVER_BIGMATH */
+#endif /* INTERNAL_API_BIGMATH */

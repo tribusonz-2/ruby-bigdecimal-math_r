@@ -1,3 +1,12 @@
+static inline void
+rb_numdiff_keep_fig(VALUE *m)
+{
+	const ID double_fig = rb_intern("double_fig");
+	VALUE dbl_fig = rb_funcall(rb_cBigDecimal, double_fig, 0);
+	if (RTEST(rb_num_coerce_cmp(*m, dbl_fig, '<')))
+		*m = dbl_fig;
+}
+
 bool
 rb_numdiff_condition_p(VALUE y, VALUE d, VALUE n, VALUE *m)
 {
@@ -11,5 +20,7 @@ rb_numdiff_condition_p(VALUE y, VALUE d, VALUE n, VALUE *m)
 	         ), abs, 0
 	       )
 	     );
-	return rb_num_nonzero_p(d) && RTEST(rb_num_coerce_cmp(*m, INT2FIX(0), '>'));
+	if (rb_num_positive_p(*m))
+		rb_numdiff_keep_fig(m);
+	return rb_num_nonzero_p(d) && rb_num_positive_p(*m);
 }

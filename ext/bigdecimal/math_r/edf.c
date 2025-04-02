@@ -381,7 +381,7 @@ rb_bigmath_exp(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-__impl_edf_math_exp(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_exp(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_exp(x, prec);
@@ -422,7 +422,7 @@ rb_bigmath_exp2(VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-__impl_edf_math_exp2(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_exp2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_exp2(x, prec);
@@ -646,7 +646,6 @@ logxt_inline(VALUE x, VALUE t, VALUE prec)
 		return BIG_ZERO;
 	while (rb_numdiff_condition_p(s, b, n, &m))
 	{
-		rb_numdiff_keep_fig(&m);
 		a = rb_funcall(a, mult, 2, a, m);
 		b = rb_funcall(one_half, mult, 2, b, m);
 		if (RTEST(rb_num_coerce_cmp(a, t, rb_intern(">="))))
@@ -711,7 +710,6 @@ log_mercator_ser(VALUE x, VALUE prec)
 	VALUE m = Qundef;
 	while (rb_numdiff_condition_p(y, d, n, &m))
 	{
-		rb_numdiff_keep_fig(&m);
 		d = rb_funcall(w, div, 2, t, m);
 		t = rb_funcall1(t, '+', one);
 		w = rb_funcall(w, mult, 2, x, n);
@@ -814,7 +812,7 @@ rb_bigmath_log(VALUE x, VALUE prec)
  * @raise [RangeError] +prec+ is zero or negative number
  */
 static VALUE
-__impl_edf_math_log(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_log(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log(x, prec);
@@ -887,7 +885,7 @@ rb_bigmath_log2(VALUE x, VALUE prec)
  * @raise [RangeError] +prec+ is zero or negative number
  */
 static VALUE
-__impl_edf_math_log2(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_log2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log2(x, prec);
@@ -959,7 +957,7 @@ rb_bigmath_log10(VALUE x, VALUE prec)
  * @raise [RangeError] +prec+ is zero or negative number
  */
 static VALUE
-__impl_edf_math_log10(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_edf_log10(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_bigmath_log10(x, prec);
@@ -998,11 +996,11 @@ InitVM_EDF(void)
 
 	rb_define_module_function(rb_mEDF, "logxt", __impl_edf_logxt, 3);
 
-	rb_define_module_function(rb_mEDF, "exp", __impl_edf_math_exp, 2);
-	rb_define_module_function(rb_mEDF, "exp2", __impl_edf_math_exp2, 2);
+	rb_define_module_function(rb_mEDF, "exp", __impl_edf_exp, 2);
+	rb_define_module_function(rb_mEDF, "exp2", __impl_edf_exp2, 2);
 
-	rb_define_module_function(rb_mEDF, "log", __impl_edf_math_log, 2);
-	rb_define_module_function(rb_mEDF, "log2", __impl_edf_math_log2, 2);
-	rb_define_module_function(rb_mEDF, "log10", __impl_edf_math_log10, 2);
+	rb_define_module_function(rb_mEDF, "log", __impl_edf_log, 2);
+	rb_define_module_function(rb_mEDF, "log2", __impl_edf_log2, 2);
+	rb_define_module_function(rb_mEDF, "log10", __impl_edf_log10, 2);
 
 }

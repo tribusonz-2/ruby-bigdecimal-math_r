@@ -34,7 +34,7 @@ atan_euler_ser(VALUE x, VALUE prec)
 
 
 VALUE
-rb_bigmath_atan_cb(VALUE x, VALUE prec, VALUE (*atan_func)(VALUE x, VALUE prec))
+rb_bigmath_atan_cb(VALUE x, VALUE prec, bigmath_func1 atan_func)
 {
 	const ID add = rb_intern("add");
 	const ID sub = rb_intern("sub");

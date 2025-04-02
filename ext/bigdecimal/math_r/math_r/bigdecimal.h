@@ -1,5 +1,5 @@
-#ifndef INTERNAL_SOLVER_BIGDECIMAL
-#define INTERNAL_SOLVER_BIGDECIMAL
+#ifndef INTERNAL_API_BIGDECIMAL
+#define INTERNAL_API_BIGDECIMAL
 
 /* API for BigDecimal */
 void rb_check_precise(VALUE prec);
@@ -27,22 +27,4 @@ VALUE rb_BigDecimal1(VALUE x);
 VALUE rb_BigDecimal_flo(VALUE x);
 VALUE rb_BigDecimal_sign(VALUE d);
 
-/**
- * Query if the condition for exiting the iterator has been reached.
- * It is use in numerical derivatives.
- */
-bool rb_numdiff_condition_p(VALUE y, VALUE d, VALUE n, VALUE *m);
-
-/**
- * Add BigDecimal#double_fig to the arbitrary precision number.
- * The precision must be greater than or equal to 1.
- */
-VALUE rb_numdiff_make_n(VALUE prec);
-
-/**
- * Keep the current precision of the numeric derivative 
- * greater than or equal to BigDecimal#double_fig.
- */
-void rb_numdiff_keep_fig(VALUE *m);
-
-#endif /* INTERNAL_SOLVER_BIGDECIMAL */
+#endif /* INTERNAL_API_BIGDECIMAL */

@@ -1,5 +1,5 @@
-#ifndef INTERNAL_SOLVER_NUMERIC
-#define INTERNAL_SOLVER_NUMERIC
+#ifndef INTERNAL_API_NUMERIC
+#define INTERNAL_API_NUMERIC
 
 /* API for Numeric */
 
@@ -22,6 +22,21 @@ bool rb_num_finite_p(VALUE z);
 int rb_num_infinite_p(VALUE z);
 bool rb_num_nan_p(VALUE z);
 
+/**
+ * Rounds the argument +x+ to an arbitrary precision +prec+. <br>
+ * It targets real numbers, but also supports Complex class. <br>
+ * 
+ */
+VALUE rb_num_round(VALUE x, VALUE prec);
+
+#define ARG_REAL        false
+#define ARG_COMPLEX     true
+#define ARG_RAWVALUE    false
+#define ARG_RECIPROCAL  true
+
+VALUE 
+rb_num_canonicalize(VALUE x, VALUE prec, bool complex_form, bool inversion);
+
 #define SIGN_PLUS false
 #define SIGN_MINUS true
 
@@ -40,4 +55,4 @@ VALUE rb_ImaginaryZ(VALUE z, bool signbit);
 
 #define rb_funcall1(lhs, ops, rhs)  rb_funcall((lhs), (ops), 1, (rhs))
 
-#endif /* INTERNAL_SOLVER_NUMERIC */
+#endif /* INTERNAL_API_NUMERIC */

@@ -12,7 +12,7 @@
 
 /**
  * @overload l2norm(*args, prec)
- *  Return solve of L2-norm for argument as numerical sequence.
+ *  Return solve of the euclidean norm (L2-norm) for argument as numerical sequence.
  *  
  *  @param *args [Array] Numerical sequence
  *  @param prec [Integer] Arbitrary precision

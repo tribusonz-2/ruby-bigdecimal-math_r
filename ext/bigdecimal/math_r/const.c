@@ -145,7 +145,6 @@ calc_pi(VALUE prec)
 	d = one;
 	while (rb_numdiff_condition_p(pi, d, n, &m))
 	{
-		rb_numdiff_keep_fig(&m);
 		d = rb_funcall(t, div, 2, k, m);
 		pi = rb_funcall1(pi, '+', d);
 		t = rb_funcall1(t, '*', m25);
@@ -156,7 +155,6 @@ calc_pi(VALUE prec)
 	d = one;
 	while (rb_numdiff_condition_p(pi, d, n, &m))
 	{
-		rb_numdiff_keep_fig(&m);
 		d = rb_funcall(t, div, 2, k, m);
 		pi = rb_funcall1(pi, '-', d);
 		t = rb_funcall(t, div, 2, m57121, n);
