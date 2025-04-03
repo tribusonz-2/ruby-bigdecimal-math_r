@@ -7,8 +7,7 @@
 #include <ruby.h>
 #include "math_r/globals.h"
 #include "math_r/bigmath_r.h"
-
-#include "api/bigmath/l2norm.h"
+#include "decl.h"
 
 /**
  * @overload l2norm(*args, prec)
@@ -76,10 +75,6 @@ __impl_nucomp_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
 	return rb_bigmath_hypot(a, b, prec);
 }
 
-
-#include "api/bigmath/cabs.h"
-
-
 /**
  *  Return complex absolute of +z+.
  *  
@@ -96,10 +91,6 @@ __impl_nucomp_cabs(VALUE unused_obj, VALUE z, VALUE prec)
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_cabs(z, prec);
 }
-
-
-#include "api/bigmath/quadrant.h"
-
 
 /**
  *  Consider where the value is in quadrant XY and computes the inverse tangent of +y/x+.
@@ -136,10 +127,6 @@ __impl_nucomp_atan2(VALUE unused_obj, VALUE y, VALUE x, VALUE prec)
 {
 	return rb_bigmath_quadrant(x, y, prec);
 }
-
-
-#include "api/bigmath/carg.h"
-
 
 /**
  *  Return complex argument of +z+.

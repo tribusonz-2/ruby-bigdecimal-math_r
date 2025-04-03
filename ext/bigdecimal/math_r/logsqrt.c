@@ -7,6 +7,7 @@
 #include <ruby.h>
 #include "math_r/globals.h"
 #include "math_r/bigmath_r.h"
+#include "decl.h"
 
 #define rb_Complex_I rb_Complex(INT2FIX(0), INT2FIX(1))
 #define rb_Complex_mI rb_Complex(INT2FIX(0), INT2FIX(-1))
@@ -17,8 +18,6 @@ domain_p(VALUE x, VALUE range)
 	const ID cover_p = rb_intern("cover?");
 	return RTEST(rb_funcall(range, cover_p, 1, x));
 }
-
-#include "api/bigmath/atan.h"
 
 /**
  * Computes the inverse tangent of +x+.

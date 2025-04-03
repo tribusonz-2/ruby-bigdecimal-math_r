@@ -7,8 +7,7 @@
 #include <ruby.h>
 #include "math_r/globals.h"
 #include "math_r/bigmath_r.h"
-
-#include "api/bigmath/sqrt.h"
+#include "decl.h"
 
 /**
  * Computes square root of +x+.
@@ -30,8 +29,6 @@ __impl_powerroot_sqrt(VALUE unused_obj, VALUE x, VALUE prec)
 	y = rb_bigmath_sqrt(x, prec);
 	return rb_num_round(y, prec);
 }
-
-#include "api/bigmath/csqrt.h"
 
 /**
  * Computes complex square root of +z+.

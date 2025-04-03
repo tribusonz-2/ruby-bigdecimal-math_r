@@ -7,6 +7,7 @@
 #include <ruby.h>
 #include "math_r/globals.h"
 #include "math_r/bigmath_r.h"
+#include "decl.h"
 
 #define USE_MERCATOR 0
 

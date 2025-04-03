@@ -7,6 +7,7 @@
 #include <ruby.h>
 #include "math_r/globals.h"
 #include "math_r/bigmath_r.h"
+#include "decl.h"
 
 static VALUE
 f_euler(VALUE theta, VALUE prec)
