@@ -15,6 +15,7 @@
 #include "api/bigmath/atan.h"
 #include "api/bigmath/cabs.h"
 #include "api/bigmath/carg.h"
+#include "api/bigmath/cpow.h"
 #include "api/bigmath/csqrt.h"
 #include "api/bigmath/l2norm.h"
 #include "api/bigmath/quadrant.h"

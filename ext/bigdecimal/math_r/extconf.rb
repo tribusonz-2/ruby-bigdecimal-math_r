@@ -5,6 +5,8 @@ require 'mkmf'
 MATHFUNCS = {
   "atan" => 1,
   "sqrt" => 1, "csqrt" => 1,
+  "cuberoot" => 1, "ccbrt" => 1,
+  "pow" => 2, "cpow" => 2,
   "cabs" => 1,
   "carg" => 1,
   "l2norm" => 1,
@@ -53,6 +55,8 @@ def update_decl_mathfunc_header
           when 2
             header_str << "VALUE #{mathfunc}_#{algo}(VALUE, VALUE, VALUE);\n"
           end
+        else
+          raise "The function name is not in the list: #{mathfunc}"
         end
       end
     end
