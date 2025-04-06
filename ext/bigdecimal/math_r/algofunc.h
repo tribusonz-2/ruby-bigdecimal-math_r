@@ -9,6 +9,7 @@
 #include "internal/algo/bigmath/cpow/formula.h"
 #include "internal/algo/bigmath/csqrt/formula.h"
 #include "internal/algo/bigmath/cuberoot/newton.h"
+#include "internal/algo/bigmath/ipow/edf.h"
 #include "internal/algo/bigmath/l2norm/formula.h"
 #include "internal/algo/bigmath/quadrant/formula.h"
 #include "internal/algo/bigmath/sqrt/builtin.h"

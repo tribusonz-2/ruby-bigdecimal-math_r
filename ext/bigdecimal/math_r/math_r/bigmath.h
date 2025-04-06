@@ -17,6 +17,7 @@ VALUE rb_bigmath_clog(VALUE z, VALUE prec);
 
 VALUE rb_bigmath_pow(VALUE x, VALUE y, VALUE prec);
 VALUE rb_bigmath_cpow(VALUE z, VALUE w, VALUE prec);
+VALUE rb_bigmath_ipow(VALUE x, VALUE n, VALUE exp);
 
 VALUE rb_sincos_to_radian(VALUE x, VALUE prec, VALUE pi, VALUE *t);
 int rb_degree_sparg(VALUE t, VALUE prec, VALUE *sin, VALUE *cos);

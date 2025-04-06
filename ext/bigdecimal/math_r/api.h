@@ -17,6 +17,7 @@
 #include "api/bigmath/carg.h"
 #include "api/bigmath/cpow.h"
 #include "api/bigmath/csqrt.h"
+#include "api/bigmath/ipow.h"
 #include "api/bigmath/l2norm.h"
 #include "api/bigmath/quadrant.h"
 #include "api/bigmath/sqrt.h"

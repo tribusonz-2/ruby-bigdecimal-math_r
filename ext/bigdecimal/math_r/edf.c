@@ -12,72 +12,6 @@
 #define USE_MERCATOR 0
 
 /**
- * 
- *  Implementation is equivalent as follow:
- *  ```Ruby
- *  def intpower(x, n, exp)
- *    eps = 10 ** exp
- *    if !n.finite?
- *      case n.infinite?
- *      when 1
- *        return BigDecimal::INFINITY
- *      when -1
- *        return Rational(0)
- *      when nil
- *        return BigDecimal::NAN
- *      end
- *    end
- *    x = Rational(x)
- *    abs_n = n.abs;  r = 1;
- *    while (abs_n != 0)
- *      if (abs_n & 1 == 1)
- *        r *= x
- *        if r > eps
- *          r = BigDecimal::INFINITY
- *        end
- *      end
- *      break if r.infinite?
- *      x *= x;  abs_n >>= 1;
- *    end
- *    (n >= 0) ? r : 1 / r
- *  end
- *  ```
- * 
- */
-static VALUE
-rb_bigmath_intpower(VALUE x, VALUE n, VALUE exp)
-{
-	const ID mult = rb_intern("mult");
-	const ID exponent = rb_intern("exponent");
-	const ID r_shift = rb_intern(">>");
-	const ID geq = rb_intern(">=");
-	VALUE abs_n = Qundef, r = Qundef;
-	if (!rb_num_finite_p(x))
-		return BIG_NAN;
-	x = rb_num_canonicalize(x, exp, ARG_REAL, ARG_RAWVALUE);
-	abs_n = n;
-	if (rb_num_negative_p(n))  abs_n = rb_num_uminus(abs_n); // abs()
-	r = BIG_ONE;
-	while (rb_num_nonzero_p(abs_n))
-	{
-		if (RTEST(NUM2INT(rb_num_coerce_bit(abs_n, INT2FIX(1), '&'))))
-		{
-			r = rb_funcall(r, mult, 2, x, exp);
-			if (RTEST(rb_num_coerce_cmp(rb_funcall(
-			r, exponent, 0), exp, '>')))
-				r = BIG_INF;
-		}
-		if (rb_num_infinite_p(r))
-			break;
-		x = rb_funcall(x, mult, 2, x, exp);
-		abs_n = rb_num_coerce_bit(abs_n, INT2FIX(1), r_shift);
-	}
-	return RTEST(rb_num_coerce_cmp(n, INT2FIX(0), geq)) ?
-		r : rb_funcall1(INT2FIX(1), '/', r);
-}
-
-
-/**
  * Computes the Integer +n+ power of +x+.
  * <br>
  * Notice that the precision parameter of this function is a decimal exponent.
@@ -114,7 +48,7 @@ __impl_edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
 	if (!(TYPE(n) == T_FIXNUM || TYPE(n) == T_BIGNUM))
 		rb_raise(rb_eTypeError, "right-hand side must be an Integer");
 	
-	y = rb_bigmath_intpower(x, n, exp);
+	y = ipow_edf(x, n, exp);
 	
 	return y;
 }
@@ -162,8 +96,8 @@ __impl_edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
  *  end
  *  ```
  */
-static void
-rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
+void
+escalb_edf(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
 {
 	const ID fix = rb_intern("fix");
 	const ID frac = rb_intern("frac");
@@ -243,10 +177,17 @@ rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
 		*fra = BIG_ZERO;
 		return;
 	}
-	*exp = rb_bigmath_intpower(a, *exp,
+	*exp = rb_bigmath_ipow(a, *exp,
 		NUM2INT(rb_num_cmpeql(prec, max_10_exp)) == 1 ? prec : max_10_exp);
 	*exp = rb_num_round(*exp,
 		NUM2INT(rb_num_cmpeql(prec, max_10_exp)) == 1 ? prec : max_10_exp);
+}
+
+
+void
+rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
+{
+	return escalb_edf(a, x, prec, exp, fra);
 }
 
 
@@ -282,40 +223,46 @@ __impl_edf_escalb(VALUE unused_obj, VALUE a, VALUE x, VALUE prec)
 }
 
 
-static inline bool
-check_eps(VALUE x, VALUE prec)
-{
-	const ID exponent = rb_intern("exponent");
-	return (rb_num_negative_p(
-		rb_funcall1(
-			rb_funcall(x, exponent, 0),
-			'+', prec
-	)));
-}
-
-
-static VALUE
-rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
+VALUE
+expxt_edf(VALUE x, VALUE t, VALUE prec)
 {
 	const ID add = rb_intern("add");
 	const ID mult = rb_intern("mult");
 	const ID div = rb_intern("div");
-	const ID double_fig = rb_intern("double_fig");
-	VALUE m = rb_funcall1(prec, '+', 
-		rb_funcall(rb_cBigDecimal, double_fig, 0));
+	VALUE n = rb_numdiff_make_n(prec), m;
 	VALUE a = BIG_ONE;
 	VALUE xt = rb_funcall1(x, '*', t);
 	VALUE e = BIG_ZERO;
-	long n = 0;
+	long i = 0;
 	if (rb_num_zero_p(xt))
 		return e;
-	while (!check_eps(a, m))
+	while (rb_numdiff_condition_p(e, a, n, &m))
 	{
 		e = rb_funcall(e, add, 2, a, m);
-		a = rb_funcall(a, div, 2, LONG2NUM(++n), m);
+		a = rb_funcall(a, div, 2, LONG2NUM(++i), m);
 		a = rb_funcall(a, mult, 2, xt, m);
 	}
 	return rb_num_round(e, prec);
+}
+
+
+VALUE
+rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
+{
+	rb_check_precise(prec);
+	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	if (rb_num_notequal_p(x, x) ||
+	    rb_num_negative_p(x) || 
+	    NUM2INT(rb_num_cmpeql(x, INT2FIX(1))) == 1)
+		rb_raise(rb_eRangeError, "Argument x is out of range: (0 <= x <= 1)");
+	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
+	if (rb_num_notequal_p(t, t) ||
+	    rb_num_negative_p(t) ||
+	    NUM2INT(rb_num_cmpeql(t, INT2FIX(1))) == 1)
+		rb_raise(rb_eRangeError, "Argument t is out of range: (0 <= t <= 1)");
+	if (!rb_num_finite_p(x) || !rb_num_finite_p(t))
+		rb_raise(rb_eFloatDomainError, "not a finite");
+	return expxt_edf(x, t, prec);
 }
 
 /**
@@ -333,23 +280,11 @@ rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
 static VALUE
 __impl_edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 {
-	rb_check_precise(prec);
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	if (rb_num_notequal_p(x, x) ||
-	    rb_num_negative_p(x) || 
-	    NUM2INT(rb_num_cmpeql(x, INT2FIX(1))) != -1)
-		rb_raise(rb_eRangeError, "Argument x is out of range: (0 <= x < 1)");
-	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
-	if (rb_num_notequal_p(t, t) ||
-	    rb_num_negative_p(t) ||
-	    NUM2INT(rb_num_cmpeql(t, INT2FIX(1))) == 1)
-		rb_raise(rb_eRangeError, "Argument t is out of range: (0 <= t <= 1)");
 	return rb_bigmath_expxt(x, t, prec);
 }
 
-
 VALUE
-rb_bigmath_exp(VALUE x, VALUE prec)
+exp_edf(VALUE x, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
 	VALUE exp = Qundef, fra = Qundef;
@@ -366,6 +301,13 @@ rb_bigmath_exp(VALUE x, VALUE prec)
 	if (CLASS_OF(exp) != rb_cBigDecimal)
 		exp = rb_num_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_funcall(exp, mult, 2, fra, prec);
+}
+
+
+VALUE
+rb_bigmath_exp(VALUE x, VALUE prec)
+{
+	return exp_edf(x, prec);
 }
 
 /**
@@ -385,12 +327,11 @@ static VALUE
 __impl_edf_exp(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_bigmath_exp(x, prec);
+	return exp_edf(x, prec);
 }
 
-
-static VALUE
-rb_bigmath_exp2(VALUE x, VALUE prec)
+VALUE
+exp2_edf(VALUE x, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
 	VALUE exp = Qundef, fra = Qundef;
@@ -426,7 +367,7 @@ static VALUE
 __impl_edf_exp2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_bigmath_exp2(x, prec);
+	return exp2_edf(x, prec);
 }
 
 
@@ -458,8 +399,8 @@ __impl_edf_exp2(VALUE unused_obj, VALUE x, VALUE prec)
  *   [fra, reso]
  * end
  */
-static VALUE
-rcm2_inline(VALUE x, VALUE *reso)
+VALUE
+rcm2_edf(VALUE x, VALUE *reso)
 {
 	VALUE fra = x; *reso = INT2FIX(0);
 	if (rb_num_nonzero_p(fra) && rb_num_finite_p(fra))
@@ -496,7 +437,8 @@ rcm2_inline(VALUE x, VALUE *reso)
 /**
  * Based on the radix complementation method, exponentially-decompose +x+ on radix 2.
  * <br>
- * It behaves the same as frexp() in C except that the value range is 1 leq y lt 2 with its exponent.
+ * It behaves the same as frexp() in C, 
+ * except that the value range is 1 leq y lt 2 with its exponent.
  * <br>
  * If +x+ is not positive finite except 0, then it is inherently undefined. 
  * However, if +x+ is negative finite, it will return a value range of -2 lt +y+ leq -1.
@@ -517,7 +459,7 @@ static VALUE
 __impl_edf_rcm2(VALUE unused_obj, VALUE x)
 {
 	VALUE exp, fra;
-	fra = rcm2_inline(x, &exp);
+	fra = rcm2_edf(x, &exp);
 	return rb_assoc_new(fra, exp);
 }
 
@@ -549,8 +491,8 @@ __impl_edf_rcm2(VALUE unused_obj, VALUE x)
  * end
  * ```
  */
-static VALUE
-rcm10_inline(VALUE x, VALUE *reso)
+VALUE
+rcm10_edf(VALUE x, VALUE *reso)
 {
 	VALUE fra = x; *reso = INT2FIX(0);
 	if (rb_num_nonzero_p(fra) && rb_num_finite_p(fra))
@@ -587,7 +529,8 @@ rcm10_inline(VALUE x, VALUE *reso)
 /**
  * Based on the radix complementation method, exponentially-decompose +x+ on radix 10.
  * <br>
- * It behaves the same as frexp() in C except that the radix is 10 and the value range is 1 leq y lt 10.
+ * It behaves the same as frexp() in C,
+ * except that the radix is 10 and the value range is 1 leq y lt 10.
  * <br>
  * If +x+ is not positive finite except 0, then it is inherently undefined. 
  * However, if +x+ is negative finite, it will return a value range of -10 lt +y+ leq -1.
@@ -608,7 +551,7 @@ static VALUE
 __impl_edf_rcm10(VALUE unused_obj, VALUE x)
 {
 	VALUE exp, fra;
-	fra = rcm10_inline(x, &exp);
+	fra = rcm10_edf(x, &exp);
 	return rb_assoc_new(fra, exp);
 }
 
@@ -632,7 +575,7 @@ __impl_edf_rcm10(VALUE unused_obj, VALUE x)
  * ```
  */
 static VALUE
-logxt_inline(VALUE x, VALUE t, VALUE prec)
+logxt_edf(VALUE x, VALUE t, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
 	VALUE a, b, s, one_half, n, m;
@@ -692,12 +635,12 @@ __impl_edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 		rb_raise(rb_eFloatDomainError, "Numerical arguments are out of range: (1 <= x <= t)");
 	}
 	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
-	return logxt_inline(x, t, prec);
+	return logxt_edf(x, t, prec);
 }
 
 #if USE_MERCATOR
-static VALUE
-log_mercator_ser(VALUE x, VALUE prec)
+VALUE
+log_ser_mercator(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
 	const ID mult = rb_intern("mult");
@@ -730,7 +673,7 @@ log_mercator_ser(VALUE x, VALUE prec)
 }
 
 static VALUE
-log_mercator_ser_x(VALUE x, VALUE prec)
+log_ser_mercator_x(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
 	VALUE y;
@@ -743,7 +686,7 @@ log_mercator_ser_x(VALUE x, VALUE prec)
 #endif
 
 VALUE
-rb_bigmath_log(VALUE x, VALUE prec)
+log_branch(VALUE x, VALUE prec)
 {
 #if 0
 	const ID log = rb_intern("log");
@@ -779,14 +722,14 @@ rb_bigmath_log(VALUE x, VALUE prec)
 		if (rb_num_positive_p(x))
 		{
 			VALUE fra = Qundef, exp = Qundef;
-			fra = rcm2_inline(x, &exp);
+			fra = rcm2_edf(x, &exp);
 #if USE_MERCATOR
-			fra = log_mercator_ser(log_mercator_ser_x(fra, prec), prec);
+			fra = log_ser_mercator(log_ser_mercator_x(fra, prec), prec);
 			fra = rb_num_uminus(fra);
 			exp = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
 			y = rb_funcall1(exp, '+', fra);
 #else
-			fra = logxt_inline(fra, INT2FIX(2), prec);
+			fra = logxt_edf(fra, INT2FIX(2), prec);
 			exp = rb_funcall1(exp, '+', fra);
 			y = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
 #endif
@@ -797,6 +740,12 @@ rb_bigmath_log(VALUE x, VALUE prec)
 	}
 	return y;
 #endif
+}
+
+VALUE
+rb_bigmath_log(VALUE x, VALUE prec)
+{
+	return log_branch(x, prec);
 }
 
 /**
@@ -816,11 +765,11 @@ static VALUE
 __impl_edf_log(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_bigmath_log(x, prec);
+	return log_branch(x, prec);
 }
 
 static VALUE
-rb_bigmath_log2(VALUE x, VALUE prec)
+log2_branch(VALUE x, VALUE prec)
 {
 #if USE_MERCATOR
 	const ID div = rb_intern("div");
@@ -854,13 +803,13 @@ rb_bigmath_log2(VALUE x, VALUE prec)
 		if (rb_num_positive_p(x))
 		{
 			VALUE fra = Qundef, exp = Qundef;
-			fra = rcm2_inline(x, &exp);
+			fra = rcm2_edf(x, &exp);
 #if USE_MERCATOR
-			fra = log_mercator_ser(log_mercator_ser_x(fra, prec), prec);
+			fra = log_ser_mercator(log_ser_mercator_x(fra, prec), prec);
 			fra = rb_num_uminus(fra);
 			fra = rb_funcall(fra, div, 2, rb_bigmath_const_log2(prec), prec);
 #else
-			fra = logxt_inline(fra, INT2FIX(2), prec);
+			fra = logxt_edf(fra, INT2FIX(2), prec);
 #endif
 			y = rb_funcall1(exp, '+', fra);
 			y = rb_num_round(y, prec);
@@ -889,11 +838,11 @@ static VALUE
 __impl_edf_log2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_bigmath_log2(x, prec);
+	return log2_branch(x, prec);
 }
 
 static VALUE
-rb_bigmath_log10(VALUE x, VALUE prec)
+log10_branch(VALUE x, VALUE prec)
 {
 #if USE_MERCATOR
 	const ID div = rb_intern("div");
@@ -926,13 +875,13 @@ rb_bigmath_log10(VALUE x, VALUE prec)
 		if (rb_num_positive_p(x))
 		{
 			VALUE fra = Qundef, exp = Qundef;
-			fra = rcm10_inline(x, &exp);
+			fra = rcm10_edf(x, &exp);
 #if USE_MERCATOR
-			fra = log_mercator_ser(log_mercator_ser_x(fra, prec), prec);
+			fra = log_ser_mercator(log_ser_mercator_x(fra, prec), prec);
 			fra = rb_num_uminus(fra);
 			fra = rb_funcall(fra, div, 2, rb_bigmath_const_log10(prec), prec);
 #else
-			fra = logxt_inline(fra, INT2FIX(10), prec);
+			fra = logxt_edf(fra, INT2FIX(10), prec);
 #endif
 			y = rb_funcall1(exp, '+', fra);
 			y = rb_num_round(y, prec);
@@ -961,7 +910,7 @@ static VALUE
 __impl_edf_log10(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_bigmath_log10(x, prec);
+	return log10_branch(x, prec);
 }
 
 

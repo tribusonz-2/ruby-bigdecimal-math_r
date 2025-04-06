@@ -6,7 +6,7 @@ MATHFUNCS = {
   "atan" => 1,
   "sqrt" => 1, "csqrt" => 1,
   "cuberoot" => 1, "ccbrt" => 1,
-  "pow" => 2, "cpow" => 2,
+  "pow" => 2, "cpow" => 2, "ipow" => 2,
   "cabs" => 1,
   "carg" => 1,
   "l2norm" => 1,
