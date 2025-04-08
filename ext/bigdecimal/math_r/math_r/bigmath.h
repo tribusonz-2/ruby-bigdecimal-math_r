@@ -11,6 +11,7 @@ VALUE rb_bigmath_const_sqrt3(VALUE prec);
 
 VALUE rb_bigmath_exp(VALUE x, VALUE prec);
 VALUE rb_bigmath_cexp(VALUE z, VALUE prec);
+VALUE rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec);
 
 VALUE rb_bigmath_log(VALUE x, VALUE prec);
 VALUE rb_bigmath_clog(VALUE z, VALUE prec);
@@ -18,6 +19,8 @@ VALUE rb_bigmath_clog(VALUE z, VALUE prec);
 VALUE rb_bigmath_pow(VALUE x, VALUE y, VALUE prec);
 VALUE rb_bigmath_cpow(VALUE z, VALUE w, VALUE prec);
 VALUE rb_bigmath_ipow(VALUE x, VALUE n, VALUE exp);
+
+void rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra);
 
 VALUE rb_sincos_to_radian(VALUE x, VALUE prec, VALUE pi, VALUE *t);
 int rb_degree_sparg(VALUE t, VALUE prec, VALUE *sin, VALUE *cos);

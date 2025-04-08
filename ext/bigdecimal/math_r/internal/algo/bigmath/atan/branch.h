@@ -1,5 +1,5 @@
 VALUE
-atan_branch(VALUE x, VALUE prec)
+atan_branch(VALUE x, VALUE prec, bigmath_func1 atan_cb)
 {
 	const ID add = rb_intern("add");
 	const ID sub = rb_intern("sub");

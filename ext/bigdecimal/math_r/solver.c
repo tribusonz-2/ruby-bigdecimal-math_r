@@ -91,5 +91,4 @@
 void
 InitVM_Solver(void)
 {
-
 }

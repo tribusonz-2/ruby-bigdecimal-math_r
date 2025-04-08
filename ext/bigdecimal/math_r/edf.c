@@ -9,8 +9,6 @@
 #include "math_r/bigmath_r.h"
 #include "decl.h"
 
-#define USE_MERCATOR 0
-
 /**
  * Computes the Integer +n+ power of +x+.
  * <br>
@@ -53,144 +51,6 @@ __impl_edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
 	return y;
 }
 
-
-/**
- *
- *  ```Ruby
- *  def escalb(a, x, prec)
- *    raise RangeError, "parameter a must be positive finite"\
- *      unless a.finite? and a.positive?
- *    exp = 0; fra = 0
- *    case x
- *    when Integer
- *      exp = x
- *    when Float
- *      if x.nan? or x.infinite?
- *        exp = x
- *      else
- *        exp = x.floor; fra = x % 1;
- *      end
- *    when Rational
- *      exp = x.floor; fra = x % 1;
- *    when Complex
- *      raise TypeError, "no solution for Complex"
- *    when BigDecimal
- *      if x.nan? or x.infinite?
- *        exp = x
- *      else
- *        exp = x.fix.to_i
- *        if x.negative? and exp != x
- *          exp = exp.pred
- *        end
- *        unless exp == x
- *          fra = x.frac
- *          if fra.negative?
- *            fra = 1 + fra
- *          end
- *        end
- *      end
- *    else
- *      raise TypeError, "unknown numeric class"
- *    end
- *    [intpower(a, exp, prec), fra]
- *  end
- *  ```
- */
-void
-escalb_edf(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
-{
-	const ID fix = rb_intern("fix");
-	const ID frac = rb_intern("frac");
-	const ID floor = rb_intern("floor");
-	const ID pred = rb_intern("pred");
-	const ID MAX_10_EXP = rb_intern("MAX_10_EXP");
-	VALUE max_10_exp = rb_const_get_at(rb_cFloat, MAX_10_EXP);
-	if (!rb_num_finite_p(a) && !rb_num_positive_p(a))
-		rb_raise(rb_eRangeError, "parameter a must be positive finite");
-	switch (TYPE(x)) {
-	case T_FIXNUM:
-	case T_BIGNUM:
-		*exp = x; *fra = BIG_ZERO;
-		break;
-	case T_FLOAT:
-		if (isinf(NUM2DBL(x)) || isnan(NUM2DBL(x)))
-		{
-			*exp = rb_BigDecimal_flo(x); *fra = BIG_ZERO;
-		}
-		else
-		{
-			*exp = rb_funcall(x, floor, 0);
-			*fra = rb_BigDecimal_flo(rb_funcall1(x, '%', INT2FIX(1)));
-		}
-		break;
-	case T_RATIONAL:
-		*exp = rb_funcall(x, floor, 0);
-		*fra = rb_BigDecimal(rb_funcall1(x, '%', INT2FIX(1)), prec);
-		break;
-	case T_COMPLEX:
-		rb_raise(rb_eTypeError, "no solution for Complex");
-		break;
-	default:
-		if (rb_class_superclass(CLASS_OF(x)) == rb_cNumeric)
-		{
-			if (CLASS_OF(x) == rb_cBigDecimal)
-			{
-				if (!rb_num_finite_p(x))
-				{
-					*exp = x; *fra = BIG_ZERO;
-				}
-				else
-				{
-					*exp = rb_Integer(rb_funcall(x, fix, 0));
-					if (rb_num_negative_p(x) &&
-					    rb_num_notequal_p(*exp, x))
-						*exp = rb_funcall(*exp, pred, 0);
-					if (rb_num_notequal_p(*exp, x))
-					{
-						*fra = rb_funcall(x, frac, 0);
-						if (rb_num_negative_p(*fra))
-							*fra = rb_funcall1(BIG_ONE, '+', *fra);
-					}
-					else
-						*fra = BIG_ZERO;
-				}
-			}
-			else
-				rb_raise(rb_eTypeError, "unknown numeric type");
-		}
-		rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-		break;
-	}
-	if (!rb_num_finite_p(x))
-	{
-		switch (rb_num_infinite_p(x)) {
-		case 1:
-			*exp = x;
-			break;
-		case -1:
-			*exp = BIG_ZERO;
-			break;
-		default:
-			*exp = BIG_NAN;
-			break;
-		}
-		*fra = BIG_ZERO;
-		return;
-	}
-	*exp = rb_bigmath_ipow(a, *exp,
-		NUM2INT(rb_num_cmpeql(prec, max_10_exp)) == 1 ? prec : max_10_exp);
-	*exp = rb_num_round(*exp,
-		NUM2INT(rb_num_cmpeql(prec, max_10_exp)) == 1 ? prec : max_10_exp);
-}
-
-
-void
-rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
-{
-	return escalb_edf(a, x, prec, exp, fra);
-}
-
-
 /**
  * Exponentially-decompose into the form of
  * [a ** x.floor, x % 1].
@@ -223,48 +83,6 @@ __impl_edf_escalb(VALUE unused_obj, VALUE a, VALUE x, VALUE prec)
 }
 
 
-VALUE
-expxt_edf(VALUE x, VALUE t, VALUE prec)
-{
-	const ID add = rb_intern("add");
-	const ID mult = rb_intern("mult");
-	const ID div = rb_intern("div");
-	VALUE n = rb_numdiff_make_n(prec), m;
-	VALUE a = BIG_ONE;
-	VALUE xt = rb_funcall1(x, '*', t);
-	VALUE e = BIG_ZERO;
-	long i = 0;
-	if (rb_num_zero_p(xt))
-		return e;
-	while (rb_numdiff_condition_p(e, a, n, &m))
-	{
-		e = rb_funcall(e, add, 2, a, m);
-		a = rb_funcall(a, div, 2, LONG2NUM(++i), m);
-		a = rb_funcall(a, mult, 2, xt, m);
-	}
-	return rb_num_round(e, prec);
-}
-
-
-VALUE
-rb_bigmath_expxt(VALUE x, VALUE t, VALUE prec)
-{
-	rb_check_precise(prec);
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	if (rb_num_notequal_p(x, x) ||
-	    rb_num_negative_p(x) || 
-	    NUM2INT(rb_num_cmpeql(x, INT2FIX(1))) == 1)
-		rb_raise(rb_eRangeError, "Argument x is out of range: (0 <= x <= 1)");
-	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
-	if (rb_num_notequal_p(t, t) ||
-	    rb_num_negative_p(t) ||
-	    NUM2INT(rb_num_cmpeql(t, INT2FIX(1))) == 1)
-		rb_raise(rb_eRangeError, "Argument t is out of range: (0 <= t <= 1)");
-	if (!rb_num_finite_p(x) || !rb_num_finite_p(t))
-		rb_raise(rb_eFloatDomainError, "not a finite");
-	return expxt_edf(x, t, prec);
-}
-
 /**
  * Calculate the exponential function of +x+ with base +t+.
  * 
@@ -283,32 +101,6 @@ __impl_edf_expxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 	return rb_bigmath_expxt(x, t, prec);
 }
 
-VALUE
-exp_edf(VALUE x, VALUE prec)
-{
-	const ID mult = rb_intern("mult");
-	VALUE exp = Qundef, fra = Qundef;
-	if (rb_num_notequal_p(x, x))
-		return BIG_NAN;
-	rb_bigmath_escalb(rb_bigmath_const_e(prec), x, prec, &exp, &fra);
-	if (exp == Qundef || fra == Qundef)
-		rb_raise(rb_eRuntimeError, "no solution");
-	if (rb_num_infinite_p(exp) ||
-	    rb_num_zero_p(exp) ||
-	    rb_num_zero_p(fra))
-		return rb_num_round(exp, prec);
-	fra = rb_bigmath_expxt(fra, INT2FIX(1), prec);
-	if (CLASS_OF(exp) != rb_cBigDecimal)
-		exp = rb_num_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_funcall(exp, mult, 2, fra, prec);
-}
-
-
-VALUE
-rb_bigmath_exp(VALUE x, VALUE prec)
-{
-	return exp_edf(x, prec);
-}
 
 /**
  * Computes exponential function of +x+.
@@ -330,25 +122,6 @@ __impl_edf_exp(VALUE unused_obj, VALUE x, VALUE prec)
 	return exp_edf(x, prec);
 }
 
-VALUE
-exp2_edf(VALUE x, VALUE prec)
-{
-	const ID mult = rb_intern("mult");
-	VALUE exp = Qundef, fra = Qundef;
-	if (rb_num_notequal_p(x, x))
-		return BIG_NAN;
-	rb_bigmath_escalb(INT2FIX(2), x, prec, &exp, &fra);
-	if (exp == Qundef || fra == Qundef)
-		rb_raise(rb_eRuntimeError, "no solution");
-	if (rb_num_infinite_p(exp) ||
-	    rb_num_zero_p(exp) ||
-	    rb_num_zero_p(fra))
-		return rb_num_round(exp, prec);
-	fra = rb_bigmath_expxt(fra, rb_bigmath_const_log2(prec), prec);
-	if (CLASS_OF(exp) != rb_cBigDecimal)
-		exp = rb_num_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
-	return rb_funcall(exp, mult, 2, fra, prec);
-}
 
 /**
  * Computes binary exponent of +x+.
@@ -370,69 +143,6 @@ __impl_edf_exp2(VALUE unused_obj, VALUE x, VALUE prec)
 	return exp2_edf(x, prec);
 }
 
-
-
-/**
- * Entity of rcm2(). It is equivalent to the following Ruby code:
- *
- * ```ruby
- * def rcm2(x)
- *   reso = 0
- *   fra = x
- *   if x.finite? and x.nonzero?
- *     fra = Rational(fra.abs)
- *     has_sign = x < 0
- *     case
- *     when fra >= 1
- *       while 2 <= fra
- *         reso += 1
- *         fra /= 2
- *       end
- *     else
- *       while 1 > fra
- *         reso -= 1
- *         fra *= 2
- *       end
- *     end
- *     fra = -fra if has_sign
- *   end
- *   [fra, reso]
- * end
- */
-VALUE
-rcm2_edf(VALUE x, VALUE *reso)
-{
-	VALUE fra = x; *reso = INT2FIX(0);
-	if (rb_num_nonzero_p(fra) && rb_num_finite_p(fra))
-	{
-		long resov = 0;
-		bool has_sign = RTEST(rb_num_coerce_cmp(x, INT2FIX(0), '<'));
-		VALUE rat_two = rb_rational_new1(INT2FIX(2));
-		fra = rb_Rational1(fra);
-		if (rb_num_negative_p(fra))
-			fra = rb_num_uminus(fra);
-		if (RTEST(rb_num_coerce_cmp(fra, INT2FIX(1), rb_intern(">="))))
-		{
-			while (RTEST(rb_num_coerce_cmp(INT2FIX(2), fra, rb_intern("<="))))
-			{
-				fra = rb_funcall1(fra, '/', rat_two);
-				resov++;
-			}
-		}
-		else
-		{
-			while (RTEST(rb_num_coerce_cmp(INT2FIX(1), fra, '>')))
-			{
-				fra = rb_funcall1(fra, '*', rat_two);
-				resov--;
-			}
-		}
-		if (has_sign)
-			fra = rb_num_uminus(fra);
-		*reso = LONG2FIX(resov);
-	}
-	return fra;
-}
 
 /**
  * Based on the radix complementation method, exponentially-decompose +x+ on radix 2.
@@ -463,68 +173,6 @@ __impl_edf_rcm2(VALUE unused_obj, VALUE x)
 	return rb_assoc_new(fra, exp);
 }
 
-/**
- * Entity of rcm10(). It is equivalent to the following Ruby code:
- * 
- * ```ruby
- * def rcm10(x)
- *   reso = 0
- *   fra = x
- *   if x.finite? and x.nonzero?
- *     fra = Rational(fra.abs)
- *     has_sign = x < 0
- *     case
- *     when fra >= 10
- *       while fra >= 10
- *         reso += 1
- *         fra /= 10
- *       end
- *     when fra < 1
- *       while fra < 1
- *         reso -= 1
- *         fra *= 10
- *       end
- *     end
- *     fra = -fra if has_sign
- *   end
- *   [fra, reso]
- * end
- * ```
- */
-VALUE
-rcm10_edf(VALUE x, VALUE *reso)
-{
-	VALUE fra = x; *reso = INT2FIX(0);
-	if (rb_num_nonzero_p(fra) && rb_num_finite_p(fra))
-	{
-		long resov = 0;
-		bool has_sign = RTEST(rb_num_coerce_cmp(x, INT2FIX(0), '<'));
-		VALUE rat_ten = rb_rational_new1(INT2FIX(10));
-		fra = rb_Rational1(fra);
-		if (rb_num_negative_p(fra))
-			fra = rb_num_uminus(fra);
-		if (RTEST(rb_num_coerce_cmp(fra, INT2FIX(10), rb_intern(">="))))
-		{
-			while (RTEST(rb_num_coerce_cmp(fra, INT2FIX(10), rb_intern(">="))))
-			{
-				fra = rb_funcall1(fra, '/', rat_ten);
-				resov++;
-			}
-		}
-		else if (RTEST(rb_num_coerce_cmp(fra, INT2FIX(1), '<')))
-		{
-			while (RTEST(rb_num_coerce_cmp(fra, INT2FIX(1), '<')))
-			{
-				fra = rb_funcall1(fra, '*', rat_ten);
-				resov--;
-			}
-		}
-		if (has_sign)
-			fra = rb_num_uminus(fra);
-		*reso = LONG2FIX(resov);
-	}
-	return fra;
-}
 
 /**
  * Based on the radix complementation method, exponentially-decompose +x+ on radix 10.
@@ -555,54 +203,6 @@ __impl_edf_rcm10(VALUE unused_obj, VALUE x)
 	return rb_assoc_new(fra, exp);
 }
 
-/**
- * Entity of logxt(). It is equivalent to the following Ruby code:
- * 
- * ```ruby
- *  def logxt(x, t, prec)
- *    eps = 10 ** (-prec-1)
- *    a = Rational(x); b = 1r; s = 0r;
- *    loop do
- *      a = (a * a).round(prec);  b = 0.5r * b;
- *      if a >= t
- *        s = s + b; a = a / t; 
- *      end
- *      break unless (b >= eps)
- *    end
- *    BigDecimal(s, prec)
- *  end
- *
- * ```
- */
-static VALUE
-logxt_edf(VALUE x, VALUE t, VALUE prec)
-{
-	const ID mult = rb_intern("mult");
-	VALUE a, b, s, one_half, n, m;
-	n = rb_numdiff_make_n(prec);
-	a = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
-	b = BIG_ONE;
-	s = BIG_ZERO;
-	one_half = rb_BigDecimal1(rb_str_new_cstr("0.5"));
-	if (rb_num_zero_p(x))
-		return BIG_ZERO;
-	else if (rb_num_equal_p(x, INT2FIX(1)))
-		return BIG_ZERO;
-	while (rb_numdiff_condition_p(s, b, n, &m))
-	{
-		a = rb_funcall(a, mult, 2, a, m);
-		b = rb_funcall(one_half, mult, 2, b, m);
-		if (RTEST(rb_num_coerce_cmp(a, t, rb_intern(">="))))
-		{
-			s = rb_funcall1(s, '+', b);
-			a = rb_funcall1(a, '/', t);
-		}
-	}
-	RB_GC_GUARD(b);
-	RB_GC_GUARD(s);
-	RB_GC_GUARD(one_half);
-	return s;
-}
 
 /**
  * Computes fraction of +x+ with its complement +t+ in the exponential decomposition.
@@ -635,117 +235,8 @@ __impl_edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 		rb_raise(rb_eFloatDomainError, "Numerical arguments are out of range: (1 <= x <= t)");
 	}
 	t = rb_num_canonicalize(t, prec, ARG_REAL, ARG_RAWVALUE);
-	return logxt_edf(x, t, prec);
-}
-
-#if USE_MERCATOR
-VALUE
-log_ser_mercator(VALUE x, VALUE prec)
-{
-	const ID div = rb_intern("div");
-	const ID mult = rb_intern("mult");
-	VALUE n = rb_numdiff_make_n(prec);
-	VALUE one = BIG_ONE;
-	VALUE w = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
-	VALUE t = one;
-	VALUE d = BIG_ONE;
-	VALUE y = BIG_ZERO;
-	int sign = 1;
-	VALUE m = Qundef;
-	while (rb_numdiff_condition_p(y, d, n, &m))
-	{
-		d = rb_funcall(w, div, 2, t, m);
-		t = rb_funcall1(t, '+', one);
-		w = rb_funcall(w, mult, 2, x, n);
-		if (sign == 1)
-			y = rb_funcall1(y, '+', d);
-		else
-			y = rb_funcall1(y, '-', d);
-		sign *= -1;
-	}
-	RB_GC_GUARD(one);
-	RB_GC_GUARD(w);
-	RB_GC_GUARD(t);
-	RB_GC_GUARD(d);
-	RB_GC_GUARD(x);
-	RB_GC_GUARD(y);
-	return rb_num_round(y, prec);
-}
-
-static VALUE
-log_ser_mercator_x(VALUE x, VALUE prec)
-{
-	const ID div = rb_intern("div");
-	VALUE y;
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	y = rb_funcall1(x, '-', INT2FIX(1));
-	y = rb_funcall(y, div, 2, x, prec);
-	y = rb_num_uminus(y);
-	return y;
-}
-#endif
-
-VALUE
-log_branch(VALUE x, VALUE prec)
-{
-#if 0
-	const ID log = rb_intern("log");
-	if (rb_num_zero_p(x))
-		return BIG_MINUS_INF;
-	return rb_funcall(rb_mBigMath, log, 2, x, prec);
-#else
-	VALUE y = Qundef;
-
-	rb_check_precise(prec);
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-
-	if (!rb_num_finite_p(x))
-	{
-		switch (rb_num_infinite_p(x)) {
-		case 1:
-			y = BIG_INF;
-			break;
-		case -1: case 0:
-		default:
-			y = BIG_NAN;
-			break;
-		}
-	}
-	else if (rb_num_zero_p(x))
-	{
-		y = BIG_MINUS_INF;
-	}
-        else
-        {
-		if (TYPE(x) == T_COMPLEX)
-			rb_raise(rb_eTypeError, "no solution for complex");
-		if (rb_num_positive_p(x))
-		{
-			VALUE fra = Qundef, exp = Qundef;
-			fra = rcm2_edf(x, &exp);
-#if USE_MERCATOR
-			fra = log_ser_mercator(log_ser_mercator_x(fra, prec), prec);
-			fra = rb_num_uminus(fra);
-			exp = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
-			y = rb_funcall1(exp, '+', fra);
-#else
-			fra = logxt_edf(fra, INT2FIX(2), prec);
-			exp = rb_funcall1(exp, '+', fra);
-			y = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
-#endif
-			y = rb_num_round(y, prec);
-		}
-		else
-			y = BIG_NAN;
-	}
-	return y;
-#endif
-}
-
-VALUE
-rb_bigmath_log(VALUE x, VALUE prec)
-{
-	return log_branch(x, prec);
+	x = logxt_edf(x, t, prec);
+	return rb_num_round(x, prec);
 }
 
 /**
@@ -765,61 +256,8 @@ static VALUE
 __impl_edf_log(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return log_branch(x, prec);
+	return log_branch(x, prec, log_edf);
 }
-
-static VALUE
-log2_branch(VALUE x, VALUE prec)
-{
-#if USE_MERCATOR
-	const ID div = rb_intern("div");
-#endif
-
-	VALUE y = Qundef;
-
-	rb_check_precise(prec);
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-
-	if (!rb_num_finite_p(x))
-	{
-		switch (rb_num_infinite_p(x)) {
-		case 1:
-			y = BIG_INF;
-			break;
-		case -1: case 0:
-		default:
-			y = BIG_NAN;
-			break;
-		}
-	}
-	else if (rb_num_zero_p(x))
-	{
-		y = BIG_MINUS_INF;
-	}
-        else
-        {
-		if (TYPE(x) == T_COMPLEX)
-			rb_raise(rb_eTypeError, "no solution for complex");
-		if (rb_num_positive_p(x))
-		{
-			VALUE fra = Qundef, exp = Qundef;
-			fra = rcm2_edf(x, &exp);
-#if USE_MERCATOR
-			fra = log_ser_mercator(log_ser_mercator_x(fra, prec), prec);
-			fra = rb_num_uminus(fra);
-			fra = rb_funcall(fra, div, 2, rb_bigmath_const_log2(prec), prec);
-#else
-			fra = logxt_edf(fra, INT2FIX(2), prec);
-#endif
-			y = rb_funcall1(exp, '+', fra);
-			y = rb_num_round(y, prec);
-		}
-		else
-			y = BIG_NAN;
-	}
-	return y;
-}
-
 
 /**
  * Computes binary logarithm of +x+.
@@ -838,60 +276,8 @@ static VALUE
 __impl_edf_log2(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return log2_branch(x, prec);
+	return log_branch(x, prec, log2_edf);
 }
-
-static VALUE
-log10_branch(VALUE x, VALUE prec)
-{
-#if USE_MERCATOR
-	const ID div = rb_intern("div");
-#endif
-	VALUE y = Qundef;
-
-	rb_check_precise(prec);
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-
-	if (!rb_num_finite_p(x))
-	{
-		switch (rb_num_infinite_p(x)) {
-		case 1:
-			y = BIG_INF;
-			break;
-		case -1: case 0:
-		default:
-			y = BIG_NAN;
-			break;
-		}
-	}
-	else if (rb_num_zero_p(x))
-	{
-		y = BIG_MINUS_INF;
-	}
-        else
-        {
-		if (TYPE(x) == T_COMPLEX)
-			rb_raise(rb_eTypeError, "no solution for complex");
-		if (rb_num_positive_p(x))
-		{
-			VALUE fra = Qundef, exp = Qundef;
-			fra = rcm10_edf(x, &exp);
-#if USE_MERCATOR
-			fra = log_ser_mercator(log_ser_mercator_x(fra, prec), prec);
-			fra = rb_num_uminus(fra);
-			fra = rb_funcall(fra, div, 2, rb_bigmath_const_log10(prec), prec);
-#else
-			fra = logxt_edf(fra, INT2FIX(10), prec);
-#endif
-			y = rb_funcall1(exp, '+', fra);
-			y = rb_num_round(y, prec);
-		}
-		else
-			y = BIG_NAN;
-	}
-	return y;
-}
-
 
 /**
  * Computes common logarithm of +x+.
@@ -910,7 +296,7 @@ static VALUE
 __impl_edf_log10(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	return log10_branch(x, prec);
+	return log_branch(x, prec, log10_edf);
 }
 
 

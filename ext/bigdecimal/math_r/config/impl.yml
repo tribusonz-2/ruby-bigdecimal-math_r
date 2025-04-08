@@ -1,0 +1,5 @@
+---
+:cb_func:
+  0.1.0:
+    :atan_cb: :atan_ser_euler
+    :log_cb: :log_edf

@@ -58,5 +58,6 @@ Init_math_r(void)
 
 	rb_mSolver = rb_define_module_under(rb_mBigMathR, "Solver");
 	InitVM(Solver);
+
 }
 
