@@ -11,21 +11,37 @@ end
 
 ARG1 = {"x"=>"VALUE", "prec"=>"VALUE"}
 ARG2 = {"x"=>"VALUE", "y"=>"VALUE", "prec"=>"VALUE"}
+ARG1SCALAR2 = {"x"=>"VALUE", "prec"=>"VALUE", "*a"=>"VALUE", "*b"=>"VALUE"}
 ARG2SCALAR2 = {"x"=>"VALUE", "y"=>"VALUE", "prec"=>"VALUE", "*a"=>"VALUE", "*b"=>"VALUE"}
 ARG_RCM = {"x"=>"VALUE", "*reso"=>"VALUE"}
+ARG_TRIG = {"func"=>"ID", "theta"=>"VALUE", "prec"=>"VALUE"}
 
 VALUE = "VALUE"
 VOID = "void"
 
 MATHFUNCS = {
-  "exp" => [VALUE, ARG1],
-  "exp2" => [VALUE, ARG1],
+  "exp" => [VALUE, ARG1], "cexp" => [VALUE, ARG1],
+  "exp2" => [VALUE, ARG1], "cexp2" => [VALUE, ARG1],
   "expxt" => [VALUE, ARG2],
   "log" => [VALUE, ARG1],
   "log2" => [VALUE, ARG1],
   "log10" => [VALUE, ARG1],
   "logxt" => [VALUE, ARG2],
   "rcm2" => [VALUE, ARG_RCM], "rcm10" => [VALUE, ARG_RCM],
+  "sincos" => [VOID, ARG1SCALAR2],
+  "sin" => [VALUE, ARG1],  "csin" => [VALUE, ARG1], 
+  "cos" => [VALUE, ARG1],  "ccos" => [VALUE, ARG1],
+  "tan" => [VALUE, ARG1],  "ctan" => [VALUE, ARG1],
+  "csc" => [VALUE, ARG1],  "ccsc" => [VALUE, ARG1],
+  "sec" => [VALUE, ARG1],  "csec" => [VALUE, ARG1],
+  "cot" => [VALUE, ARG1],  "ccot" => [VALUE, ARG1],
+  "sinh" => [VALUE, ARG1],  "csinh" => [VALUE, ARG1], 
+  "cosh" => [VALUE, ARG1],  "ccosh" => [VALUE, ARG1],
+  "tanh" => [VALUE, ARG1],  "ctanh" => [VALUE, ARG1],
+  "csch" => [VALUE, ARG1],  "ccsch" => [VALUE, ARG1],
+  "sech" => [VALUE, ARG1],  "csech" => [VALUE, ARG1],
+  "coth" => [VALUE, ARG1],  "ccoth" => [VALUE, ARG1],
+  "trig" => [VALUE, ARG_TRIG],
   "atan" => [VALUE, ARG1],
   "sqrt" => [VALUE, ARG1], "csqrt" => [VALUE, ARG1],
   "cuberoot" => [VALUE, ARG1], "ccbrt" => [VALUE, ARG1],
@@ -34,7 +50,8 @@ MATHFUNCS = {
   "cabs" => [VALUE, ARG1],
   "carg" => [VALUE, ARG1],
   "l2norm" => [VALUE, ARG1],
-  "quadrant" => [VALUE, ARG2]
+  "quadrant" => [VALUE, ARG2],
+  "f_euler" => [VALUE, ARG1]
 }
 
 CB_TYPE = {
