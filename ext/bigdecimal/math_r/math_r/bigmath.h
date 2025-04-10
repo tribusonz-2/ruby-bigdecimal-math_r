@@ -22,8 +22,6 @@ VALUE rb_bigmath_ipow(VALUE x, VALUE n, VALUE exp);
 
 void rb_bigmath_escalb(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra);
 
-VALUE rb_sincos_to_radian(VALUE x, VALUE prec, VALUE pi, VALUE *t);
-int rb_degree_sparg(VALUE t, VALUE prec, VALUE *sin, VALUE *cos);
 void rb_bigmath_sincos(VALUE x, VALUE prec, VALUE *sin, VALUE *cos);
 
 VALUE rb_bigmath_atan(VALUE x, VALUE prec);
