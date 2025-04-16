@@ -10,9 +10,10 @@
 
 void InitVM_Constant(void);
 void InitVM_EDF(void);
+void InitVM_Logarithm(void);
 void InitVM_Trigonometric(void);
 void InitVM_ComplexPlane(void);
-void InitVM_TrigExp(void);
+void InitVM_EulerF(void);
 void InitVM_LogSqrt(void);
 void InitVM_PowerRoot(void);
 void InitVM_Solver(void);
@@ -41,14 +42,17 @@ Init_math_r(void)
 	rb_mEDF = rb_define_module_under(rb_mBigMathR, "EDF");
 	InitVM(EDF);
 
+	rb_mLogarithm = rb_define_module_under(rb_mBigMathR, "Logarithm");
+	InitVM(Logarithm);
+
 	rb_mTrigonometric = rb_define_module_under(rb_mBigMathR, "Trigonometric");
 	InitVM(Trigonometric);
 
 	rb_mComplexPlane = rb_define_module_under(rb_mBigMathR, "ComplexPlane");
 	InitVM(ComplexPlane);
 
-	rb_mTrigExp = rb_define_module_under(rb_mBigMathR, "TrigExp");
-	InitVM(TrigExp);
+	rb_mEulerF = rb_define_module_under(rb_mBigMathR, "EulerF");
+	InitVM(EulerF);
 
 	rb_mLogSqrt = rb_define_module_under(rb_mBigMathR, "LogSqrt");
 	InitVM(LogSqrt);
