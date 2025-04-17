@@ -15,6 +15,7 @@ ARG1SCALAR2 = {"x"=>"VALUE", "prec"=>"VALUE", "*a"=>"VALUE", "*b"=>"VALUE"}
 ARG2SCALAR2 = {"x"=>"VALUE", "y"=>"VALUE", "prec"=>"VALUE", "*a"=>"VALUE", "*b"=>"VALUE"}
 ARG_RCM = {"x"=>"VALUE", "*reso"=>"VALUE"}
 ARG_TRIG = {"func"=>"ID", "theta"=>"VALUE", "prec"=>"VALUE"}
+ARG_PREC = {"prec"=>"VALUE"}
 
 VALUE = "VALUE"
 VOID = "void"
@@ -51,7 +52,13 @@ MATHFUNCS = {
   "carg" => [VALUE, ARG1],
   "l2norm" => [VALUE, ARG1],
   "quadrant" => [VALUE, ARG2],
-  "f_euler" => [VALUE, ARG1]
+  "f_euler" => [VALUE, ARG1],
+  "PI"=>[VALUE, ARG_PREC],
+  "E"=>[VALUE, ARG_PREC],
+  "LOG2"=>[VALUE, ARG_PREC],
+  "LOG10"=>[VALUE, ARG_PREC],
+  "SQRT2"=>[VALUE, ARG_PREC],
+  "SQRT3"=>[VALUE, ARG_PREC]
 }
 
 CB_TYPE = {

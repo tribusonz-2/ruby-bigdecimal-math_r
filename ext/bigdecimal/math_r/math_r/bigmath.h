@@ -2,6 +2,15 @@
 #define INTERNAL_API_BIGMATH
 
 /* API for BigMath */
+#define DEF_PREC 1000
+#define BIGMATH_PI     "$M_PI"
+#define BIGMATH_E      "$M_E"
+#define BIGMATH_LOG2   "$M_LOG2"
+#define BIGMATH_LOG10  "$M_LOG10"
+#define BIGMATH_SQRT2  "$M_SQRT2"
+#define BIGMATH_SQRT3  "$M_SQRT3"
+
+VALUE rb_bigmath_const(const char *gv, VALUE (*func)(VALUE prec), VALUE prec);
 VALUE rb_bigmath_const_pi(VALUE prec);
 VALUE rb_bigmath_const_e(VALUE prec);
 VALUE rb_bigmath_const_log2(VALUE prec);
