@@ -18,17 +18,34 @@ void InitVM_LogSqrt(void);
 void InitVM_PowerRoot(void);
 void InitVM_Solver(void);
 
+#include "math_r/numeric.h"
+
 /**
- *  The #nan? method for primitive. Always return false.
- *  
- *  @example
- *   1.nan? #=> false
- *  @return [false] Whether self is Not a Number(NaN).
+ * The #nan? method for primitive. Always return false.
+ * 
+ * @example
+ *  1.nan? #=> false
+ * @return [false] Whether self is Not a Number(NaN).
  */
 static VALUE
 numeric_nan_p(VALUE self)
 {
 	return Qfalse;
+}
+
+/**
+ * Calculates "i z" so inverts the real and imaginary maps of +z+.
+ * 
+ * @example
+ *  Complex.imaginary_z(1+2i) #=> (-2+1i)
+ *  -Complex.imaginary_z(1+2i) #=> (2-1i)
+ * @param z [Numeric] Numerical argument
+ * @return [Complex] Solve
+ */
+static VALUE
+__impl_nucomp_s_imaginary_z(VALUE self, VALUE z)
+{
+	return rb_ImaginaryZ(z, SIGN_PLUS);
 }
 
 /**
@@ -77,5 +94,6 @@ Init_math_r(void)
 	InitVM(Solver);
 
 	rb_define_method(rb_cNumeric, "nan?", numeric_nan_p, 0);
+	rb_define_singleton_method(rb_cComplex, "imaginary_z", __impl_nucomp_s_imaginary_z, 1);
 }
 
