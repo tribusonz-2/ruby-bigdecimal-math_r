@@ -10,13 +10,26 @@
 
 void InitVM_Constant(void);
 void InitVM_EDF(void);
-void InitVM_Logarithm(void);
+void InitVM_Log(void);
 void InitVM_Trigonometric(void);
 void InitVM_ComplexPlane(void);
 void InitVM_EulerF(void);
 void InitVM_LogSqrt(void);
 void InitVM_PowerRoot(void);
 void InitVM_Solver(void);
+
+/**
+ *  The #nan? method for primitive. Always return false.
+ *  
+ *  @example
+ *   1.nan? #=> false
+ *  @return [false] Whether self is Not a Number(NaN).
+ */
+static VALUE
+numeric_nan_p(VALUE self)
+{
+	return Qfalse;
+}
 
 /**
  * Document-module:  BigMathR
@@ -42,8 +55,8 @@ Init_math_r(void)
 	rb_mEDF = rb_define_module_under(rb_mBigMathR, "EDF");
 	InitVM(EDF);
 
-	rb_mLogarithm = rb_define_module_under(rb_mBigMathR, "Logarithm");
-	InitVM(Logarithm);
+	rb_mLog = rb_define_module_under(rb_mBigMathR, "Log");
+	InitVM(Log);
 
 	rb_mTrigonometric = rb_define_module_under(rb_mBigMathR, "Trigonometric");
 	InitVM(Trigonometric);
@@ -63,5 +76,6 @@ Init_math_r(void)
 	rb_mSolver = rb_define_module_under(rb_mBigMathR, "Solver");
 	InitVM(Solver);
 
+	rb_define_method(rb_cNumeric, "nan?", numeric_nan_p, 0);
 }
 

@@ -9,6 +9,8 @@ atan_branch(VALUE x, VALUE prec, bigmath_func1 atan_cb)
 	bool neg, dbl, inv;
 	VALUE pi;
 	rb_check_precise(prec);
+	if (atan_cb == NULL)
+		return BIG_NAN;
 	if (rb_num_notequal_p(x, x))
 		return BIG_NAN;
 	if (rb_num_zero_p(x))

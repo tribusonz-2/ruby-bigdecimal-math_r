@@ -145,7 +145,6 @@ __impl_nucomp_carg(VALUE unused_obj, VALUE z, VALUE prec)
 	return rb_bigmath_carg(z, prec);
 }
 
-
 /**
  *  Document-module:  BigMathR::ComplexPlane
  *  
@@ -171,4 +170,5 @@ InitVM_ComplexPlane(void)
 
 	rb_define_module_function(rb_mBigMathR, "hypot", __impl_nucomp_hypot, 3);
 	rb_define_module_function(rb_mBigMathR, "atan2", __impl_nucomp_atan2, 3);
+
 }

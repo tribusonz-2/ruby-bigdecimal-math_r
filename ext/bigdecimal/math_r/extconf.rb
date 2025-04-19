@@ -24,9 +24,9 @@ MATHFUNCS = {
   "exp" => [VALUE, ARG1], "cexp" => [VALUE, ARG1],
   "exp2" => [VALUE, ARG1], "cexp2" => [VALUE, ARG1],
   "expxt" => [VALUE, ARG2],
-  "log" => [VALUE, ARG1],
-  "log2" => [VALUE, ARG1],
-  "log10" => [VALUE, ARG1],
+  "log" => [VALUE, ARG1], "clog" => [VALUE, ARG1], 
+  "log2" => [VALUE, ARG1], "clog2" => [VALUE, ARG1],
+  "log10" => [VALUE, ARG1], "clog10" => [VALUE, ARG1], 
   "logxt" => [VALUE, ARG2],
   "rcm2" => [VALUE, ARG_RCM], "rcm10" => [VALUE, ARG_RCM],
   "sincos" => [VOID, ARG1SCALAR2],
@@ -62,7 +62,7 @@ MATHFUNCS = {
 }
 
 CB_TYPE = {
-  "log" => "bigmath_func1",
+  "log" => "bigmath_func1", "clog" => "bigmath_func1",
   "sqrt" => "bigmath_func1",
   "atan" => "bigmath_func1"
 }

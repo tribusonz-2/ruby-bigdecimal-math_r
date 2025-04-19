@@ -476,75 +476,6 @@ __impl_logsqrt_acoth(VALUE unused_obj, VALUE x, VALUE prec)
 }
 
 
-VALUE
-rb_bigmath_clog(VALUE z, VALUE prec)
-{
-	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
-	VALUE real = rb_bigmath_log(rb_bigmath_cabs(z, prec), prec);
-	VALUE imag = rb_bigmath_carg(z, prec);
-	return rb_Complex(real, imag);
-}
-
-/**
- * Computes complex natural logarithm of +z+.
- * 
- * @example
- *  BigMathR::LogSqrt.clog(1+1i, 20)
- *  #=> (0.34657359027997265471e0+0.78539816339744830963e0i)
- * @param z [Numeric] Numerical argument
- * @param prec [Integer] Arbitrary precision
- * @return [Complex] Complex solution
- * @raise [TypeError] +prec+ is not an Integer
- * @raise [RangeError] +prec+ is zero or negative number
- * @since 0.1.0
- */
-static VALUE
-__impl_logsqrt_clog(VALUE unused_obj, VALUE z, VALUE prec)
-{
-	return rb_bigmath_clog(z, prec);
-}
-
-/**
- * Computes complex binary logarithm of +z+.
- * 
- * @example
- *  BigMathR::LogSqrt.clog2(1+1i, 20)
- *  #=> (0.5e0+0.11330900354567984524e1i)
- * @param z [Numeric] Numerical argument
- * @param prec [Integer] Arbitrary precision
- * @return [Complex] Complex solution
- * @raise [TypeError] +prec+ is not an Integer
- * @raise [RangeError] +prec+ is zero or negative number
- * @since 0.1.0
- */
-static VALUE
-__impl_logsqrt_clog2(VALUE unused_obj, VALUE z, VALUE prec)
-{
-	VALUE w = rb_bigmath_clog(z, prec);
-	w = rb_funcall1(w, '/', rb_bigmath_const_log2(prec));
-	return rb_num_round(w, prec);
-}
-
-/**
- * Computes complex common logarithm of +z+.
- * 
- * @example
- *  BigMathR::LogSqrt.clog10(1+1i, 20)
- *  #=> (0.15051499783199059761e0+0.34109408846046033688e0i)
- * @param z [Numeric] Numerical argument
- * @param prec [Integer] Arbitrary precision
- * @return [Complex] Complex solution
- * @raise [TypeError] +prec+ is not an Integer
- * @raise [RangeError] +prec+ is zero or negative number
- * @since 0.1.0
- */
-static VALUE
-__impl_logsqrt_clog10(VALUE unused_obj, VALUE z, VALUE prec)
-{
-	VALUE w = rb_bigmath_clog(z, prec);
-	w = rb_funcall1(w, '/', rb_bigmath_const_log10(prec));
-	return rb_num_round(w, prec);
-}
 
 static VALUE
 casin_domain(VALUE z, VALUE prec)
@@ -1233,10 +1164,6 @@ __impl_logsqrt_cacoth(VALUE unused_obj, VALUE z, VALUE prec)
 void
 InitVM_LogSqrt(void)
 {
-	rb_define_module_function(rb_mLogSqrt, "clog", __impl_logsqrt_clog, 2);
-	rb_define_module_function(rb_mLogSqrt, "clog2", __impl_logsqrt_clog2, 2);
-	rb_define_module_function(rb_mLogSqrt, "clog10", __impl_logsqrt_clog10, 2);
-
 	rb_define_module_function(rb_mLogSqrt, "asin", __impl_logsqrt_asin, 2);
 	rb_define_module_function(rb_mLogSqrt, "acos", __impl_logsqrt_acos, 2);
 	rb_define_module_function(rb_mLogSqrt, "atan", __impl_logsqrt_atan, 2);
