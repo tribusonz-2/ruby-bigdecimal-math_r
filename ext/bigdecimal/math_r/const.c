@@ -26,6 +26,22 @@ __impl_const_pi(VALUE unused_obj, VALUE prec)
 }
 
 /**
+ * The natural logarithm of pi.
+ * @example
+ *  BigMathR.LOG_PI(20) #=> 0.11447298858494001741e1
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Real solution
+ * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ * @raise [TypeError] Occurs when +x+ is not a numeric class.
+ * @since 0.1.0
+ */
+static VALUE
+__impl_const_log_pi(VALUE unused_obj, VALUE prec)
+{
+	return rb_bigmath_const_log_pi(prec);
+}
+
+/**
  * The constant e.
  * @example
  *  BigMathR.E(20) #=> 0.27182818284590452354e1
@@ -68,7 +84,7 @@ __impl_const_log2(VALUE unused_obj, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-__const_log10(VALUE unused_obj, VALUE prec)
+__impl_const_log10(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_log10(prec);
 }
@@ -113,7 +129,8 @@ InitVM_Constant(void)
 	rb_define_module_function(rb_mBigMathR, "PI", __impl_const_pi, 1);
 	rb_define_module_function(rb_mBigMathR, "E", __impl_const_e, 1);
 	rb_define_module_function(rb_mBigMathR, "LOG2", __impl_const_log2, 1);
-	rb_define_module_function(rb_mBigMathR, "LOG10", __const_log10, 1);
+	rb_define_module_function(rb_mBigMathR, "LOG_PI", __impl_const_log_pi, 1);
+	rb_define_module_function(rb_mBigMathR, "LOG10", __impl_const_log10, 1);
 	rb_define_module_function(rb_mBigMathR, "SQRT2", __impl_const_sqrt2, 1);
 	rb_define_module_function(rb_mBigMathR, "SQRT3", __impl_const_sqrt3, 1);
 }

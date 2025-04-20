@@ -7,16 +7,19 @@
 #define BIGMATH_E      "$M_E"
 #define BIGMATH_LOG2   "$M_LOG2"
 #define BIGMATH_LOG10  "$M_LOG10"
+#define BIGMATH_LOG_PI "$M_LOG_PI"
 #define BIGMATH_SQRT2  "$M_SQRT2"
 #define BIGMATH_SQRT3  "$M_SQRT3"
 
 VALUE rb_bigmath_const(const char *gv, VALUE (*func)(VALUE prec), VALUE prec);
 VALUE rb_bigmath_const_pi(VALUE prec);
+VALUE rb_bigmath_const_log_pi(VALUE prec);
 VALUE rb_bigmath_const_e(VALUE prec);
 VALUE rb_bigmath_const_log2(VALUE prec);
 VALUE rb_bigmath_const_log10(VALUE prec);
 VALUE rb_bigmath_const_sqrt2(VALUE prec);
 VALUE rb_bigmath_const_sqrt3(VALUE prec);
+
 
 VALUE rb_bigmath_exp(VALUE x, VALUE prec);
 VALUE rb_bigmath_cexp(VALUE z, VALUE prec);
