@@ -22,6 +22,8 @@ bool rb_num_finite_p(VALUE z);
 int rb_num_infinite_p(VALUE z);
 bool rb_num_nan_p(VALUE z);
 
+bool rb_num_numeric_p(VALUE self);
+
 /**
  * Rounds the argument +x+ to an arbitrary precision +prec+. <br>
  * It targets real numbers, but also supports Complex class. <br>

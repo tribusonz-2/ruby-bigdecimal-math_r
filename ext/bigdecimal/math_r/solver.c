@@ -39,18 +39,6 @@ rb_id_includes(int n, const ID *funcs, ID func)
 			"no includes function: %"PRIsVALUE"", ID2SYM(func));
 }
 
-bool
-rb_num_numeric_p(VALUE self)
-{
-	return rb_class_superclass(CLASS_OF(self)) == rb_cNumeric;
-}
-
-static VALUE
-__impl_numeric_numeric_p(VALUE self)
-{
-	return rb_num_numeric_p(self) ? Qtrue : Qfalse;
-}
-
 #define CHECK_NUMARG(x) \
   if (!rb_num_numeric_p(x)) {\
     VALUE self; \
@@ -126,30 +114,86 @@ solver_logarithm(ID func, VALUE z, VALUE prec)
 	return w;
 }
 
+/**
+ * This is a public API for logarithmic solver.
+ * 
+ * @param func [Symbol] The name of the target function. [:log, :log1p, :log2, :log10]
+ * @param z [Numeric] Numerical argument
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Real solution
+ * @return [Complex] Complex solution
+ * @raise [ArgumentError] Target function name no match found.
+ * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ * @raise [TypeError] Occurs when +z+ is not a numeric class.
+ */
 static VALUE
 __impl_solver_logarithm(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
 {
 	return solver_logarithm(SYM2ID(func), z, prec);
 }
 
+/**
+ *  Computes Natural logarithm of +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @return [Complex] Complex solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.1.0
+ */
 static VALUE
 __impl_bigmath_log(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return solver_logarithm(mf_log, z, prec);
 }
 
+/**
+ *  Computes natural logarithm of 1 plus +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @return [Complex] Complex solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.1.0
+ */
 static VALUE
 __impl_bigmath_log1p(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return solver_logarithm(mf_log1p, z, prec);
 }
 
+/**
+ *  Computes binary logarithm of +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @return [Complex] Complex solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.1.0
+ */
 static VALUE
 __impl_bigmath_log2(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return solver_logarithm(mf_log2, z, prec);
 }
 
+/**
+ *  Computes common logarithm of +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @return [Complex] Complex solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.1.0
+ */
 static VALUE
 __impl_bigmath_log10(VALUE unused_obj, VALUE z, VALUE prec)
 {
@@ -258,5 +302,4 @@ InitVM_Solver(void)
 	rb_define_singleton_method(rb_mBigMathR, "log2", __impl_bigmath_log2, 2);
 	rb_define_singleton_method(rb_mBigMathR, "log10", __impl_bigmath_log10, 2);
 
-	rb_define_method(rb_cObject, "numeric?", __impl_numeric_numeric_p, 0);
 }
