@@ -9,6 +9,154 @@
 #include "math_r/bigmath_r.h"
 #include "decl.h"
 
+static ID mf_log;
+static ID mf_log2;
+static ID mf_log10;
+static ID mf_log1p;
+
+bigmath_func1 cb_log;
+bigmath_func1 cb_clog;
+bigmath_func1 cb_log2;
+bigmath_func1 cb_clog2;
+bigmath_func1 cb_log10;
+bigmath_func1 cb_clog10;
+
+
+static void
+rb_id_includes(int n, const ID *funcs, ID func)
+{
+	bool func_match = false;
+	for (int i = 0; i < n; i++)
+	{
+		if (funcs[i] == func)
+		{
+			func_match = true;
+			break;
+		}
+	}
+	if (!func_match)
+		rb_raise(rb_eArgError,
+			"no includes function: %"PRIsVALUE"", ID2SYM(func));
+}
+
+bool
+rb_num_numeric_p(VALUE self)
+{
+	return rb_class_superclass(CLASS_OF(self)) == rb_cNumeric;
+}
+
+static VALUE
+__impl_numeric_numeric_p(VALUE self)
+{
+	return rb_num_numeric_p(self) ? Qtrue : Qfalse;
+}
+
+#define CHECK_NUMARG(x) \
+  if (!rb_num_numeric_p(x)) {\
+    VALUE self; \
+    switch(TYPE(x)) { \
+    case T_NIL: case T_TRUE: case T_FALSE: \
+      self = rb_inspect(x); \
+      break; \
+    default: \
+      self = CLASS_OF(x); \
+      break; \
+    } \
+    rb_raise(rb_eTypeError, \
+      "can't convert %"PRIsVALUE" into Numeric", self); \
+  }
+
+
+static VALUE
+solver_logarithm(ID func, VALUE z, VALUE prec)
+{
+	const ID funcs[4] = { mf_log, mf_log2, mf_log10, mf_log1p };
+	VALUE w = Qundef;
+	rb_id_includes(4, funcs, func);
+	CHECK_NUMARG(z);
+	rb_check_precise(prec);
+	if (!rb_num_finite_p(z))
+	{
+		if (rb_num_nan_p(z))
+			w = rb_num_real_p(z) ? 
+				BIG_NAN : rb_Complex(BIG_NAN, BIG_NAN);
+		else
+		{
+			if (func == mf_log || func == mf_log1p)
+				w = clog_branch(z, prec, cb_clog);
+			else if (func == mf_log2)
+				w = clog_branch(z, prec, cb_clog2);
+			else if (func == mf_log10)
+				w = clog_branch(z, prec, cb_clog10);
+			if (rb_num_real_p(z) && rb_num_positive_p(z))
+				w = rb_num_real(w);
+		}
+	}
+	if (w == Qundef)
+	{
+		if (rb_num_real_p(z) && !rb_num_negative_p(z))
+		{
+			if (func == mf_log)
+				w = log_branch(z, prec, cb_log);
+			else if (func == mf_log2)
+				w = log_branch(z, prec, cb_log2);
+			else if (func == mf_log10)
+				w = log_branch(z, prec, cb_log10);
+			else if (func == mf_log1p)
+			{
+				z = rb_funcall1(z, '+', BIG_ONE);
+				w = log_branch(z, prec, cb_log);
+			}
+		}
+		else
+		{
+			if (func == mf_log)
+				w = clog_branch(z, prec, cb_clog);
+			else if (func == mf_log2)
+				w = clog_branch(z, prec, cb_clog2);
+			else if (func == mf_log10)
+				w = clog_branch(z, prec, cb_clog10);
+			else if (func == mf_log1p)
+			{
+				z = rb_funcall1(z, '+', BIG_ONE);
+				w = clog_branch(z, prec, cb_clog);
+			}
+		}
+	}
+	return w;
+}
+
+static VALUE
+__impl_solver_logarithm(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
+{
+	return solver_logarithm(SYM2ID(func), z, prec);
+}
+
+static VALUE
+__impl_bigmath_log(VALUE unused_obj, VALUE z, VALUE prec)
+{
+	return solver_logarithm(mf_log, z, prec);
+}
+
+static VALUE
+__impl_bigmath_log1p(VALUE unused_obj, VALUE z, VALUE prec)
+{
+	return solver_logarithm(mf_log1p, z, prec);
+}
+
+static VALUE
+__impl_bigmath_log2(VALUE unused_obj, VALUE z, VALUE prec)
+{
+	return solver_logarithm(mf_log2, z, prec);
+}
+
+static VALUE
+__impl_bigmath_log10(VALUE unused_obj, VALUE z, VALUE prec)
+{
+	return solver_logarithm(mf_log10, z, prec);
+}
+
+
 /**
  *  Computes hyperbolic sine of +x+.
  *  
@@ -91,4 +239,24 @@
 void
 InitVM_Solver(void)
 {
+	mf_log = rb_intern_const("log");
+	mf_log2 = rb_intern_const("log2");
+	mf_log10 = rb_intern_const("log10");
+	mf_log1p = rb_intern_const("log1p");
+
+	cb_log = log_edf;
+	cb_log2 = log2_edf;
+	cb_log10 = log10_edf;
+	cb_clog = clog_formula;
+	cb_clog2 = clog2_formula;
+	cb_clog10 = clog10_formula;
+
+	rb_define_singleton_method(rb_mSolver, "logarithm", __impl_solver_logarithm, 3);
+
+	rb_define_singleton_method(rb_mBigMathR, "log", __impl_bigmath_log, 2);
+	rb_define_singleton_method(rb_mBigMathR, "log1p", __impl_bigmath_log1p, 2);
+	rb_define_singleton_method(rb_mBigMathR, "log2", __impl_bigmath_log2, 2);
+	rb_define_singleton_method(rb_mBigMathR, "log10", __impl_bigmath_log10, 2);
+
+	rb_define_method(rb_cObject, "numeric?", __impl_numeric_numeric_p, 0);
 }

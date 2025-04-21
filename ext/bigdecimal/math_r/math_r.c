@@ -11,11 +11,12 @@
 void InitVM_Constant(void);
 void InitVM_EDF(void);
 void InitVM_Log(void);
-void InitVM_Trigonometric(void);
+void InitVM_Trig(void);
 void InitVM_ComplexPlane(void);
 void InitVM_EulerF(void);
 void InitVM_LogSqrt(void);
 void InitVM_PowerRoot(void);
+void InitVM_GammaR(void);
 void InitVM_Solver(void);
 
 #include "math_r/numeric.h"
@@ -75,8 +76,8 @@ Init_math_r(void)
 	rb_mLog = rb_define_module_under(rb_mBigMathR, "Log");
 	InitVM(Log);
 
-	rb_mTrigonometric = rb_define_module_under(rb_mBigMathR, "Trigonometric");
-	InitVM(Trigonometric);
+	rb_mTrig = rb_define_module_under(rb_mBigMathR, "Trig");
+	InitVM(Trig);
 
 	rb_mComplexPlane = rb_define_module_under(rb_mBigMathR, "ComplexPlane");
 	InitVM(ComplexPlane);
@@ -89,6 +90,9 @@ Init_math_r(void)
 
 	rb_mPowerRoot = rb_define_module_under(rb_mBigMathR, "PowerRoot");
 	InitVM(PowerRoot);
+
+	rb_mGammaR = rb_define_module_under(rb_mBigMathR, "GammaR");
+	InitVM(GammaR);
 
 	rb_mSolver = rb_define_module_under(rb_mBigMathR, "Solver");
 	InitVM(Solver);

@@ -16,7 +16,6 @@
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
@@ -32,7 +31,6 @@ __impl_const_pi(VALUE unused_obj, VALUE prec)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
@@ -48,7 +46,6 @@ __impl_const_log_pi(VALUE unused_obj, VALUE prec)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
@@ -64,7 +61,6 @@ __impl_const_e(VALUE unused_obj, VALUE prec)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
@@ -80,7 +76,6 @@ __impl_const_log2(VALUE unused_obj, VALUE prec)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
@@ -96,7 +91,6 @@ __impl_const_log10(VALUE unused_obj, VALUE prec)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
@@ -112,7 +106,6 @@ __impl_const_sqrt2(VALUE unused_obj, VALUE prec)
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Real solution
  * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
  * @since 0.1.0
  */
 static VALUE
