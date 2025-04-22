@@ -135,7 +135,10 @@ __impl_solver_logarithm(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
 /**
  *  Computes Natural logarithm of +z+.
  *  
+ *  @overload log(z, prec)
+ *  @overload log(z, b, prec)
  *  @param z [Numeric] Numerical argument
+ *  @param b [Numeric] The base. Specified a real number
  *  @param prec [Integer] Arbitrary precision
  *  @return [BigDecimal] Real solution
  *  @return [Complex] Complex solution
@@ -144,9 +147,52 @@ __impl_solver_logarithm(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_log(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_bigmath_log(int argc, VALUE *argv, VALUE unused_obj)
 {
-	return solver_logarithm(mf_log, z, prec);
+	const ID div = rb_intern("div");
+	VALUE z = Qundef, b = Qundef, prec = Qundef;
+	rb_check_arity(argc, 2, 3);
+	switch (argc) {
+	case 2:
+		rb_scan_args(argc, argv, "20", &z, &prec);
+		z = solver_logarithm(mf_log, z, prec);
+		break;
+	case 3:
+		rb_scan_args(argc, argv, "30", &z, &b, &prec);
+		rb_check_precise(prec);
+		CHECK_NUMARG(z);
+		b = rb_num_canonicalize(b, prec, ARG_REAL, ARG_RAWVALUE);
+		if (rb_num_nan_p(b))
+			z = rb_num_real_p(z) && !rb_num_negative_p(z) ?
+				BIG_NAN : rb_Complex(BIG_NAN, BIG_NAN);
+		else if (rb_num_infinite_p(b))
+			z = rb_num_real_p(z) && !rb_num_negative_p(z) ? 
+				BIG_ZERO : rb_Complex(BIG_ZERO, BIG_ZERO);
+		else if (rb_num_zero_p(b))
+			z = rb_num_zero_p(z) ?
+				rb_num_real_p(z) ?
+					BIG_NAN : 
+					rb_Complex(BIG_NAN, BIG_NAN) :
+				rb_num_real_p(z) && !rb_num_negative_p(z) ? 
+					BIG_ZERO : 
+					rb_Complex(BIG_ZERO, BIG_ZERO);
+		else if (rb_num_equal_p(b, BIG_ONE))
+			z = rb_Complex(BIG_INF, BIG_INF);
+		else
+		{
+			z = solver_logarithm(mf_log, z, prec);
+			b = solver_logarithm(mf_log, b, prec);
+			if (rb_num_real_p(b))
+				z = rb_funcall(z, div, 2, b, prec);
+			else
+			{
+				z = rb_funcall1(z, '/', b);
+				z = rb_num_round(z, prec);
+			}
+		}
+		break;
+	}
+	return z;
 }
 
 /**
@@ -297,7 +343,7 @@ InitVM_Solver(void)
 
 	rb_define_singleton_method(rb_mSolver, "logarithm", __impl_solver_logarithm, 3);
 
-	rb_define_singleton_method(rb_mBigMathR, "log", __impl_bigmath_log, 2);
+	rb_define_singleton_method(rb_mBigMathR, "log", __impl_bigmath_log, -1);
 	rb_define_singleton_method(rb_mBigMathR, "log1p", __impl_bigmath_log1p, 2);
 	rb_define_singleton_method(rb_mBigMathR, "log2", __impl_bigmath_log2, 2);
 	rb_define_singleton_method(rb_mBigMathR, "log10", __impl_bigmath_log10, 2);

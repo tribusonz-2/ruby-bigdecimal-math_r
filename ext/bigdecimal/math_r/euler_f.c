@@ -120,9 +120,9 @@ __impl_eulerf_tan(VALUE unused_obj, VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-__impl_eulerf_csc(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_eulerf_csc(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	return csc_eulerf(z, prec);
+	return csc_eulerf(x, prec);
 }
 
 /**
@@ -158,9 +158,9 @@ __impl_eulerf_sec(VALUE unused_obj, VALUE x, VALUE prec)
  * @since 0.1.0
  */
 static VALUE
-__impl_eulerf_cot(VALUE unused_obj, VALUE z, VALUE prec)
+__impl_eulerf_cot(VALUE unused_obj, VALUE x, VALUE prec)
 {
-	return cot_eulerf(z, prec);
+	return cot_eulerf(x, prec);
 }
 
 /**
@@ -504,7 +504,6 @@ __impl_eulerf_ccoth(VALUE unused_obj, VALUE z, VALUE prec)
 {
 	return ccoth_eulerf(z, prec);
 }
-
 
 /**
  *  Document-module:  BigMathR::EulerF
