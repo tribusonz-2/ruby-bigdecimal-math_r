@@ -9,20 +9,19 @@
 #include "math_r/bigmath_r.h"
 #include "decl.h"
 
-
-
-static VALUE
-__impl_log_n_ser_okumura(VALUE uunused_obj, VALUE x, VALUE prec)
-{
-	// BUG: 循環小数だと誤差を拾うことがある。
-	// BigMathR::Logarithm.ser_okumura(BigDecimal('5.0'), 1000) - BigMath.log(BigDecimal('5.0'), 1000)
-	// #=> 0.18e-44
-	// BigMathR::Logarithm.ser_okumura(BigDecimal('10'), 1000) - BigMath.log(BigDecimal('10'), 1000)
-	// #=> 0.18e-44
-	return log_branch(x, prec, log_ser_okumura);
-}
-
-
+/**
+ * Computes natural logarithm of +z + 1+ by mercator series expansion.
+ * 
+ * @example
+ *  BigMathR::LogSqrt.n_ser_mercator(1/2r, 20)
+ *  #=> 0.40546510810816438198e0
+ * @param x [Numeric] Numerical argument
+ * @param prec [Integer] Arbitrary precision
+ * @return [Complex] Real precision
+ * @raise [TypeError] +prec+ is not an Integer
+ * @raise [RangeError] +prec+ is zero or negative number
+ * @since 0.1.0
+ */
 static VALUE
 __impl_log_n_ser_mercator(VALUE uunused_obj, VALUE x, VALUE prec)
 {
@@ -109,7 +108,6 @@ __impl_log_clog10(VALUE unused_obj, VALUE z, VALUE prec)
 void
 InitVM_Log(void)
 {
-	rb_define_module_function(rb_mLog, "n_ser_okumura", __impl_log_n_ser_okumura, 2);
 	rb_define_module_function(rb_mLog, "n_ser_mercator", __impl_log_n_ser_mercator, 2);
 
 	rb_define_module_function(rb_mLog, "clog", __impl_log_clog, 2);
