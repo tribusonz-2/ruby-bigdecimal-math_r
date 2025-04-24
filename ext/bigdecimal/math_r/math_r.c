@@ -32,6 +32,15 @@ void InitVM_Solver(void);
 void
 Init_math_r(void)
 {
+	mf_log = rb_intern_const("log");
+	mf_log2 = rb_intern_const("log2");
+	mf_log10 = rb_intern_const("log10");
+	mf_log1p = rb_intern_const("log1p");
+
+	mf_sin = rb_intern_const("sin");
+	mf_cos = rb_intern_const("cos");
+	mf_tan = rb_intern_const("tan");
+
 	rb_require("bigdecimal/math");
 	rb_cBigDecimal = rb_const_get_at(rb_cObject, rb_intern("BigDecimal"));
 	rb_mBigMath = rb_const_get_at(rb_cObject, rb_intern("BigMath"));

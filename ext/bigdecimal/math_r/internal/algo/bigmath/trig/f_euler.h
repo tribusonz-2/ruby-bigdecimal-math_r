@@ -131,9 +131,6 @@ f_euler_tan(VALUE exppz, VALUE expmz)
 static inline VALUE
 f_euler_sc(const ID func, VALUE theta, VALUE prec)
 {
-	const ID sin = rb_intern_const("sin");
-	const ID cos = rb_intern_const("cos");
-	const ID tan = rb_intern_const("tan");
 	VALUE exppz = Qundef, expmz = Qundef, y = Qundef;
 
 	if (!rb_num_finite_p(rb_num_imag(theta)))
@@ -141,15 +138,15 @@ f_euler_sc(const ID func, VALUE theta, VALUE prec)
 
 	f_euler2(theta, prec, &exppz, &expmz);
 
-	if (func == cos)
+	if (func == mf_cos)
 	{
 		y = f_euler_cos(exppz, expmz);
 	}
-	else if (func == sin)
+	else if (func == mf_sin)
 	{
 		y = f_euler_sin(exppz, expmz);
 	}
-	else if (func == tan)
+	else if (func == mf_tan)
 	{
 		y = f_euler_tan(exppz, expmz);
 	}
@@ -215,21 +212,18 @@ f_euler_t(VALUE theta, VALUE prec)
 static inline VALUE
 f_euler_h(const ID func, VALUE theta, VALUE prec)
 {
-	const ID sin = rb_intern_const("sin");
-	const ID cos = rb_intern_const("cos");
-	const ID tan = rb_intern_const("tan");
 	VALUE y = Qundef, exppz = Qundef, expmz = Qundef;
 
-	if (func == tan)
+	if (func == mf_tan)
 		return f_euler_t(theta, prec);
 
 	f_euler_e2(rb_num_real(theta), prec, &exppz, &expmz);
 
-	if (func == cos)
+	if (func == mf_cos)
 	{
 		y = f_euler_cos(exppz, expmz);
 	}
-	else if (func == sin)
+	else if (func == mf_sin)
 	{
 		y = f_euler_sin(exppz, expmz);
 	}
@@ -239,9 +233,6 @@ f_euler_h(const ID func, VALUE theta, VALUE prec)
 static inline VALUE
 f_euler_esc(const ID func, VALUE z, VALUE prec)
 {
-	const ID sin = rb_intern_const("sin");
-	const ID cos = rb_intern_const("cos");
-	const ID tan = rb_intern_const("tan");
 	VALUE e_exppz  = Qundef,
 	      e_expmz  = Qundef,
 	      sc_exppz = Qundef,
@@ -254,15 +245,15 @@ f_euler_esc(const ID func, VALUE z, VALUE prec)
 	exppz = rb_funcall1(e_exppz, '*', sc_exppz);
 	expmz = rb_funcall1(e_expmz, '*', sc_expmz);
 
-	if (func == cos)
+	if (func == mf_cos)
 	{
 		y = f_euler_cos(exppz, expmz);
 	}
-	else if (func == sin)
+	else if (func == mf_sin)
 	{
 		y = f_euler_sin(exppz, expmz);
 	}
-	else if (func == tan)
+	else if (func == mf_tan)
 	{
 		y = f_euler_tan(exppz, expmz);
 	}

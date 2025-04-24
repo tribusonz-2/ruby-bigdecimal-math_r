@@ -30,13 +30,20 @@ rb_num_canonicalize(VALUE x, VALUE prec, bool complex_form, bool inversion)
 {
 	const ID sum = rb_intern("sum");
 	const ID div = rb_intern("div");
-	VALUE n = rb_numdiff_make_n(prec);
 retry:
 	switch (TYPE(x)) {
 	case T_FIXNUM:
 	case T_BIGNUM:
 		if (inversion)
-			{ x = rb_Rational(INT2FIX(1), x); x = rb_BigDecimal(x, n); }
+		{
+			if (rb_num_zero_p(x))
+				x = BIG_INF;
+			else
+			{
+				x = rb_Rational(INT2FIX(1), x);
+				x = rb_BigDecimal(x, prec);
+			}
+		}
 		else
 			x = rb_BigDecimal1(x);
 		if (complex_form)
@@ -52,12 +59,12 @@ retry:
 	case T_RATIONAL:
 		if (inversion)
 			x = rb_funcall1(INT2FIX(1), '/', x);
-		x = rb_BigDecimal(x, n);
+		x = rb_BigDecimal(x, prec);
 		if (complex_form)
 			x = rb_Complex(x, BIG_ZERO);
 		break;
 	case T_COMPLEX:
-		if (rb_num_zero_p(x))
+		if (rb_num_zero_p(rb_num_imag(x)))
 		{
 			x = rb_num_real(x);
 			goto retry;
@@ -83,7 +90,8 @@ retry:
 		}
 		else if (complex_form)
 		{
-			VALUE norm, real, imag;
+			VALUE norm, real, imag, n = rb_numdiff_make_n(prec);
+;
 			real = canonicalize_decimalize(rb_num_real(x), n);
 			imag = canonicalize_decimalize(rb_num_imag(x), n);
 			if (inversion)
@@ -94,8 +102,8 @@ retry:
 					  rb_num_imag(x)), 
 					sum, 0, NULL,
 					canonicalize_iter, n);
-				real = rb_funcall(real, div, 2, norm, n);
-				imag = rb_funcall(imag, div, 2, norm, n);
+				real = rb_funcall(real, div, 2, norm, prec);
+				imag = rb_funcall(imag, div, 2, norm, prec);
 				x = rb_Complex(real, rb_num_uminus(imag));
 			}
 			else
@@ -117,7 +125,10 @@ retry:
 		else if (CLASS_OF(x) == rb_cBigDecimal)
 		{
 			if (inversion)
-				x = rb_funcall(BIG_ONE, div, 2, x, n);
+			{
+				x = rb_funcall(BIG_ONE, div, 2, x, prec);
+				x = rb_num_round(x, prec);
+			}
 			if (complex_form)
 				x = rb_Complex(x, BIG_ZERO);
 		}

@@ -1,9 +1,9 @@
-#ifndef INTERNAL_SOLVER_BIGMATHR
-#define INTERNAL_SOLVER_BIGMATHR
+#ifndef INTERNAL_BIGMATHR
+#define INTERNAL_BIGMATHR
 
 #include "numeric.h"
 #include "bigdecimal.h"
 #include "bigmath.h"
 #include "numdiff.h"
 
-#endif /* INTERNAL_SOLVER_BIGMATHR */
+#endif /* INTERNAL_BIGMATHR */
