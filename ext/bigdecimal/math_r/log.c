@@ -13,7 +13,7 @@
  * Computes natural logarithm of +x + 1+ by mercator series expansion.
  * 
  * @example
- *  BigMathR::LogSqrt.n_ser_mercator(1/2r, 20)
+ *  BigMathR::Log.n_ser_mercator(1/2r, 20)
  *  #=> 0.40546510810816438198e0
  * @param x [Numeric] Numerical argument
  * @param prec [Integer] Arbitrary precision
@@ -43,15 +43,20 @@ __impl_log_n_ser_mercator(VALUE uunused_obj, VALUE x, VALUE prec)
 /**
  * Computes natural logarithm of +x+ by series expansion.
  * <br>
- * Bug: Computationally, the fraction is a cyclic decimal picks up an error about eps-44.
- *  BigMathR::Log.n_ser_okumura(5, 50) - BigMathR::EDF.log(5, 50)
- *  #=> 0.18e-44
-
+ * @example
+ *  BigMathR::Log.n_ser_okumura(2, 20)
+ *  #=> 0.69314718055994530942e0
+ * @param x [Numeric] Numerical argument
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Real solution
+ * @raise [TypeError] +prec+ is not an Integer
+ * @raise [RangeError] +prec+ is zero or negative number
+ * @since 0.1.0
  */
 static VALUE
 __impl_log_n_ser_okumura(VALUE uunused_obj, VALUE x, VALUE prec)
 {
-	return log_ser_okumura(x, prec);
+	return log_branch(x, prec, log_ser_okumura);
 }
 
 /**
