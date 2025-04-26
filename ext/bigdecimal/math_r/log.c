@@ -10,7 +10,7 @@
 #include "decl.h"
 
 /**
- * Computes natural logarithm of +z + 1+ by mercator series expansion.
+ * Computes natural logarithm of +x + 1+ by mercator series expansion.
  * 
  * @example
  *  BigMathR::LogSqrt.n_ser_mercator(1/2r, 20)
@@ -38,6 +38,20 @@ __impl_log_n_ser_mercator(VALUE uunused_obj, VALUE x, VALUE prec)
 	}
 	else
 		return BIG_NAN;
+}
+
+/**
+ * Computes natural logarithm of +x+ by series expansion.
+ * <br>
+ * Bug: Computationally, the fraction is a cyclic decimal picks up an error about eps-44.
+ *  BigMathR::Log.n_ser_okumura(5, 50) - BigMathR::EDF.log(5, 50)
+ *  #=> 0.18e-44
+
+ */
+static VALUE
+__impl_log_n_ser_okumura(VALUE uunused_obj, VALUE x, VALUE prec)
+{
+	return log_ser_okumura(x, prec);
 }
 
 /**
@@ -109,6 +123,7 @@ void
 InitVM_Log(void)
 {
 	rb_define_module_function(rb_mLog, "n_ser_mercator", __impl_log_n_ser_mercator, 2);
+	rb_define_module_function(rb_mLog, "n_ser_okumura", __impl_log_n_ser_okumura, 2);
 
 	rb_define_module_function(rb_mLog, "clog", __impl_log_clog, 2);
 	rb_define_module_function(rb_mLog, "clog2", __impl_log_clog2, 2);

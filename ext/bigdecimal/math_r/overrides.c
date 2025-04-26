@@ -57,7 +57,11 @@ __impl_obj_numeric_p(VALUE self)
 
 /**
  * Returns the reciprocal of itself with +prec+ as decimal precision.
- * If it is a complex number, it returns the complex solution.
+ * <br>
+ * If it is a complex number, 
+ * computes (x / ||w||) - (y / ||w||) * i). 
+ * <br>
+ * Where ||w|| = x^2 + y^2.
  * 
  * @example
  *  3.reciprocal(20) #=> 0.33333333333333333333e0

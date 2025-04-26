@@ -20,10 +20,11 @@ log_ser_okumura(VALUE x, VALUE prec)
 	
 	rcm2_edf(rb_funcall1(x, '/', rb_bigmath_const_sqrt2(n)), &k);
 	k = rb_funcall(k, succ, 0);
-	x = rb_funcall1(x, '/', rb_funcall1(INT2FIX(2), pow, k));
-	x = rb_funcall1(
-		rb_funcall1(x, '-', one), '/', 
-		rb_funcall1(x, '+', one));
+	k = rb_BigDecimal1(k);
+	x = rb_funcall1(x, '/', rb_funcall1(two, pow, k));
+	x = rb_funcall(
+		rb_funcall1(x, '-', one), div, 2,
+		rb_funcall1(x, '+', one), n);
 	x2 = rb_funcall1(x, '*', x);
 	i = one;
 	s = x;
@@ -37,7 +38,7 @@ log_ser_okumura(VALUE x, VALUE prec)
 	}
 
 	y = rb_funcall(
-		rb_funcall1(rb_bigmath_const_log2(n), '*', k), 
+		rb_funcall1(rb_bigmath_const_log2(n), '*', k),
 		add, 2, rb_funcall1(two, '*', s), prec);
 
 	RB_GC_GUARD(x);
