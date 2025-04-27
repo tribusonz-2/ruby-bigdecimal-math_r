@@ -30,6 +30,7 @@
 #include "api/bigmath/escalb.h"
 #include "api/bigmath/exp.h"
 #include "api/bigmath/expxt.h"
+#include "api/bigmath/hypot.h"
 #include "api/bigmath/ipow.h"
 #include "api/bigmath/l2norm.h"
 #include "api/bigmath/log.h"

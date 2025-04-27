@@ -12,7 +12,7 @@ exp_edf(VALUE x, VALUE prec)
 	    rb_num_zero_p(exp) ||
 	    rb_num_zero_p(fra))
 		return rb_num_round(exp, prec);
-	fra = rb_bigmath_expxt(fra, INT2FIX(1), prec);
+	fra = rb_bigmath_expxt(fra, BIG_ONE, prec);
 	if (CLASS_OF(exp) != rb_cBigDecimal)
 		exp = rb_num_canonicalize(exp, prec, ARG_REAL, ARG_RAWVALUE);
 	return rb_funcall(exp, mult, 2, fra, prec);

@@ -13,6 +13,7 @@ void InitVM_Constant(void);
 void InitVM_EDF(void);
 void InitVM_Log(void);
 void InitVM_Trig(void);
+void InitVM_Hyperb(void);
 void InitVM_ComplexPlane(void);
 void InitVM_EulerF(void);
 void InitVM_LogSqrt(void);
@@ -60,6 +61,9 @@ Init_math_r(void)
 
 	rb_mTrig = rb_define_module_under(rb_mBigMathR, "Trig");
 	InitVM(Trig);
+
+	rb_mHyperb = rb_define_module_under(rb_mBigMathR, "Hyperb");
+	InitVM(Hyperb);
 
 	rb_mComplexPlane = rb_define_module_under(rb_mBigMathR, "ComplexPlane");
 	InitVM(ComplexPlane);

@@ -25,7 +25,11 @@ log_ser_okumura(VALUE x, VALUE prec)
 	x = rb_funcall(
 		rb_funcall1(x, '-', one), div, 2,
 		rb_funcall1(x, '+', one), n);
+#if 0
 	x2 = rb_funcall1(x, '*', x);
+#else
+	x2 = rb_funcall(x, mult, 2, x, n);
+#endif
 	i = one;
 	s = x;
 	d = one;

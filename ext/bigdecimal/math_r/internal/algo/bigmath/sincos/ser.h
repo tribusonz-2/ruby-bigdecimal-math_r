@@ -273,14 +273,6 @@ degree_sparg(VALUE t, VALUE prec, VALUE *sin, VALUE *cos)
 	}
 }
 
-static VALUE
-sincos_fig(VALUE deg, VALUE f)
-{
-	const ID exponent = rb_intern("exponent");
-	deg = rb_funcall1(deg, '-', rb_funcall(f, exponent, 0));
-	return deg;
-}
-
 /**
  *  It is equivalent to the following Ruby code:
  *  ```Ruby
@@ -348,16 +340,15 @@ sincos_fig(VALUE deg, VALUE f)
  * In this Ruby code, you can create the value of the entire trigonometric 
  * function. In C code, you need to be more aware of function procedures.
  */
-
 static void
 sincos_inline(VALUE x, VALUE prec, VALUE *sin, VALUE *cos)
 {
-	const ID double_fig = rb_intern("double_fig");
-	const ID mult = rb_intern("mult");
 	const ID div = rb_intern("div");
-	VALUE deg, m, dbl_fig;
-	VALUE f, w, a;
-	long n = 0;
+	VALUE n, m, f, w, a, y;
+	long i = 0;
+
+	if (sin == NULL && cos == NULL)
+		return;
 
 	if (!rb_num_finite_p(x))
 	{
@@ -365,39 +356,37 @@ sincos_inline(VALUE x, VALUE prec, VALUE *sin, VALUE *cos)
 		if (cos != NULL)  *cos = BIG_NAN;
 		return;
 	}
-	dbl_fig = rb_funcall(rb_cBigDecimal, double_fig, 0);
-	deg = rb_funcall1(prec, '+', dbl_fig);
+	n = rb_numdiff_make_n(prec);
 	f = BIG_ONE;
 	w = BIG_ONE;
 	a = BIG_ONE;
+	y = BIG_ZERO;
 	if (sin != NULL)  *sin = BIG_ZERO;
 	if (cos != NULL)  *cos = BIG_ZERO;
-	while (rb_num_nonzero_p(a) &&
-	       NUM2INT(rb_num_cmpeql(m = sincos_fig(deg, f), INT2FIX(0))) == 1)
+	while (rb_numdiff_condition_p(y, a, n, &m))
 	{
-		if (NUM2INT(rb_num_cmpeql(m, dbl_fig)) == -1)
-			m = dbl_fig;
 		a = rb_funcall(w, div, 2, f, m);
-		switch (n % 4) {
+		switch (i % 4) {
 		case 0:
-			if (cos != NULL)  *cos = rb_funcall1(*cos, '+', a);
+			if (cos != NULL) *cos = (y = rb_funcall1(*cos, '+', a));
 			break;
 		case 1:
-                        if (sin != NULL)  *sin = rb_funcall1(*sin, '+', a);
+                        if (sin != NULL) *sin = (y = rb_funcall1(*sin, '+', a));
  			break;
 		case 2:
-                        if (cos != NULL)  *cos = rb_funcall1(*cos, '-', a);
+                        if (cos != NULL) *cos = (y = rb_funcall1(*cos, '-', a));
  			break;
 		case 3:
-                        if (sin != NULL)  *sin = rb_funcall1(*sin, '-', a);
+                        if (sin != NULL) *sin = (y = rb_funcall1(*sin, '-', a));
  			break;
 		}
-		w = rb_funcall(w, mult, 2, x, deg);
-		f = rb_funcall(f, mult, 2, LONG2NUM(++n), deg);
+		w = rb_funcall1(w, '*', x);
+		f = rb_funcall1(f, '*', LONG2NUM(++i));
 	}
 	RB_GC_GUARD(f);
 	RB_GC_GUARD(w);
 	RB_GC_GUARD(a);
+	RB_GC_GUARD(y);
 	if (sin != NULL)  RB_GC_GUARD(*sin);
 	if (cos != NULL)  RB_GC_GUARD(*cos);
 }

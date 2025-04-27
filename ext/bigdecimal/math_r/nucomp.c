@@ -36,14 +36,6 @@ __impl_nucomp_l2norm(VALUE unused_obj, VALUE args)
 }
 
 
-VALUE
-rb_bigmath_hypot(VALUE a, VALUE b, VALUE prec)
-{
-	rb_check_precise(prec);
-	return rb_bigmath_l2norm(rb_assoc_new(a, b), prec);
-}
-
-
 /**
  *  Returns the hypotenuse of a right triangle with side lengths of +a+ and +b+.
  *  <br>
@@ -62,16 +54,8 @@ rb_bigmath_hypot(VALUE a, VALUE b, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_nucomp_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
+__impl_bigmathr_hypot(VALUE unused_obj, VALUE a, VALUE b, VALUE prec)
 {
-	if (rb_num_real_p(a))
-		a = rb_num_canonicalize(a, prec, ARG_REAL, ARG_RAWVALUE);
-	else
-		a = rb_num_canonicalize(a, prec, ARG_COMPLEX, ARG_RAWVALUE);
-	if (rb_num_real_p(b))
-		b = rb_num_canonicalize(b, prec, ARG_REAL, ARG_RAWVALUE);
-	else
-		b = rb_num_canonicalize(b, prec, ARG_COMPLEX, ARG_RAWVALUE);
 	return rb_bigmath_hypot(a, b, prec);
 }
 
@@ -123,7 +107,7 @@ __impl_nucomp_quadrant(VALUE unused_obj, VALUE x, VALUE y, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_nucomp_atan2(VALUE unused_obj, VALUE y, VALUE x, VALUE prec)
+__impl_bigmathr_atan2(VALUE unused_obj, VALUE y, VALUE x, VALUE prec)
 {
 	return rb_bigmath_quadrant(x, y, prec);
 }
@@ -168,7 +152,7 @@ InitVM_ComplexPlane(void)
 	rb_define_module_function(rb_mComplexPlane, "quadrant", __impl_nucomp_quadrant, 3);
 	rb_define_module_function(rb_mComplexPlane, "carg", __impl_nucomp_carg, 2);
 
-	rb_define_module_function(rb_mBigMathR, "hypot", __impl_nucomp_hypot, 3);
-	rb_define_module_function(rb_mBigMathR, "atan2", __impl_nucomp_atan2, 3);
+	rb_define_module_function(rb_mBigMathR, "hypot", __impl_bigmathr_hypot, 3);
+	rb_define_module_function(rb_mBigMathR, "atan2", __impl_bigmathr_atan2, 3);
 
 }

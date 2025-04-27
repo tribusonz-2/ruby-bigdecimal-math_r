@@ -36,6 +36,7 @@ MATHFUNCS = {
   "csc" => [VALUE, ARG1],  "ccsc" => [VALUE, ARG1],
   "sec" => [VALUE, ARG1],  "csec" => [VALUE, ARG1],
   "cot" => [VALUE, ARG1],  "ccot" => [VALUE, ARG1],
+  "sinhcosh" => [VOID, ARG1SCALAR2],
   "sinh" => [VALUE, ARG1],  "csinh" => [VALUE, ARG1], 
   "cosh" => [VALUE, ARG1],  "ccosh" => [VALUE, ARG1],
   "tanh" => [VALUE, ARG1],  "ctanh" => [VALUE, ARG1],
@@ -44,6 +45,7 @@ MATHFUNCS = {
   "coth" => [VALUE, ARG1],  "ccoth" => [VALUE, ARG1],
   "trig" => [VALUE, ARG_TRIG],
   "atan" => [VALUE, ARG1],
+  "hypot" => [VALUE, ARG2],
   "sqrt" => [VALUE, ARG1], "csqrt" => [VALUE, ARG1],
   "cuberoot" => [VALUE, ARG1], "ccbrt" => [VALUE, ARG1],
   "pow" => [VALUE, ARG2], "cpow" => [VALUE, ARG2], "ipow" => [VALUE, ARG2],
@@ -65,7 +67,9 @@ MATHFUNCS = {
 CB_TYPE = {
   "log" => "bigmath_func1", "clog" => "bigmath_func1",
   "sqrt" => "bigmath_func1",
-  "atan" => "bigmath_func1"
+  "sinh" => "bigmath_func1",
+  "atan" => "bigmath_func1",
+  "hypot" => "bigmath_func2"
 }
 
 API_H = 'api.h'
