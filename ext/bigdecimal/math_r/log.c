@@ -9,6 +9,8 @@
 #include "math_r/bigmath_r.h"
 #include "decl.h"
 
+
+
 /**
  * Computes natural logarithm of +x + 1+ by mercator series expansion.
  * 
@@ -38,6 +40,12 @@ __impl_log_n_ser_mercator(VALUE uunused_obj, VALUE x, VALUE prec)
 	}
 	else
 		return BIG_NAN;
+}
+
+static VALUE
+__impl_log_n_builtin(VALUE uunused_obj, VALUE x, VALUE prec)
+{
+	return log_branch(x, prec, log_builtin);
 }
 
 /**
@@ -128,6 +136,7 @@ void
 InitVM_Log(void)
 {
 	rb_define_module_function(rb_mLog, "n_ser_mercator", __impl_log_n_ser_mercator, 2);
+	rb_define_module_function(rb_mLog, "n_builtin", __impl_log_n_builtin, 2);
 	rb_define_module_function(rb_mLog, "n_ser_okumura", __impl_log_n_ser_okumura, 2);
 
 	rb_define_module_function(rb_mLog, "clog", __impl_log_clog, 2);
