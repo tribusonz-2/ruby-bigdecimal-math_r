@@ -346,16 +346,7 @@ sincos_inline(VALUE x, VALUE prec, VALUE *sin, VALUE *cos)
 	const ID div = rb_intern("div");
 	VALUE n, m, f, w, a, y;
 	long i = 0;
-
-	if (sin == NULL && cos == NULL)
-		return;
-
-	if (!rb_num_finite_p(x))
-	{
-		if (sin != NULL)  *sin = BIG_NAN;
-		if (cos != NULL)  *cos = BIG_NAN;
-		return;
-	}
+	
 	n = rb_numdiff_make_n(prec);
 	f = BIG_ONE;
 	w = BIG_ONE;
@@ -371,14 +362,14 @@ sincos_inline(VALUE x, VALUE prec, VALUE *sin, VALUE *cos)
 			if (cos != NULL) *cos = (y = rb_funcall1(*cos, '+', a));
 			break;
 		case 1:
-                        if (sin != NULL) *sin = (y = rb_funcall1(*sin, '+', a));
- 			break;
+			if (sin != NULL) *sin = (y = rb_funcall1(*sin, '+', a));
+			break;
 		case 2:
                         if (cos != NULL) *cos = (y = rb_funcall1(*cos, '-', a));
- 			break;
+			break;
 		case 3:
                         if (sin != NULL) *sin = (y = rb_funcall1(*sin, '-', a));
- 			break;
+			break;
 		}
 		w = rb_funcall1(w, '*', x);
 		f = rb_funcall1(f, '*', LONG2NUM(++i));
@@ -395,6 +386,10 @@ void
 sincos_ser(VALUE x, VALUE prec, VALUE *sin, VALUE *cos)
 {
 	VALUE pi, t, y;
+	
+	if (sin == NULL && cos == NULL)
+		return;
+	
 	if (!rb_num_finite_p(x))
 	{
 		if (sin != NULL)  *sin = BIG_NAN;

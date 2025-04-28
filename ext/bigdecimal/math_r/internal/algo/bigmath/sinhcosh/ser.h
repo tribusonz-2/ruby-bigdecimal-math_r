@@ -11,8 +11,6 @@ sinhcosh_inline(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 	a = BIG_ONE;
 	y = BIG_ZERO;
 	
-	if (sinh == NULL && cosh == NULL)  return;
-	
 	if (sinh != NULL)  *sinh = BIG_ZERO;
 	if (cosh != NULL)  *cosh = BIG_ZERO;
 	while (rb_numdiff_condition_p(y, a, n, &m))
@@ -42,6 +40,9 @@ sinhcosh_ser(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 {
 	int sign;
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+	
+	if (sinh == NULL && cosh == NULL)  return;
+	
 	if (rb_num_nan_p(x))
 	{
 		if (sinh != NULL)  *sinh = BIG_NAN;

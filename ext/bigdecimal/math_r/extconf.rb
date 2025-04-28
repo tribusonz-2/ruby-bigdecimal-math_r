@@ -68,6 +68,11 @@ CB_TYPE = {
   "log" => "bigmath_func1", "clog" => "bigmath_func1",
   "sqrt" => "bigmath_func1",
   "sinh" => "bigmath_func1",
+  "cosh" => "bigmath_func1",
+  "tanh" => "bigmath_func1",
+  "csch" => "bigmath_func1",
+  "sech" => "bigmath_func1",
+  "coth" => "bigmath_func1",
   "atan" => "bigmath_func1",
   "hypot" => "bigmath_func2"
 }

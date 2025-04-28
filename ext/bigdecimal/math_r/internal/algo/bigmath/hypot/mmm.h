@@ -3,7 +3,6 @@ VALUE
 hypot_mmm(VALUE a, VALUE b, VALUE prec)
 {
 	const ID div = rb_intern("div");
-	const ID mult = rb_intern("mult");
 	VALUE n = rb_numdiff_make_n(prec), m = Qundef;
         VALUE two = rb_BigDecimal1(INT2FIX(2));
 	VALUE four = rb_BigDecimal1(INT2FIX(4));
@@ -17,9 +16,9 @@ hypot_mmm(VALUE a, VALUE b, VALUE prec)
 	if (rb_num_zero_p(b))  return a;
 	while (rb_numdiff_condition_p(a, t, n, &m))
 	{
-		t = rb_funcall(b, div, 2, a, m);
-		t = rb_funcall(t, mult, 2, t, m);
-		t = rb_funcall1(t, '/', rb_funcall1(four, '+', t));
+		t = rb_funcall1(b, '/', a);
+		t = rb_funcall1(t, '*', t);
+		t = rb_funcall(t, div, 2, rb_funcall1(four, '+', t), m);
 		a = rb_funcall1(a, '+', 
 			rb_funcall1(rb_funcall1(two, '*', a), '*', t));
 		b = rb_funcall1(b, '*', t);
