@@ -6,7 +6,7 @@ module BigMathR
   module Const
     module PI
       module_function
-      def PI_euler(prec)
+      def euler(prec)
         raise ArgumentError, "Zero or negative precision for PI" if prec <= 0
         one = BigDecimal(1)
         two = BigDecimal(2)
