@@ -3,8 +3,8 @@
 require 'bigdecimal/math'
 
 # Chudnovsky's formula.
-# If the number of digits is about 100, # fast convergence can be expected, 
-# but since one derivative is nearly 11 digits, # the larger the accuracy, the slower the convergence.
+# If the number of digits is about 100, fast convergence can be expected, 
+# but since one derivative is nearly 11 digits, the larger the accuracy, the slower the convergence.
 # Machin's formula may be the fastest.
 # If you change the calculation algorithm (e.g., calculate everything with the BigDecimal class), it may be faster.
 
