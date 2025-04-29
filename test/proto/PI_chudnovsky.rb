@@ -13,7 +13,8 @@ module BigMathR
     module PI
       module_function
       def chudnovsky(prec)
-        raise ArgumentError, "Zero or negative precision for PI" if prec <= 0
+        raise TypeError, "precision must be in Integer" unless prec.class == Integer
+        raise RangeError, "Zero or negative precision" if prec <= 0
 
         zero = BigDecimal(0)
         one = BigDecimal(1)
