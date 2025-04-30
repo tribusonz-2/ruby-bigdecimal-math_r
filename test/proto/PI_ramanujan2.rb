@@ -12,18 +12,20 @@ module BigMathR
         n = BigDecimal.double_fig + prec
 
         i = 0
-        r = 1123/882r
+        r = 1/882r
+        k = 1123
 
         d = BigDecimal(1)
         y = BigDecimal(0)
 
         while d.nonzero? && ((m = n - (y.exponent - d.exponent).abs) > 0)
           m = BigDecimal.double_fig if m < BigDecimal.double_fig
-          d = BigDecimal(r, m)
+          d = BigDecimal(r * k, m)
           y = y + d
           i = i.succ
-          r *= -21460 # FIXME: ここは和積 (1123+21460n) なので矛盾する
-          r *= 16 * i * i * i - 20 * i * i + 8 * i - 1
+          k += 21460
+          r = -r
+          r *= 32 * i * i * i - 48 * i * i + 22 * i - 3
           r /= 777924
           r /= 32
           3.times { r /= i }
@@ -33,4 +35,3 @@ module BigMathR
     end
   end
 end
-
