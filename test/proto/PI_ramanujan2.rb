@@ -22,7 +22,7 @@ module BigMathR
           d = BigDecimal(r, m)
           y = y + d
           i = i.succ
-          r *= -21460 # FIXME: ここは和積 (1123 21460n) なので矛盾する
+          r *= -21460 # FIXME: ここは和積 (1123+21460n) なので矛盾する
           r *= 16 * i * i * i - 20 * i * i + 8 * i - 1
           r /= 777924
           r /= 32
