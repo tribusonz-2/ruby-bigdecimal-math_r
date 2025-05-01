@@ -1,46 +1,45 @@
 # frozen_string_literal: true
 
-require 'bigdecimal/math'
+require 'bigdecimal'
 
 module BigMathR
   module Const
-    module PI
+    module EulerGamma
       module_function
-      # Implement by Ramanujan's formula.
+      # Implement by Engel expansion.
       # 
       # @example
-      #  BigMathR::Const::PI.ramanujan2(20)
-      #  #=> 0.31415926535897932385e1
+      #  BigMathR::Const::EulerGamma.engel(20)
+      #  #=> 0.57721566490153286061e0
       # @param prec [Integer] Arbitrary precision
-      # @return [BigDecimal] Constant PI
+      # @return [BigDecimal] Euler-mascheroni constant gamma
       # @raise [TypeError] not an Integer
       # @raise [RangeError] Zero or negative precision
-      def ramanujan2(prec)
+      def engel(prec)
         raise TypeError, "precision must be an Integer" unless prec.class == Integer
         raise RangeError, "Zero or negative precision" if prec <= 0
         n = BigDecimal.double_fig + prec
 
-        i = 0
-        r = 1/882r
-        k = 1123
+        f = File.open(__dir__ + '/b053977/b053977.txt', 'r')
+        g = BigDecimal(1)
+        fread = -> do
+          raise "expansion maximum reached" if f.eof?
+          numb, coef = f.readline.chomp.split(' ');
+          raise "expansion maximum reached" if coef.nil?
+          g *= BigDecimal(coef.to_i)
+        end
 
         d = BigDecimal(1)
         y = BigDecimal(0)
 
         while d.nonzero? && ((m = n - (y.exponent - d.exponent).abs) > 0)
           m = BigDecimal.double_fig if m < BigDecimal.double_fig
-          d = BigDecimal(r * k, m)
-          y = y + d
-          i = i.succ
-          k += 21460
-          r = -r
-          r *= (2 * i - 1) * (4 * i - 3) * (4 * i - 1)
-          r /= 777924
-          r /= 32
-          3.times { r /= i }
+          d = BigDecimal(Rational(1, fread.call), m)
+          y += d
         end
-        BigDecimal(4).div(y, prec)
+        y.round(prec)
       end
     end
   end
 end
+

@@ -6,6 +6,15 @@ module BigMathR
   module Const
     module PI
       module_function
+      # Implement by Ramanujan's formula.
+      # 
+      # @example
+      #  BigMathR::Const::PI.ramanujan1(20)
+      #  #=> 0.31415926535897932385e1
+      # @param prec [Integer] Arbitrary precision
+      # @return [BigDecimal] Constant PI
+      # @raise [TypeError] not an Integer
+      # @raise [RangeError] Zero or negative precision
       def ramanujan1(prec)
         raise TypeError, "precision must be an Integer" unless prec.class == Integer
         raise RangeError, "Zero or negative precision" if prec <= 0
