@@ -25,7 +25,7 @@ module BigMathR
           i = i.succ
           k += 21460
           r = -r
-          r *= 32 * i * i * i - 48 * i * i + 22 * i - 3
+          r *= (2 * i - 1) * (4 * i - 3) * (4 * i - 1)
           r /= 777924
           r /= 32
           3.times { r /= i }
