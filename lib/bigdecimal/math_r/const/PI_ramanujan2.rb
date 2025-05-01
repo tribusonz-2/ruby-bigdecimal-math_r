@@ -7,7 +7,7 @@ module BigMathR
     module PI
       module_function
       def ramanujan2(prec)
-        raise TypeError, "precision must be in Integer" unless prec.class == Integer
+        raise TypeError, "precision must be an Integer" unless prec.class == Integer
         raise RangeError, "Zero or negative precision" if prec <= 0
         n = BigDecimal.double_fig + prec
 
