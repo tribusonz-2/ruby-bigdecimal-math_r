@@ -12,21 +12,22 @@ module BigMathR
       #  BigMathR::Const::EulerGamma.engel(20)
       #  #=> 0.57721566490153286061e0
       # @param prec [Integer] Arbitrary precision
-      # @return [BigDecimal] Euler-mascheroni constant gamma
+      # @return [BigDecimal] Euler-Mascheroni constant gamma
       # @raise [TypeError] not an Integer
       # @raise [RangeError] Zero or negative precision
+      # @see https://oeis.org/A053977
       def engel(prec)
         raise TypeError, "precision must be an Integer" unless prec.class == Integer
         raise RangeError, "Zero or negative precision" if prec <= 0
         n = BigDecimal.double_fig + prec
 
         f = File.open(__dir__ + '/b053977/b053977.txt', 'r')
-        g = BigDecimal(1)
+        g = 1
         fread = -> do
-          raise "expansion maximum reached" if f.eof?
-          numb, coef = f.readline.chomp.split(' ');
+          raise "there is no more list" if f.eof?
+          _, coef = f.readline.chomp.split(' ');
           raise "expansion maximum reached" if coef.nil?
-          g *= BigDecimal(coef.to_i)
+          g *= coef.to_i
         end
 
         d = BigDecimal(1)
