@@ -116,7 +116,6 @@ rb_id_includes(int n, const ID *funcs, ID func)
       "can't convert %"PRIsVALUE" into Numeric", self); \
   }
 
-
 static VALUE
 solver_exp(ID func, VALUE z, VALUE prec)
 {
@@ -136,31 +135,30 @@ solver_exp(ID func, VALUE z, VALUE prec)
 	}
 	if (w == Qundef)
 	{
-		VALUE real = Qundef, imag = Qundef;
+		VALUE r = Qundef, theta = Qundef;
 //		if (rb_num_real_p(z))
 		{
 			if (func == mf_exp)
-				real = exp_branch(rb_num_real(z), prec, cb_exp);
+				r = exp_branch(rb_num_real(z), prec, cb_exp);
 			else if (func == mf_exp2)
-				real = exp2_branch(rb_num_real(z), prec, cb_exp2);
+				r = exp2_branch(rb_num_real(z), prec, cb_exp2);
 		}
 //		else if (rb_num_zero_p(rb_num_real(z)))
 		{
 			VALUE t, v_sin, v_cos;
-			imag = rb_num_imag(z);
+			theta = rb_num_imag(z);
 			if (func == mf_exp2)
 			{
-				imag = rb_funcall1(imag, '*', rb_bigmath_const_log2(prec));
+				theta = rb_funcall1(theta, '*', rb_bigmath_const_log2(prec));
 			}
-			imag = rb_bigmath_to_rad(imag, prec, &t);
+			theta = rb_bigmath_to_rad(theta, prec, &t);
 			if (-1 == rb_bigmath_degree_sparg(t, prec, &v_sin, &v_cos))
-				rb_bigmath_sincos(imag, prec, &v_sin, &v_cos);
-			imag = rb_Complex(v_cos, v_sin);
+				rb_bigmath_sincos(theta, prec, &v_sin, &v_cos);
+			theta = rb_Complex(v_cos, v_sin);
 		}
-		w = rb_funcall1(real, '*', imag); w = rb_num_round(w, prec);
+		w = rb_funcall1(r, '*', theta); w = rb_num_round(w, prec);
 	}
 	return w;
-
 }
 
 /**
