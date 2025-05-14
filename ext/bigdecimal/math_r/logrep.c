@@ -1,5 +1,5 @@
 /*******************************************************************************
-	logrep.c -- Logarithm Reprensentations
+	logrep.c -- Logarithm Representations
 
 	Author: tribusonz
 	Licence: MIT
