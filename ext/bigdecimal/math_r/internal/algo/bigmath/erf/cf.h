@@ -14,6 +14,7 @@ erf_cf(VALUE x, VALUE prec)
 	if (rb_num_zero_p(rb_num_round(c, prec)))
 		return rb_num_negative_p(x) ? BIG_MINUS_ONE : BIG_ONE;
 	c = rb_funcall1(c, '/', rb_bigmath_sqrt(rb_bigmath_const_pi(n), n));
+	b = x;
 
 	p1 = one;  q1 = zero;  p2 = one;  q2 = one;
 	i = one;
