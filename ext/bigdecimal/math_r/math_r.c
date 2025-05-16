@@ -19,6 +19,7 @@ void InitVM_ComplexPlane(void);
 void InitVM_EulerF(void);
 void InitVM_LogRep(void);
 void InitVM_PowerRoot(void);
+void InitVM_Erf(void);
 void InitVM_GammaR(void);
 void InitVM_Solver(void);
 
@@ -116,6 +117,9 @@ Init_math_r(void)
 
 	rb_mPowerRoot = rb_define_module_under(rb_mBigMathR, "PowerRoot");
 	InitVM(PowerRoot);
+
+	rb_mErf = rb_define_module_under(rb_mBigMathR, "Erf");
+	InitVM(Erf);
 
 	rb_mGammaR = rb_define_module_under(rb_mBigMathR, "GammaR");
 	InitVM(GammaR);

@@ -59,6 +59,8 @@ MATHFUNCS = {
   "carg" => [VALUE, ARG1],
   "l2norm" => [VALUE, ARG1],
   "quadrant" => [VALUE, ARG2],
+  "erf" => [VALUE, ARG1],
+  "erfc" => [VALUE, ARG1],
   "f_euler" => [VALUE, ARG1],
   "PI"=>[VALUE, ARG_PREC],
   "E"=>[VALUE, ARG_PREC],
@@ -101,7 +103,9 @@ CB_TYPE = {
   "acsch" => "bigmath_func1", "cacsch" => "bigmath_func1",
   "asech" => "bigmath_func1", "casech" => "bigmath_func1",
   "acoth" => "bigmath_func1", "cacoth" => "bigmath_func1",
-  "hypot" => "bigmath_func2"
+  "hypot" => "bigmath_func2",
+  "erf" => "bigmath_func1",
+  "erfc" => "bigmath_func1"
 }
 
 API_H = 'api.h'

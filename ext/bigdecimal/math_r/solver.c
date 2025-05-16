@@ -1353,7 +1353,6 @@ __impl_bigmath_cbrt(VALUE unused_obj, VALUE x, VALUE prec)
 	return y;
 }
 
-
 /**
  *  Document-module: BigMathR::Solver
  *  
