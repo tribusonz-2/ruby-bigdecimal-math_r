@@ -36,11 +36,15 @@ Init_math_r(void)
 {
 	mf_exp = rb_intern_const("exp");
 	mf_exp2 = rb_intern_const("exp2");
+	mf_expm1 = rb_intern_const("expm1");
 
 	mf_log = rb_intern_const("log");
 	mf_log2 = rb_intern_const("log2");
 	mf_log10 = rb_intern_const("log10");
 	mf_log1p = rb_intern_const("log1p");
+
+	mf_sqrt = rb_intern_const("sqrt");
+	mf_cbrt = rb_intern_const("cbrt");
 
 	mf_sin = rb_intern_const("sin");
 	mf_cos = rb_intern_const("cos");

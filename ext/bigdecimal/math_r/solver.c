@@ -116,6 +116,7 @@ rb_id_includes(int n, const ID *funcs, ID func)
       "can't convert %"PRIsVALUE" into Numeric", self); \
   }
 
+
 static VALUE
 solver_exp(ID func, VALUE z, VALUE prec)
 {
@@ -159,6 +160,7 @@ solver_exp(ID func, VALUE z, VALUE prec)
 		w = rb_funcall1(r, '*', theta); w = rb_num_round(w, prec);
 	}
 	return w;
+
 }
 
 /**
@@ -1307,6 +1309,50 @@ __impl_bigmath_acoth(VALUE unused_obj, VALUE x, VALUE prec)
 	return solver_hyperbinv(mf_acoth, x, prec);
 }
 
+static VALUE
+__impl_bigmath_sqrt(VALUE unused_obj, VALUE x, VALUE prec)
+{
+	VALUE y = Qundef;
+	if (rb_num_real_p(x))
+	{
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		if (rb_num_negative_p(x))
+			y = sqrt_edom(x, prec);
+		else
+			y = sqrt_newton(x, prec);
+	}
+	else
+	{
+		x = rb_num_canonicalize(x, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		y = csqrt_formula(x, prec);
+	}
+	return y;
+}
+
+static VALUE
+__impl_bigmath_cbrt(VALUE unused_obj, VALUE x, VALUE prec)
+{
+	VALUE y = Qundef;
+	if (rb_num_real_p(x))
+	{
+		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+		if (rb_num_negative_p(x))
+		{
+			x = rb_num_uminus(x);
+			y = cuberoot_newton(x, prec);
+			y = rb_num_uminus(y);
+		}
+		else
+			y = cuberoot_newton(x, prec);
+	}
+	else
+	{
+		x = rb_num_canonicalize(x, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		y = csqrt_formula(x, prec);
+	}
+	return y;
+}
+
 
 /**
  *  Document-module: BigMathR::Solver
@@ -1435,4 +1481,6 @@ InitVM_Solver(void)
 	rb_define_singleton_method(rb_mBigMathR, "asech", __impl_bigmath_asech, 2);
 	rb_define_singleton_method(rb_mBigMathR, "acoth", __impl_bigmath_acoth, 2);
 
+	rb_define_singleton_method(rb_mBigMathR, "sqrt", __impl_bigmath_sqrt, 2);
+	rb_define_singleton_method(rb_mBigMathR, "cbrt", __impl_bigmath_cbrt, 2);
 }
