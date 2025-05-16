@@ -12,7 +12,7 @@ erfc_cf(VALUE x, VALUE prec)
 
 	c = rb_bigmath_exp(rb_funcall1(rb_num_uminus(x), '*', x), n);
 	if (rb_num_zero_p(rb_num_round(c, prec)))
-		return rb_num_negative_p(x) ? rb_BigDecimal(INT2FIX(2)) : BIG_ZERO;
+		return rb_num_negative_p(x) ? rb_BigDecimal1(INT2FIX(2)) : BIG_ZERO;
 	c = rb_funcall1(c, '/', rb_bigmath_sqrt(rb_bigmath_const_pi(n), n));
 	b = x;
 
