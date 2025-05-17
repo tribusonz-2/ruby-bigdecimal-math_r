@@ -9,47 +9,6 @@
 #include "math_r/bigmath_r.h"
 #include "decl.h"
 
-/**
- * Computes the Integer +n+ power of +x+.
- * <br>
- * Notice that the precision parameter of this function is a decimal exponent.
- * <br>
- * Because the exponential value means the maximum digit, 
- * the value retains the significant digits.
- * <br>
- * Therefore, if the solution exceeds the range of significant digits, 
- * it returns infinity at the upper bound and 0 at the lower bound.
- * <br>
- * For example, the solution of 2**-100 with an exponential value of 20 is 0.
- * @example
- *  d = BigMathR::EDF.integer_power(Math::E, 2*2, Float::MAX_10_EXP).round(Float::DIG)
- *  #=> 0.5459815003314423e2
- *  BigDecimal(((d - 1)/(d + 1)), Float::DIG)
- *  #=> 0.964027580075817e0
- *  Math.tanh(2)
- *  #=> 0.9640275800758169
- * @param x [Numeric] Numerical argument
- * @param n [Integer] Integer power
- * @param exp [Integer] Maximum of the decimal exponent for solution
- * @return [BigDecimal] Solution for +x**n+
- * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
- * @raise [TypeError] Occurs when +x+ is not a numeric class.
- * @since 0.1.0
- */
-static VALUE
-__impl_edf_integer_power(VALUE unused_obj, VALUE x, VALUE n, VALUE exp)
-{
-	VALUE y;
-	
-	rb_check_precise(exp);
-	x = rb_num_canonicalize(x, exp, ARG_REAL, ARG_RAWVALUE);
-	if (!(TYPE(n) == T_FIXNUM || TYPE(n) == T_BIGNUM))
-		rb_raise(rb_eTypeError, "right-hand side must be an Integer");
-	
-	y = ipow_edf(x, n, exp);
-	
-	return y;
-}
 
 /**
  * Exponentially-decompose into the form of
@@ -204,11 +163,6 @@ __impl_edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
  *  <br>
  *  This formula was discovered by the author shortly afterwards. It will be proven in time.
  *  <br>
- *  == Synopsis:
- *  The function names defined are the same as those in the C/C++ standard.
- *  <br>
- *  Exponential function:     +exp()+ <br>
- *  Base-2 (binary) exponent: +exp2()+ <br>
  *  
  *  Reference::
  *  {https://github.com/tribusonz-2/edf Exponential Decomposition Formula}
@@ -216,7 +170,6 @@ __impl_edf_logxt(VALUE unused_obj, VALUE x, VALUE t, VALUE prec)
 void
 InitVM_EDF(void)
 {
-	rb_define_module_function(rb_mEDF, "integer_power", __impl_edf_integer_power, 3);
 	rb_define_module_function(rb_mEDF, "escalb", __impl_edf_escalb, 3);
 	rb_define_module_function(rb_mEDF, "expxt", __impl_edf_expxt, 3);
 

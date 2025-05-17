@@ -137,14 +137,14 @@ solver_exp(ID func, VALUE z, VALUE prec)
 	if (w == Qundef)
 	{
 		VALUE r = Qundef, theta = Qundef;
-//		if (rb_num_real_p(z))
+		// Real
 		{
 			if (func == mf_exp)
 				r = exp_branch(rb_num_real(z), prec, cb_exp);
 			else if (func == mf_exp2)
 				r = exp2_branch(rb_num_real(z), prec, cb_exp2);
 		}
-//		else if (rb_num_zero_p(rb_num_real(z)))
+		// Imaginary
 		{
 			VALUE t, v_sin, v_cos;
 			theta = rb_num_imag(z);
@@ -528,9 +528,9 @@ __impl_solver_trig(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_sin(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_sin(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_trig(mf_sin, x, prec);
+	return solver_trig(mf_sin, z, prec);
 }
 
 /**
@@ -545,9 +545,9 @@ __impl_bigmath_sin(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_cos(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_cos(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_trig(mf_cos, x, prec);
+	return solver_trig(mf_cos, z, prec);
 }
 
 /**
@@ -562,9 +562,9 @@ __impl_bigmath_cos(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_tan(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_tan(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_trig(mf_tan, x, prec);
+	return solver_trig(mf_tan, z, prec);
 }
 
 /**
@@ -579,9 +579,9 @@ __impl_bigmath_tan(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_csc(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_csc(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_trig(mf_csc, x, prec);
+	return solver_trig(mf_csc, z, prec);
 }
 
 /**
@@ -596,9 +596,9 @@ __impl_bigmath_csc(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_sec(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_sec(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_trig(mf_sec, x, prec);
+	return solver_trig(mf_sec, z, prec);
 }
 
 /**
@@ -613,9 +613,9 @@ __impl_bigmath_sec(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_cot(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_cot(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_trig(mf_cot, x, prec);
+	return solver_trig(mf_cot, z, prec);
 }
 
 static VALUE
@@ -745,9 +745,9 @@ __impl_solver_hyperb(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_sinh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_sinh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperb(mf_sinh, x, prec);
+	return solver_hyperb(mf_sinh, z, prec);
 }
 
 /**
@@ -762,9 +762,9 @@ __impl_bigmath_sinh(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_cosh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_cosh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperb(mf_cosh, x, prec);
+	return solver_hyperb(mf_cosh, z, prec);
 }
 
 /**
@@ -779,9 +779,9 @@ __impl_bigmath_cosh(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_tanh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_tanh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperb(mf_tanh, x, prec);
+	return solver_hyperb(mf_tanh, z, prec);
 }
 
 /**
@@ -796,9 +796,9 @@ __impl_bigmath_tanh(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_csch(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_csch(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperb(mf_csch, x, prec);
+	return solver_hyperb(mf_csch, z, prec);
 }
 
 /**
@@ -813,9 +813,9 @@ __impl_bigmath_csch(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_sech(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_sech(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperb(mf_sech, x, prec);
+	return solver_hyperb(mf_sech, z, prec);
 }
 
 /**
@@ -830,9 +830,9 @@ __impl_bigmath_sech(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_coth(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_coth(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperb(mf_coth, x, prec);
+	return solver_hyperb(mf_coth, z, prec);
 }
 
 
@@ -954,9 +954,9 @@ __impl_solver_triginv(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_asin(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_asin(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_triginv(mf_asin, x, prec);
+	return solver_triginv(mf_asin, z, prec);
 }
 
 /**
@@ -971,9 +971,9 @@ __impl_bigmath_asin(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_acos(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_acos(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_triginv(mf_acos, x, prec);
+	return solver_triginv(mf_acos, z, prec);
 }
 
 /**
@@ -1045,9 +1045,9 @@ __impl_bigmath_atan(int argc, VALUE *argv, VALUE unused_obj)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_acsc(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_acsc(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_triginv(mf_acsc, x, prec);
+	return solver_triginv(mf_acsc, z, prec);
 }
 
 /**
@@ -1062,9 +1062,9 @@ __impl_bigmath_acsc(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_asec(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_asec(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_triginv(mf_asec, x, prec);
+	return solver_triginv(mf_asec, z, prec);
 }
 
 /**
@@ -1079,9 +1079,9 @@ __impl_bigmath_asec(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_acot(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_acot(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_triginv(mf_acot, x, prec);
+	return solver_triginv(mf_acot, z, prec);
 }
 
 static VALUE
@@ -1219,9 +1219,9 @@ __impl_solver_hyperbinv(VALUE unused_obj, VALUE func, VALUE z, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_asinh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_asinh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperbinv(mf_asinh, x, prec);
+	return solver_hyperbinv(mf_asinh, z, prec);
 }
 
 /**
@@ -1236,9 +1236,9 @@ __impl_bigmath_asinh(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_acosh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_acosh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperbinv(mf_acosh, x, prec);
+	return solver_hyperbinv(mf_acosh, z, prec);
 }
 
 /**
@@ -1253,9 +1253,9 @@ __impl_bigmath_acosh(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_atanh(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_atanh(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperbinv(mf_atanh, x, prec);
+	return solver_hyperbinv(mf_atanh, z, prec);
 }
 
 /**
@@ -1270,9 +1270,9 @@ __impl_bigmath_atanh(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_acsch(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_acsch(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperbinv(mf_acsch, x, prec);
+	return solver_hyperbinv(mf_acsch, z, prec);
 }
 
 /**
@@ -1287,9 +1287,9 @@ __impl_bigmath_acsch(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_asech(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_asech(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperbinv(mf_asech, x, prec);
+	return solver_hyperbinv(mf_asech, z, prec);
 }
 
 /**
@@ -1304,53 +1304,84 @@ __impl_bigmath_asech(VALUE unused_obj, VALUE x, VALUE prec)
  *  @since 0.1.0
  */
 static VALUE
-__impl_bigmath_acoth(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_acoth(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return solver_hyperbinv(mf_acoth, x, prec);
+	return solver_hyperbinv(mf_acoth, z, prec);
 }
 
+/**
+ *  Computes square root of +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @return [Complex] Complex solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.2.0
+ *  @example
+ *   BigMathR.sqrt(-1, 20) == Complex::I
+ *   #=> true
+ *   BigMathR.sqrt(2, 20)
+ *   #=> 0.14142135623730950488e1
+ *   BigMathR.sqrt(1+1i, 20)
+ *   #=> (0.109868411346780996604e1+0.4550898605622273413e0i)
+ */
 static VALUE
-__impl_bigmath_sqrt(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_sqrt(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	VALUE y = Qundef;
-	if (rb_num_real_p(x))
+	VALUE w = Qundef;
+	if (rb_num_real_p(z))
 	{
-		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-		if (rb_num_negative_p(x))
-			y = sqrt_edom(x, prec);
+		z = rb_num_canonicalize(z, prec, ARG_REAL, ARG_RAWVALUE);
+		if (rb_num_negative_p(z))
+			w = sqrt_edom(z, prec);
 		else
-			y = sqrt_newton(x, prec);
+			w = sqrt_newton(z, prec);
 	}
 	else
 	{
-		x = rb_num_canonicalize(x, prec, ARG_COMPLEX, ARG_RAWVALUE);
-		y = csqrt_formula(x, prec);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		w = csqrt_formula(z, prec);
 	}
-	return y;
+	return w;
 }
 
+/**
+ *  Computes cubic root of +z+.
+ *  <br>
+ *  Note that the return value differs depending on the type of the argument.
+ *  <br>
+ *  For example, a negative argument returns a different value for real and complex solutions.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @return [Complex] Complex solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.2.0
+ *  @example
+ *   BigMathR.cbrt(-1, 20)
+ *   #=> -0.1e1
+ *   BigMathR.cbrt(-1+0i, 20)
+ *   #=> (0.49999999999999999999e0+0.86602540378443864677e0i)
+ */
 static VALUE
-__impl_bigmath_cbrt(VALUE unused_obj, VALUE x, VALUE prec)
+__impl_bigmath_cbrt(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	VALUE y = Qundef;
-	if (rb_num_real_p(x))
+	VALUE w = Qundef;
+	if (rb_num_real_p(z))
 	{
-		x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-		if (rb_num_negative_p(x))
-		{
-			x = rb_num_uminus(x);
-			y = cuberoot_newton(x, prec);
-			y = rb_num_uminus(y);
-		}
-		else
-			y = cuberoot_newton(x, prec);
+		z = rb_num_canonicalize(z, prec, ARG_REAL, ARG_RAWVALUE);
+		w = cuberoot_newton(z, prec);
 	}
 	else
 	{
-		x = rb_num_canonicalize(x, prec, ARG_COMPLEX, ARG_RAWVALUE);
-		y = csqrt_formula(x, prec);
+		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+		w = ccbrt_formula(z, prec);
 	}
-	return y;
+	return w;
 }
 
 /**
