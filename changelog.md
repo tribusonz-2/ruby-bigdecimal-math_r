@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Changed
+- Rename `BigMathR::PowerRoot` to `BigMathR::Power`
+
 ### Added
 - Add function `BigMathR#sqrt`, `BigMath#cbrt`
 - Add module `BigMathR::Erf` with functions of  `#erf_algo911` and `#erfc_algo911`
