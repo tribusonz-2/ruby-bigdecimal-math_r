@@ -4,23 +4,76 @@ This is a math module that using the BigDecimal class. Multiple-precision arithm
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
+It doesn't use any external libraries that have dependencies. Use only the BigDecimal class.  
 
 ```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-```
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install bigdecimal-math_r
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+When it is called, the BigDecimal class is also called.
+
+```Ruby
+require 'bigdecimal/math_r'
+```
+
+The functions at the top level `BigMathR`, of the module are mathematical constants in uppercase letters, and mathematical functions in lowercase.  
+Mathematical functions are compatible with both real and complex solutions.  
+
+Constants:  
+```
+:E (Constant e), 
+:LOG2 (Natural logarithm of 2)
+:LOG_PI (Natural logarithm of pi)
+:LOG10 (Natural logarithm of 10)
+:SQRT2 (Square root of 2)
+:SQRT3 (Square root of 3)
+:PI (Constant pi)
+```
+Functions:  
+```
+:exp (Exponential function)
+:exp2 (Base-2 (Binary) exponent)
+
+:log (Natural logarithm)
+:log2 (Binary logarithm)
+:log10 (Common logarithm)
+:log1p  (log(1+x))
+
+:hypot  (Hypotenuse)
+
+:sqrt (Square root)
+:cbrt (Cubic root)
+
+:sin (Sine)
+:cos (Cosine)
+:tan (Tangent)
+:sec (Secant)
+:csc (Cosecant)
+:cot (Cotangent)
+
+:sinh (Hyperbolic sine)
+:cosh (Hyperbolic cosine)
+:tanh (Hyperbolic tangent)
+:csch (Hyperbolic cosecant)
+:sech (Hyperbolic secant)
+:coth (Hyperbolic cotangent)
+
+:asin (Inverse Sine)
+:acos (Inverse Cosine)
+:atan, :atan2 (Inverse Tangent)
+:acsc (Inverse Cosecant)
+:asec (Inverse Secant)
+:acot (Inverse Cotangent)
+
+:acosh (Inverse Hyperbolic Sine)
+:asinh (Inverse Hyperbolic Cosine)
+:atanh (Inverse Hyperbolic Tangent)
+:acsch (Inverse Hyperbolic Cosecant)
+:asech (Inverse Hyperbolic Secant)
+:acoth (Inverse Hyperbolic Cotangent)
+```
 
 ## Development
 
