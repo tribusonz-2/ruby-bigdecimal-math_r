@@ -13,9 +13,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 - Add function `BigMathR#sqrt`, `BigMath#cbrt`
 - Add module `BigMathR::Erf` with functions of  `#erf_algo911` and `#erfc_algo911`
+- Add Power functions `BigMathR::Power.pow`, `BigMathR::Power.cpow`
 
 ### Fixed
-- `asec_branch()` incorrect a range of domain
+- `asec_branch()` incorrected a range of domain
+- `rb_bigmath_atan()` API was too slow a convergent
 
 ## [0.1.0] - 2025-05-XX
 
