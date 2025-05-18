@@ -1,4 +1,4 @@
-#if 0
+#if 1
 static VALUE
 atan_ser_euler_inline(VALUE x, VALUE prec)
 {

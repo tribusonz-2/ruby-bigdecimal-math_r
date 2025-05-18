@@ -5,9 +5,7 @@ clog_branch(VALUE z, VALUE prec, bigmath_func1 clog_cb)
 
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 
-	if (clog_cb == NULL)
-		w = rb_Complex(BIG_NAN, BIG_NAN);
-	else if (!rb_num_finite_p(z))
+	if (!rb_num_finite_p(z))
 	{
 		if (rb_num_notequal_p(z, z))
 		{
