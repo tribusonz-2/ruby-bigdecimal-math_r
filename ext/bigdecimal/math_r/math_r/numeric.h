@@ -26,6 +26,7 @@ bool rb_num_nan_p(VALUE z);
 
 bool rb_num_numeric_p(VALUE self);
 
+bool rb_num_domain_p(VALUE range, VALUE x);
 
 /**
  * Rounds the argument +x+ to an arbitrary precision +prec+. <br>
