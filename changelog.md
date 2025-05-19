@@ -13,9 +13,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fixed
 - `cpow_formula()` return complex solution when left hand side is in negative real number.
 - `acsch_branch()` had a domain.
+- `sqrt_branch()` API did not perform an implicit type conversion.
+- The global constant was set when the library was loaded.
+- `log*_edf()` was not defined in the sub-module `Log`.
 
 ### Added
 - Add API `rb_num_domain_p()`. This query whether an argument is in the domain.
+- Add minitest.
 
 ## [0.2.0] - 2025-05-XX
 

@@ -243,9 +243,9 @@ InitVM_Log(void)
 	rb_define_module_function(rb_mLog, "log_builtin", __impl_log_builtin, 2);
 	rb_define_module_function(rb_mLog, "log_ser_okumura", __impl_log_ser_okumura, 2);
 
-	rb_define_module_function(rb_mEDF, "log_edf", __impl_log_edf, 2);
-	rb_define_module_function(rb_mEDF, "log2_edf", __impl_log2_edf, 2);
-	rb_define_module_function(rb_mEDF, "log10_edf", __impl_log10_edf, 2);
+	rb_define_module_function(rb_mLog, "log_edf", __impl_log_edf, 2);
+	rb_define_module_function(rb_mLog, "log2_edf", __impl_log2_edf, 2);
+	rb_define_module_function(rb_mLog, "log10_edf", __impl_log10_edf, 2);
 
 	rb_define_module_function(rb_mLog, "log1p_ser_mercator", __impl_log1p_ser_mercator, 2);
 	rb_define_module_function(rb_mLog, "log1p_p_adic", __impl_log1p_p_adic, 2);

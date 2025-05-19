@@ -74,6 +74,15 @@ bigmath_func1 cb_casech;
 bigmath_func1 cb_acoth;
 bigmath_func1 cb_cacoth;
 
+bigmath_func1 cb_sqrt;
+bigmath_func1 cb_csqrt;
+bigmath_func1 cb_cbrt;
+bigmath_func1 cb_ccbrt;
+
+bigmath_func1 cb_erf;
+bigmath_func1 cb_erfc;
+
+
 
 static void
 rb_id_includes(int n, const ID *funcs, ID func)
@@ -1328,12 +1337,12 @@ __impl_bigmath_sqrt(VALUE unused_obj, VALUE z, VALUE prec)
 		if (rb_num_negative_p(z))
 			w = sqrt_edom(z, prec);
 		else
-			w = sqrt_newton(z, prec);
+			w = cb_sqrt(z, prec);
 	}
 	else
 	{
 		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
-		w = csqrt_formula(z, prec);
+		w = cb_csqrt(z, prec);
 	}
 	return w;
 }
@@ -1365,14 +1374,56 @@ __impl_bigmath_cbrt(VALUE unused_obj, VALUE z, VALUE prec)
 	if (rb_num_real_p(z))
 	{
 		z = rb_num_canonicalize(z, prec, ARG_REAL, ARG_RAWVALUE);
-		w = cuberoot_newton(z, prec);
+		w = cb_cbrt(z, prec);
 	}
 	else
 	{
 		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
-		w = ccbrt_formula(z, prec);
+		w = cb_ccbrt(z, prec);
 	}
 	return w;
+}
+
+/**
+ *  Computes error function of +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.2.1
+ *  @example
+ *   BigMathR.erf(5, 20)
+ *   #=> 0.99999999999846254021e0
+ *   BigMathR.erf(5, 40)
+ *   #=> 0.9999999999984625402055719651498116565146e0
+ */
+static VALUE
+__impl_bigmath_erf(VALUE unused_obj, VALUE z, VALUE prec)
+{
+	return erf_branch(z, prec, cb_erf);
+}
+
+/**
+ *  Computes complementary error function of +z+.
+ *  
+ *  @param z [Numeric] Numerical argument
+ *  @param prec [Integer] Arbitrary precision
+ *  @return [BigDecimal] Real solution
+ *  @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ *  @raise [TypeError] Occurs when +z+ is not a numeric class.
+ *  @since 0.2.1
+ *  @example
+ *   BigMathR.erfc(5, 20)
+ *   #=> 0.153745979e-11
+ *   BigMathR.erfc(5, 40)
+ *   #=> 0.15374597944280348501883434854e-11
+ */
+static VALUE
+__impl_bigmath_erfc(VALUE unused_obj, VALUE z, VALUE prec)
+{
+	return erfc_branch(z, prec, cb_erfc);
 }
 
 /**
@@ -1454,6 +1505,15 @@ InitVM_Solver(void)
 	cb_casech = casech_logrep;
 	cb_cacoth = cacoth_logrep;
 
+	cb_sqrt = sqrt_newton;
+	cb_csqrt = csqrt_formula;
+	cb_cbrt = cuberoot_newton;
+	cb_ccbrt = ccbrt_formula;
+
+	cb_erf = erf_algo911;
+	cb_erfc = erfc_algo911;
+
+
 	rb_define_singleton_method(rb_mSolver, "exp", __impl_solver_exp, 3);
 
 	rb_define_singleton_method(rb_mBigMathR, "exp", __impl_bigmath_exp, 2);
@@ -1504,4 +1564,7 @@ InitVM_Solver(void)
 
 	rb_define_singleton_method(rb_mBigMathR, "sqrt", __impl_bigmath_sqrt, 2);
 	rb_define_singleton_method(rb_mBigMathR, "cbrt", __impl_bigmath_cbrt, 2);
+
+	rb_define_singleton_method(rb_mBigMathR, "erf", __impl_bigmath_erf, 2);
+	rb_define_singleton_method(rb_mBigMathR, "erfc", __impl_bigmath_erfc, 2);
 }

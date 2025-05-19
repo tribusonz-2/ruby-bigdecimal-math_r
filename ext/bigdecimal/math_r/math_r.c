@@ -7,6 +7,7 @@
 #include <ruby.h>
 #define DEFINE_SYMBOL
 #include "math_r/globals.h"
+#include "math_r/bigmath.h"
 
 void InitVM_Overrides(void);
 void InitVM_Const(void);
@@ -35,6 +36,14 @@ void InitVM_Solver(void);
 void
 Init_math_r(void)
 {
+	rb_gv_set(BIGMATH_PI, Qnil);
+	rb_gv_set(BIGMATH_E, Qnil);
+	rb_gv_set(BIGMATH_LOG2, Qnil);
+	rb_gv_set(BIGMATH_LOG10, Qnil);
+	rb_gv_set(BIGMATH_LOG_PI, Qnil);
+	rb_gv_set(BIGMATH_SQRT2, Qnil);
+	rb_gv_set(BIGMATH_SQRT3, Qnil);
+
 	mf_exp = rb_intern_const("exp");
 	mf_exp2 = rb_intern_const("exp2");
 	mf_expm1 = rb_intern_const("expm1");
