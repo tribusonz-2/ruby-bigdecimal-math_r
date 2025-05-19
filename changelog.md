@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - `acsch_branch()` had a domain.
 
 ### Added
-- Add API 'rb_num_domain_p'. This query whether an argument is in the domain.
+- Add API `rb_num_domain_p`. This query whether an argument is in the domain.
 
 ## [0.2.0] - 2025-05-XX
 
