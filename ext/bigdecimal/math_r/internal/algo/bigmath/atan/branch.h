@@ -10,7 +10,7 @@ atan_branch(VALUE x, VALUE prec, bigmath_func1 atan_cb)
 	if (rb_num_zero_p(x))
 		y = BIG_ZERO;
 	else
-		y = atan_cb(x, prec);
+		y = rb_bigmath_atan_adopt(x, prec, atan_cb);
 
 	return y;
 }

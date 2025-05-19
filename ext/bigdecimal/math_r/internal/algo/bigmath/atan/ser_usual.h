@@ -1,5 +1,5 @@
-static VALUE
-atan_ser_usual_inline(VALUE x, VALUE prec)
+VALUE
+atan_ser_usual(VALUE x, VALUE prec)
 {
 	const ID mult = rb_intern("mult");
 	const ID div = rb_intern("div");
@@ -31,11 +31,4 @@ atan_ser_usual_inline(VALUE x, VALUE prec)
 	RB_GC_GUARD(two);
 
 	return y;
-}
-
-
-VALUE
-atan_ser_usual(VALUE x, VALUE prec)
-{
-	return rb_bigmath_atan_adopt(x, prec, atan_ser_usual_inline);
 }
