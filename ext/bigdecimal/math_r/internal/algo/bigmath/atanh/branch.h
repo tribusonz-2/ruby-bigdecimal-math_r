@@ -2,12 +2,13 @@ VALUE
 atanh_branch(VALUE x, VALUE prec, bigmath_func1 atanh_cb)
 {
 	const ID leq = rb_intern("<=");
-	VALUE y = Qundef, p0999 = rb_BigDecimal1(rb_str_new_cstr("0.999"));
+	VALUE y = Qundef;
+	VALUE p0999 = rb_BigDecimal1(rb_str_new_cstr("0.999"));
+	VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), false);
 
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 
-	if (RTEST(rb_num_coerce_cmp(INT2FIX(-1), x, leq)) &&
-	    RTEST(rb_num_coerce_cmp(x, INT2FIX(1), leq)))
+	if (rb_num_domain_p(domain, x))
 	{
 		VALUE absx = rb_num_negative_p(x) ? rb_num_uminus(x) : x;
 		if (rb_num_equal_p(absx, INT2FIX(1)))

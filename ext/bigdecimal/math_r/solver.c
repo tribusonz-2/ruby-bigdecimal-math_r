@@ -75,15 +75,6 @@ bigmath_func1 cb_acoth;
 bigmath_func1 cb_cacoth;
 
 
-
-static bool
-domain_p(VALUE range, VALUE x)
-{
-	const ID cover_p = rb_intern("cover?");
-	VALUE ans = rb_funcall(range, cover_p, 1, x);
-	return ans == Qtrue ? true : false;
-}
-
 static void
 rb_id_includes(int n, const ID *funcs, ID func)
 {
@@ -867,7 +858,7 @@ solver_triginv(ID func, VALUE z, VALUE prec)
 			if (func == mf_asin)
 			{
 				VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
-				if (domain_p(domain, z))
+				if (rb_num_domain_p(domain, z))
 					w = asin_branch(z, prec, cb_asin);
 				else
 					w = asin_edom(z, prec);
@@ -875,7 +866,7 @@ solver_triginv(ID func, VALUE z, VALUE prec)
 			else if (func == mf_acos)
 			{
 				VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
-				if (domain_p(domain, z))
+				if (rb_num_domain_p(domain, z))
 					w = acos_branch(z, prec, cb_acos);
 				else
 					w = acos_edom(z, prec);
@@ -886,7 +877,7 @@ solver_triginv(ID func, VALUE z, VALUE prec)
 			{
 				VALUE m_domain = rb_range_new(BIG_MINUS_INF, BIG_MINUS_ONE, 0);
 				VALUE p_domain = rb_range_new(BIG_ONE, BIG_INF, 0);
-				if (domain_p(m_domain, z) || domain_p(p_domain, z))
+				if (rb_num_domain_p(m_domain, z) || rb_num_domain_p(p_domain, z))
 					w = acsc_branch(z, prec, cb_acsc);
 				else
 					w = acsc_edom(z, prec);
@@ -895,7 +886,7 @@ solver_triginv(ID func, VALUE z, VALUE prec)
 			{
 				VALUE m_domain = rb_range_new(BIG_MINUS_INF, BIG_MINUS_ONE, 0);
 				VALUE p_domain = rb_range_new(BIG_ONE, BIG_INF, 0);
-				if (domain_p(m_domain, z) || domain_p(p_domain, z))
+				if (rb_num_domain_p(m_domain, z) || rb_num_domain_p(p_domain, z))
 					w = asec_branch(z, prec, cb_asec);
 				else
 					w = asec_edom(z, prec);
@@ -1121,9 +1112,9 @@ solver_hyperbinv(ID func, VALUE z, VALUE prec)
 			{
 				VALUE m_domain = rb_range_new(BIG_MINUS_INF, BIG_MINUS_ONE, 0);
 				VALUE p_domain = rb_range_new(BIG_ONE, BIG_INF, 0);
-				if (domain_p(p_domain, z))
+				if (rb_num_domain_p(p_domain, z))
 					w = acosh_branch(z, prec, cb_acosh);
-				else if (domain_p(m_domain, z))
+				else if (rb_num_domain_p(m_domain, z))
 				{
 					z = rb_num_abs(z);
 					w = acosh_branch(z, prec, cb_acosh);
@@ -1135,7 +1126,7 @@ solver_hyperbinv(ID func, VALUE z, VALUE prec)
 			else if (func == mf_atanh)
 			{
 				VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
-				if (domain_p(domain, z))
+				if (rb_num_domain_p(domain, z))
 					w = atanh_branch(z, prec, cb_atanh);
 				else
 					w = atanh_edom(z, prec);
@@ -1148,9 +1139,9 @@ solver_hyperbinv(ID func, VALUE z, VALUE prec)
 			{
 				VALUE m_domain = rb_range_new(BIG_MINUS_ONE, BIG_ZERO, 0);
 				VALUE p_domain = rb_range_new(BIG_ZERO, BIG_ONE, 0);
-				if (domain_p(p_domain, z))
+				if (rb_num_domain_p(p_domain, z))
 					w = asech_branch(z, prec, cb_asech);
-				else if (domain_p(m_domain, z))
+				else if (rb_num_domain_p(m_domain, z))
 				{
 					w = asech_branch(z, prec, cb_asech);
 					w = rb_Complex(w, rb_bigmath_const_pi(prec));
@@ -1162,7 +1153,7 @@ solver_hyperbinv(ID func, VALUE z, VALUE prec)
 			{
 				VALUE m_domain = rb_range_new(BIG_MINUS_INF, BIG_MINUS_ONE, 0);
 				VALUE p_domain = rb_range_new(BIG_ONE, BIG_INF, 0);
-				if (domain_p(m_domain, z) || domain_p(p_domain, z))
+				if (rb_num_domain_p(m_domain, z) || rb_num_domain_p(p_domain, z))
 					w = acoth_branch(z, prec, cb_acoth);
 				else
 					w = acoth_edom(z, prec);

@@ -5,7 +5,8 @@ cpow_formula(VALUE z, VALUE w, VALUE prec)
 
 	rb_check_precise(prec);
 
-	if (rb_num_zero_p(rb_num_imag(z)) && rb_num_zero_p(rb_num_imag(w)))
+	if (rb_num_positive_p(rb_num_real(z)) &&
+	    rb_num_zero_p(rb_num_imag(z)) && rb_num_zero_p(rb_num_imag(w)))
 	{
 		a = pow_formula(rb_num_real(z), rb_num_real(w), prec);
 		a = rb_num_canonicalize(a, prec, ARG_COMPLEX, ARG_RAWVALUE);
