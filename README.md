@@ -18,7 +18,7 @@ When it is called, the BigDecimal class is also called.
 require 'bigdecimal/math_r'
 ```
 
-The functions at the top level `BigMathR`, of the module are mathematical constants in uppercase letters, and mathematical functions in lowercase.  
+The functions at the top level `BigMathR` of the module, are mathematical constants in uppercase letters, and mathematical functions in lowercase.  
 Mathematical functions are compatible with both real and complex solutions.  
 
 Constants:  
