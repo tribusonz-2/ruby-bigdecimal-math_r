@@ -7,12 +7,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Changed
+- `atan_branch()` limit a calculation range in $0 \lt x \lt \frac{1}{2}$ .
+
 ### Fixed
 - `cpow_formula()` return complex solution when left hand side is in negative real number.
 - `acsch_branch()` had a domain.
 
 ### Added
-- Add API `rb_num_domain_p`. This query whether an argument is in the domain.
+- Add API `rb_num_domain_p()`. This query whether an argument is in the domain.
 
 ## [0.2.0] - 2025-05-XX
 
