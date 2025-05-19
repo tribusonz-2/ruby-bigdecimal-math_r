@@ -4,7 +4,7 @@ acos_branch(VALUE x, VALUE prec, bigmath_func1 acos_cb)
 	const ID leq = rb_intern("<=");
 	VALUE y = Qundef;
 	VALUE p001 = rb_BigDecimal1(rb_str_new_cstr("0.001"));
-	VALUE domain = rb_range_new(INT2FIX(0), INT2FIX(1), false);
+	VALUE domain = rb_range_new(INT2FIX(0), INT2FIX(1), true);
 
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 
