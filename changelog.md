@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Fixed
+- `cpow_formula()` return complex solution when left hand side is in negative real number.
+- `acsch_branch()` had a domain.
+
+### Added
+- Add API 'rb_num_domain_p'. This query whether an argument is in the domain.
+
 ## [0.2.0] - 2025-05-XX
 
 ### Changed
