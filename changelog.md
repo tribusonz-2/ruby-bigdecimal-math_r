@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-05-XX
+
 ### Changed
 - `atan_branch()` limit a calculation range in $0 \lt x \lt \frac{1}{2}$ .
 
