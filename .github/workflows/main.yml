@@ -26,6 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           bundle install
+          gem install rake-compiler
           gem install bigdecimal-math_r
 
       - run: rake compile
