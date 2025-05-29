@@ -13,7 +13,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - `BigMathR::Const::E.euler`. Continued fraction styled constant $e$ .
-- `BigMathR::Const::PI.brouncker`. Continued fraction styled constant $\pi$ .
 
 ## [0.2.1] - 2025-05-XX
 
