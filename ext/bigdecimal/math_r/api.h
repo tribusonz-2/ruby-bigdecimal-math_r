@@ -50,6 +50,7 @@
 #include "api/numeric/abs.h"
 #include "api/numeric/canonicalize.h"
 #include "api/numeric/cmpeql.h"
+#include "api/numeric/domain_p.h"
 #include "api/numeric/equal_p.h"
 #include "api/numeric/finite_p.h"
 #include "api/numeric/imag.h"

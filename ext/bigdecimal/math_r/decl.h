@@ -1,7 +1,7 @@
 #ifndef BIGMATH_MATHFUNC_H
 #define BIGMATH_MATHFUNC_H
 
-VALUE E_ser(VALUE prec);
+VALUE E_napier(VALUE prec);
 VALUE LOG10_ser(VALUE prec);
 VALUE LOG2_BBP2002(VALUE prec);
 VALUE LOG_PI_builtin(VALUE prec);

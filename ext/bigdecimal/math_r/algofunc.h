@@ -1,7 +1,7 @@
 #ifndef BIGMATH_ALGOFUNC_H
 #define BIGMATH_ALGOFUNC_H
 
-#include "internal/algo/bigmath/E/ser.h"
+#include "internal/algo/bigmath/E/napier.h"
 #include "internal/algo/bigmath/LOG10/ser.h"
 #include "internal/algo/bigmath/LOG2/BBP2002.h"
 #include "internal/algo/bigmath/LOG_PI/builtin.h"

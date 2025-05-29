@@ -135,7 +135,7 @@ __impl_const_pi_machin(VALUE unused_obj, VALUE prec)
  * Implement by series expansion: sum_(n=0)^infty 1/n!
  * 
  * @example
- *  BigMathR::Const::E.ser(20)
+ *  BigMathR::Const::E.napier(20)
  *  #=> 0.27182818284590452354e1
  * @param prec [Integer] Arbitrary precision
  * @return [BigDecimal] Natural logarithm of 2
@@ -143,9 +143,9 @@ __impl_const_pi_machin(VALUE unused_obj, VALUE prec)
  * @raise [RangeError] Zero or negative precision
  */
 static VALUE
-__impl_const_e_ser(VALUE unused_obj, VALUE prec)
+__impl_const_e_napier(VALUE unused_obj, VALUE prec)
 {
-	return E_ser(prec);
+	return E_napier(prec);
 }
 
 /**
@@ -179,7 +179,7 @@ InitVM_Const(void)
 	rb_define_module_function(rb_mBigMathR, "SQRT3", __impl_const_sqrt3, 1);
 
 	rb_define_module_function(rb_mConstPI, "machin", __impl_const_pi_machin, 1);
-	rb_define_module_function(rb_mConstE, "ser", __impl_const_e_ser, 1);
+	rb_define_module_function(rb_mConstE, "napier", __impl_const_e_napier, 1);
 	rb_define_module_function(rb_mConstLOG2, "bbp2002", __impl_const_log2_bbp2002, 1);
 
 }
