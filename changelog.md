@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Renamed `BigMathR::Const::E.ser` to `BigMathR::Const::E.napier`
 
 ### Added
-- `BigMathR::Const::E.euler`. Continued fraction styled constant $e$ .
+- `BigMathR::Const::E.euler`. Continued fraction type constant $e$ .
 
 ## [0.2.1] - 2025-05-XX
 
