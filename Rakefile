@@ -10,4 +10,4 @@ Rake::ExtensionTask.new("bigdecimal/math_r") do |ext|
   ext.lib_dir = "lib/bigdecimal/"
 end
 
-task default: :test
+task default: :task
