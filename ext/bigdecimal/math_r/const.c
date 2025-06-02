@@ -180,6 +180,7 @@ InitVM_Const(void)
 
 	rb_define_module_function(rb_mConstPI, "machin", __impl_const_pi_machin, 1);
 	rb_define_module_function(rb_mConstE, "napier", __impl_const_e_napier, 1);
+	rb_define_alias(rb_mConstE, "euler_number", "napier");
 	rb_define_module_function(rb_mConstLOG2, "bbp2002", __impl_const_log2_bbp2002, 1);
 
 }
