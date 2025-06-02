@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - `BigMathR::Const::E.euler`. Continued fraction type constant $e$ .
+- 'BigMathR::Const::E.euler_number'. It is an alias of 'napier'.
 
 ## [0.2.1] - 2025-05-XX
 
