@@ -5,6 +5,7 @@
 #define DEF_PREC 1000
 #define BIGMATH_PI     "$M_PI"
 #define BIGMATH_E      "$M_E"
+#define BIGMATH_EulerGamma "$M_EulerGamma"
 #define BIGMATH_LOG2   "$M_LOG2"
 #define BIGMATH_LOG10  "$M_LOG10"
 #define BIGMATH_LOG_PI "$M_LOG_PI"
@@ -21,6 +22,7 @@ VALUE rb_bigmath_const(const char *gv, VALUE (*func)(VALUE prec), VALUE prec);
 VALUE rb_bigmath_const_pi(VALUE prec);
 VALUE rb_bigmath_const_log_pi(VALUE prec);
 VALUE rb_bigmath_const_e(VALUE prec);
+VALUE rb_bigmath_const_euler_gamma(VALUE prec);
 VALUE rb_bigmath_const_log2(VALUE prec);
 VALUE rb_bigmath_const_log10(VALUE prec);
 VALUE rb_bigmath_const_sqrt2(VALUE prec);
