@@ -20,6 +20,7 @@
 #include "api/bigmath/clog.h"
 #include "api/bigmath/const.h"
 #include "api/bigmath/const_e.h"
+#include "api/bigmath/const_euler_gamma.h"
 #include "api/bigmath/const_log10.h"
 #include "api/bigmath/const_log2.h"
 #include "api/bigmath/const_log_pi.h"

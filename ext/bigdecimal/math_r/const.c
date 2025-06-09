@@ -55,6 +55,21 @@ __impl_const_e(VALUE unused_obj, VALUE prec)
 }
 
 /**
+ * The Euler-Mascheroni constant gamma.
+ * @example
+ *  BigMathR.EulerGamma(20) #=> 
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Real solution
+ * @raise [ArgumentError] Occurs when +prec+ is not a positive integer.
+ * @since 0.1.0
+ */
+static VALUE
+__impl_const_euler_gamma(VALUE unused_obj, VALUE prec)
+{
+	return rb_bigmath_const_euler_gamma(prec);
+}
+
+/**
  * The natural logarithm of 2.
  * @example
  *  BigMathR.LOG2(20) #=> 0.69314718055994530942e0
@@ -149,6 +164,23 @@ __impl_const_e_napier(VALUE unused_obj, VALUE prec)
 }
 
 /**
+ * Implement by Borwein-Bailey's formula (Brent-McMillan type formula)
+ * 
+ * @example
+ *  BigMathR::Const::EulerGamma.borwein_bailey(20)
+ *  #=> 
+ * @param prec [Integer] Arbitrary precision
+ * @return [BigDecimal] Natural logarithm of 2
+ * @raise [TypeError] not an Integer
+ * @raise [RangeError] Zero or negative precision
+ */
+static VALUE
+__impl_const_euler_gamma_borwein_bailey(VALUE unused_obj, VALUE prec)
+{
+	return EulerGamma_borwein_bailey(prec);
+}
+
+/**
  * Implement by BBP's formula (Borwein and Bailey 2002)
  * 
  * @example
@@ -172,6 +204,7 @@ InitVM_Const(void)
 {
 	rb_define_module_function(rb_mBigMathR, "PI", __impl_const_pi, 1);
 	rb_define_module_function(rb_mBigMathR, "E", __impl_const_e, 1);
+	rb_define_module_function(rb_mBigMathR, "EulerGamma", __impl_const_euler_gamma, 1);
 	rb_define_module_function(rb_mBigMathR, "LOG2", __impl_const_log2, 1);
 	rb_define_module_function(rb_mBigMathR, "LOG_PI", __impl_const_log_pi, 1);
 	rb_define_module_function(rb_mBigMathR, "LOG10", __impl_const_log10, 1);
@@ -180,8 +213,11 @@ InitVM_Const(void)
 
 	rb_define_module_function(rb_mConstPI, "machin", __impl_const_pi_machin, 1);
 	rb_define_module_function(rb_mConstE, "napier", __impl_const_e_napier, 1);
-	rb_define_alias(rb_mConstE, "euler_number", "napier");
+	rb_define_module_function(rb_mConstE, "euler_number", __impl_const_e_napier, 1);
+	rb_define_module_function(rb_mConstEulerGamma, "borwein_bailey",
+		__impl_const_euler_gamma_borwein_bailey, 1);
+	rb_define_module_function(rb_mConstEulerGamma, "brent_mcmillan",
+		__impl_const_euler_gamma_borwein_bailey, 1);
 	rb_define_module_function(rb_mConstLOG2, "bbp2002", __impl_const_log2_bbp2002, 1);
-
 }
 

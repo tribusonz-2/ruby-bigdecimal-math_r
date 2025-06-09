@@ -36,8 +36,10 @@ void InitVM_Solver(void);
 void
 Init_math_r(void)
 {
+
 	rb_gv_set(BIGMATH_PI, Qnil);
 	rb_gv_set(BIGMATH_E, Qnil);
+	rb_gv_set(BIGMATH_EulerGamma, Qnil);
 	rb_gv_set(BIGMATH_LOG2, Qnil);
 	rb_gv_set(BIGMATH_LOG10, Qnil);
 	rb_gv_set(BIGMATH_LOG_PI, Qnil);

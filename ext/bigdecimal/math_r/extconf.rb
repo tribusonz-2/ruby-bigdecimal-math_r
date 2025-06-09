@@ -64,6 +64,7 @@ MATHFUNCS = {
   "f_euler" => [VALUE, ARG1],
   "PI"=>[VALUE, ARG_PREC],
   "E"=>[VALUE, ARG_PREC],
+  "EulerGamma"=>[VALUE, ARG_PREC],
   "LOG2"=>[VALUE, ARG_PREC],
   "LOG10"=>[VALUE, ARG_PREC],
   "LOG_PI"=>[VALUE, ARG_PREC],
