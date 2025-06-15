@@ -25,5 +25,13 @@ EulerGamma_borwein_bailey(VALUE prec)
 		u = rb_funcall1(u, '+', a);
 		v = rb_funcall1(v, '+', b);
 	}
+	RB_GC_GUARD(zero);
+	RB_GC_GUARD(one);
+	RB_GC_GUARD(nn);
+	RB_GC_GUARD(a);
+	RB_GC_GUARD(b);
+	RB_GC_GUARD(u);
+	RB_GC_GUARD(v);
+	RB_GC_GUARD(k);
 	return rb_funcall(u, div, 2, v, prec);
 }
