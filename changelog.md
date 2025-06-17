@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 - The names of mathematical constants were unified by the discoverer
 - Renamed `BigMathR::Const::E.ser` to `BigMathR::Const::E.napier`
+- Renamed `BigMathR::GammaR` to `BigMathR::GammaBeta`
 
 ### Added
 - `BigMathR::Const::E#euler`. Continued fraction type constant $e$ .
