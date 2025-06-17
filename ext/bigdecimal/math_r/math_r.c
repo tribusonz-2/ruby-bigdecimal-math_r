@@ -21,7 +21,7 @@ void InitVM_EulerF(void);
 void InitVM_LogRep(void);
 void InitVM_Power(void);
 void InitVM_Erf(void);
-void InitVM_GammaR(void);
+void InitVM_GammaBeta(void);
 void InitVM_Solver(void);
 
 /**
@@ -132,8 +132,8 @@ Init_math_r(void)
 	rb_mErf = rb_define_module_under(rb_mBigMathR, "Erf");
 	InitVM(Erf);
 
-	rb_mGammaR = rb_define_module_under(rb_mBigMathR, "GammaR");
-	InitVM(GammaR);
+	rb_mGammaBeta = rb_define_module_under(rb_mBigMathR, "GammaBeta");
+	InitVM(GammaBeta);
 
 	rb_mSolver = rb_define_module_under(rb_mBigMathR, "Solver");
 	InitVM(Solver);
