@@ -4,15 +4,17 @@ erf_algo911(VALUE x, VALUE prec)
 	const ID div = rb_intern("div");
 	const ID leq = rb_intern("<=");
 	const ID pow = rb_intern("**");
-	VALUE absx, bc, n, y = Qundef;
+	VALUE absx, bc, log10, n, y = Qundef;
 	VALUE zero_six = rb_BigDecimal1(rb_str_new_cstr("0.6"));
 	VALUE four_one = rb_BigDecimal1(rb_str_new_cstr("4.1"));
 
 	n = rb_numdiff_make_n(prec);
 
 	absx = rb_num_abs(x);
-	bc = rb_BigDecimal1(rb_funcall1(prec, '+', INT2FIX(21)));
-	bc = rb_funcall1(bc, '*', rb_bigmath_log(INT2FIX(10), n));
+	log10 = rb_bigmath_const_log10(n);
+
+	bc = rb_BigDecimal1(rb_funcall1(n, '+', INT2FIX(21)));
+	bc = rb_funcall1(bc, '*', log10);
 	bc = rb_bigmath_sqrt(bc, n);
 	bc = rb_funcall(bc, div, 2, INT2FIX(5), n);
 	if (rb_num_coerce_cmp(absx, bc, leq))
@@ -21,7 +23,7 @@ erf_algo911(VALUE x, VALUE prec)
 		goto retval;
 	}
 	bc = rb_funcall1(prec, '+', INT2FIX(6));
-	bc = rb_funcall1(bc, '*', rb_bigmath_log(INT2FIX(10), n));
+	bc = rb_funcall1(bc, '*', log10);
 	bc = rb_funcall1(bc, pow, zero_six);
 	bc = rb_funcall(bc, div, 2, four_one, n);
        if (rb_num_coerce_cmp(absx, bc, leq))
