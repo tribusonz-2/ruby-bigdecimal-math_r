@@ -82,20 +82,20 @@ gammar_q(VALUE a, VALUE x, VALUE loggamma_a, VALUE prec)
 	n = rb_numdiff_make_n(prec);
 	la = one; lb = rb_funcall1(one, '+', rb_funcall1(x, '-', a)); // Laguerreの多項式
 	// w = exp(a * log(x, prec) - x - loggamma_a, n);
-	w = rb_funcall1(a, '*', rb_bigmath_log(x, prec));
+	w = rb_funcall1(a, '*', rb_bigmath_log(x, n));
 	w = rb_funcall1(w, '-', x);
 	w = rb_funcall1(w, '-', loggamma_a);
-	w = rb_bigmath_exp(w, prec);
+	w = rb_bigmath_exp(w, n);
 	result = rb_funcall1(w, '/', lb);
 	big_k = two;
+
 	for (int k = 2; k <= 1000; k++)
 	{
 		// temp = ((k - one - a) * (lb - la) + (k + x) * lb).div(k, n);
-		temp = rb_funcall1(k, '-', rb_funcall1(one, '-', a));
+		temp = rb_funcall1(big_k, '-', rb_funcall1(one, '-', a));
 		temp = rb_funcall1(temp, '*', rb_funcall1(lb, '-', la));
-		temp = rb_funcall1(temp, '+', rb_funcall1(rb_funcall1(k, '+', x), '*', lb));
+		temp = rb_funcall1(temp, '+', rb_funcall1(rb_funcall1(big_k, '+', x), '*', lb));
 		temp = rb_funcall(temp, div, 2, big_k, n);
-
 		la = lb; lb = temp;
 		// w *= (k - one - a) / k;
 		temp = rb_funcall1(rb_funcall1(big_k, '-', one), '-', a);
@@ -126,7 +126,6 @@ retval:
 	return result;
 }
 
-// TODO: -1 <= x <= 1 以外はエラーが出る: `erf': undefined method `-' for nil (NoMethodError)
 VALUE
 erf_gammar(VALUE x, VALUE prec)
 {
@@ -140,35 +139,6 @@ erf_gammar(VALUE x, VALUE prec)
 	return rb_num_round(y, prec);
 }
 
-VALUE
-erf_branch(VALUE x, VALUE prec, bigmath_func1 erf_cb)
-{
-	VALUE y = Qundef;
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	if (erf_cb == NULL)
-		return BIG_NAN;
-	if (!rb_num_finite_p(x))
-	{
-		if (rb_num_nan_p(x))
-			y = BIG_NAN;
-		else
-		{
-			switch (rb_num_infinite_p(x)) {
-			case -1:
-				y = BIG_MINUS_ONE;
-				break;
-			case 1:
-				y = BIG_ONE;
-				break;
-			}
-		}
-	}
-	if (y == Qundef)
-		y = erf_cb(x, prec);
-	return y;
-}
-
-// TODO: -1 <= x <= 1 以外はエラーが出る: `erf': undefined method `-' for nil (NoMethodError)
 VALUE
 erfc_gammar(VALUE x, VALUE prec)
 {
@@ -188,35 +158,6 @@ erfc_gammar(VALUE x, VALUE prec)
 	return rb_num_round(y, prec);
 }
 
-VALUE
-erfc_branch(VALUE x, VALUE prec, bigmath_func1 erfc_cb)
-{
-	VALUE y = Qundef;
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
-	if (erfc_cb == NULL)
-		return BIG_NAN;
-	if (!rb_num_finite_p(x))
-	{
-		if (rb_num_nan_p(x))
-			y = BIG_NAN;
-		else
-		{
-			switch (rb_num_infinite_p(x)) {
-			case -1:
-				y = rb_BigDecimal1(INT2FIX(2));
-				break;
-			case 1:
-				y = BIG_ZERO;
-				break;
-			}
-		}
-	}
-	if (y == Qundef)
-		y = erfc_cb(x, prec);
-	return y;
-}
-
-
 
 
 static VALUE
@@ -231,21 +172,13 @@ __impl_gammabeta_erfc(VALUE unused_obj, VALUE x, VALUE prec)
 {
 	return erfc_branch(x, prec, erfc_gammar);
 }
-
-
-// TODO: eps-16の誤差がある。
-// |erf(1) - 0.84270079294971474562456763838456194738845892814039e0|
-// 結果: 1.237166529966980473119076080698259... × 10^-16
-// |erfc(1) - 0.15729920705028525437543236161543805261154107185961e0|
-// 結果: 1.2371665299669804731190760806982591... × 10^-16
-
 #endif
 
 void
 InitVM_GammaBeta(void)
 {
 #if 0
-	rb_define_module_function(rb_mGammaR, "erf", __impl_gammabeta_erf, 2);
-	rb_define_module_function(rb_mGammaR, "erfc", __impl_gammabeta_erfc, 2);
+	rb_define_module_function(rb_mGammaBeta, "erf", __impl_gammabeta_erf, 2);
+	rb_define_module_function(rb_mGammaBeta, "erfc", __impl_gammabeta_erfc, 2);
 #endif
 }
