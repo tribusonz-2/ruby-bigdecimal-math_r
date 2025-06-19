@@ -201,7 +201,7 @@ __impl_clog_formula(VALUE unused_obj, VALUE z, VALUE prec)
 static VALUE
 __impl_clog2_formula(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return clog_branch(z, prec, clog2_formula);
+	return clog2_branch(z, prec, clog2_formula);
 }
 
 /**
@@ -220,7 +220,7 @@ __impl_clog2_formula(VALUE unused_obj, VALUE z, VALUE prec)
 static VALUE
 __impl_clog10_formula(VALUE unused_obj, VALUE z, VALUE prec)
 {
-	return clog_branch(z, prec, clog10_formula);
+	return clog10_branch(z, prec, clog10_formula);
 }
 
 

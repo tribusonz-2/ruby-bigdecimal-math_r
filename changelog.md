@@ -17,7 +17,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - `BigMathR::Const::E#euler_number`. It is an alias of `napier`.
 - `BigMathR::Const::EulerGamma#borwein_bailey`. Brent-McMillan type constant $\gamma$ .
 - `BigMathR::Const::EulerGamma#brent_mcmillan`. It is an alias of `borwein_bailey`.
-- `BigMathR#EulerGamma`
+- `BigMathR#EulerGamma`.
+- Branches for the logarithmic functions.
+- `expm1` Function.
 
 ## [0.2.1] - 2025-05-XX
 

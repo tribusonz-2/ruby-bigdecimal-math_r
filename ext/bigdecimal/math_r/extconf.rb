@@ -16,6 +16,7 @@ VOID = "void"
 MATHFUNCS = {
   "exp" => [VALUE, ARG1], "cexp" => [VALUE, ARG1],
   "exp2" => [VALUE, ARG1], "cexp2" => [VALUE, ARG1],
+  "expm1" => [VALUE, ARG1], "cexpm1" => [VALUE, ARG1],
   "expxt" => [VALUE, ARG2],
   "log" => [VALUE, ARG1], "clog" => [VALUE, ARG1], 
   "log1p" => [VALUE, ARG1], "clog1p" => [VALUE, ARG1], 
@@ -75,6 +76,7 @@ MATHFUNCS = {
 CB_TYPE = {
   "exp" => "bigmath_func1", "cexp" => "bigmath_func1",
   "exp2" => "bigmath_func1", "cexp2" => "bigmath_func1",
+  "expm1" => "bigmath_func1", "cexpm1" => "bigmath_func1",
   "log" => "bigmath_func1", "clog" => "bigmath_func1",
   "log2" => "bigmath_func1", "clog2" => "bigmath_func1",
   "log10" => "bigmath_func1", "clog10" => "bigmath_func1",

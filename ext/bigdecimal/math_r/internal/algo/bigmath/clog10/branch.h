@@ -1,5 +1,5 @@
 VALUE
-clog_branch(VALUE z, VALUE prec, bigmath_func1 clog_cb)
+clog10_branch(VALUE z, VALUE prec, bigmath_func1 clog10_cb)
 {
 	VALUE w = Qundef, arg = Qundef;
 
@@ -17,7 +17,7 @@ clog_branch(VALUE z, VALUE prec, bigmath_func1 clog_cb)
 		{
 			switch (re_inf_sgn) {
 			case -1:
-				arg = rb_num_imag(clog_cb(BIG_MINUS_ONE, prec));
+				arg = rb_num_imag(clog10_cb(BIG_MINUS_ONE, prec));
 				w = rb_Complex(BIG_INF, arg);
 				break;
 			case 1:
@@ -30,12 +30,12 @@ clog_branch(VALUE z, VALUE prec, bigmath_func1 clog_cb)
 			switch (rb_num_infinite_p(rb_num_imag(z))) {
 			case -1:
 				arg = rb_num_imag(
-					clog_cb(rb_Complex(BIG_ZERO, BIG_MINUS_ONE), prec));
+					clog10_cb(rb_Complex(BIG_ZERO, BIG_MINUS_ONE), prec));
 				w = rb_Complex(BIG_INF, arg);
 				break;
 			case 1:
 				arg = rb_num_imag(
-					clog_cb(rb_Complex(BIG_ZERO, BIG_ONE), prec));
+					clog10_cb(rb_Complex(BIG_ZERO, BIG_ONE), prec));
 				w = rb_Complex(BIG_INF, arg);
 				break;
 			}
@@ -47,7 +47,7 @@ clog_branch(VALUE z, VALUE prec, bigmath_func1 clog_cb)
 	}
 	if (w == Qundef)
 	{
-		w = clog_cb(z, prec);
+		w = clog10_cb(z, prec);
 	}
 	return w;
 }
