@@ -9,5 +9,5 @@ cot_eulerf(VALUE z, VALUE prec)
 	w = trig_f_euler(mf_tan, rb_ImaginaryZ(z, SIGN_PLUS), n);
 	w = rb_num_canonicalize(w, n, ARG_REAL, ARG_RECIPROCAL);
 
-	return _rb_num_round(w, prec);
+	return rb_num_round(w, prec);
 }
