@@ -1,8 +1,12 @@
 #ifndef INTERNAL_API_BIGDECIMAL
 #define INTERNAL_API_BIGDECIMAL
 
-/* API for BigDecimal */
+/**
+ *  Query the Parameter `prec` that is in valid range $p \lt 0$.
+ *  if invalid range, error occurrd.
+ */
 void rb_check_precise(VALUE prec);
+#define CheckPrecise(prec) rb_check_precise(prec) 
 
 VALUE rb_big_zero(void);
 #define BIG_ZERO rb_big_zero()
