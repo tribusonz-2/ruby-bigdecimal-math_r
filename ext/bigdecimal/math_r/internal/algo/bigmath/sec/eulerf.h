@@ -1,11 +1,13 @@
 VALUE
 sec_eulerf(VALUE z, VALUE prec)
 {
-	VALUE w;
+	VALUE w, n;
 
 	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 
-	w = trig_f_euler(mf_cos, rb_ImaginaryZ(z, SIGN_PLUS), prec);
+	w = trig_f_euler(mf_cos, rb_ImaginaryZ(z, SIGN_PLUS), n);
+	w = rb_num_canonicalize(w, n, ARG_REAL, ARG_RECIPROCAL);
 
-	return rb_num_canonicalize(w, prec, ARG_REAL, ARG_RECIPROCAL);
+	return rb_num_round(w, prec);
 }

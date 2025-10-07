@@ -264,17 +264,23 @@ VALUE
 trig_f_euler(const ID func, VALUE theta, VALUE prec)
 {
 	VALUE h = Qundef, sc = Qundef;
+
+	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
+
 	if (rb_num_nan_p(theta))
 		return rb_Complex(BIG_NAN, BIG_NAN);
 	if (rb_num_zero_p(rb_num_imag(theta)))
 	{
-		h = f_euler_h(func, theta, prec);
+		h = f_euler_h(func, theta, n);
+		h = rb_num_round(h, prec);
 		if (rb_num_nan_p(h))
 			return h;
 	}
 	if (rb_num_zero_p(rb_num_real(theta)))
 	{
-		sc = f_euler_sc(func, theta, prec);
+		sc = f_euler_sc(func, theta, n);
+		sc = rb_num_round(sc, prec);
 		if (rb_num_nan_p(sc))
 			return sc;
 	}
@@ -284,7 +290,7 @@ trig_f_euler(const ID func, VALUE theta, VALUE prec)
 		return sc;
 	else
 	{
-		VALUE y = f_euler_esc(func, theta, prec);
-		return y;
+		VALUE y = f_euler_esc(func, theta, n);
+		return rb_num_round(y, prec);
 	}
 }

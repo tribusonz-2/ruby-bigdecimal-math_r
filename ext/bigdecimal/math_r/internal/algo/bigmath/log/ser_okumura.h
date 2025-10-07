@@ -9,8 +9,11 @@ log_ser_okumura(VALUE x, VALUE prec)
 	bool inv;
 	VALUE one = BIG_ONE;
 	VALUE two = rb_BigDecimal1(INT2FIX(2));
-	VALUE n = rb_numdiff_make_n(prec), m;
+	VALUE n, m;
 	VALUE k, x2, i, s, d, y;
+
+	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 	
 	inv = RTEST(rb_num_coerce_cmp(x, INT2FIX(1), '>'));
 	if (inv)

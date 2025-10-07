@@ -4,10 +4,14 @@ tanh_formula(VALUE x, VALUE prec)
 	const ID pred = rb_intern("pred");
 	const ID succ = rb_intern("succ");
 	const ID div = rb_intern("div");
-	VALUE n = rb_numdiff_make_n(prec);
-	VALUE two = rb_BigDecimal1(INT2FIX(2));
-        VALUE t = rb_bigmath_exp(rb_funcall1(x, '*', two), n), y = Qundef;
+	VALUE n, two, t, y = Qundef;
 	int sign;
+
+	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
+
+	two = rb_BigDecimal1(INT2FIX(2));
+        t = rb_bigmath_exp(rb_funcall1(x, '*', two), n);
 
 	if (TYPE(t) == T_FIXNUM || TYPE(t) == T_BIGNUM)
 	{

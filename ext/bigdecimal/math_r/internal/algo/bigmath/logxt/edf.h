@@ -4,7 +4,12 @@ logxt_edf(VALUE x, VALUE t, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE a, b, s, one_half, n, m;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
+
+	if (!rb_num_finite_p(x) || !rb_num_finite_p(t))
+		return BIG_NAN;
+
 	a = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
 	b = BIG_ONE;
 	s = BIG_ZERO;
@@ -29,5 +34,5 @@ logxt_edf(VALUE x, VALUE t, VALUE prec)
 	RB_GC_GUARD(s);
 	RB_GC_GUARD(one_half);
 
-	return s;
+	return rb_num_round(s, prec);
 }

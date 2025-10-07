@@ -10,9 +10,9 @@ sinhcosh_inline(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 	w = BIG_ONE;
 	a = BIG_ONE;
 	y = BIG_ZERO;
-	
 	if (sinh != NULL)  *sinh = BIG_ZERO;
 	if (cosh != NULL)  *cosh = BIG_ZERO;
+
 	while (rb_numdiff_condition_p(y, a, n, &m))
 	{
 		a = rb_funcall(w, div, 2, f, m);
@@ -27,10 +27,12 @@ sinhcosh_inline(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 		w = rb_funcall1(w, '*', x);
 		f = rb_funcall1(f, '*', LONG2NUM(++i));
 	}
+
 	RB_GC_GUARD(f);
 	RB_GC_GUARD(w);
 	RB_GC_GUARD(a);
 	RB_GC_GUARD(y);
+
 	if (sinh != NULL)  RB_GC_GUARD(*sinh);
 	if (cosh != NULL)  RB_GC_GUARD(*cosh);
 }
@@ -38,8 +40,13 @@ sinhcosh_inline(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 void
 sinhcosh_ser(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 {
+	VALUE n;
 	int sign;
-	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
+
+	rb_check_precise(prec);
+
+	n = rb_numdiff_make_n(prec);
+	x = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
 	
 	if (sinh == NULL && cosh == NULL)  return;
 	
@@ -63,7 +70,7 @@ sinhcosh_ser(VALUE x, VALUE prec, VALUE *sinh, VALUE *cosh)
 	}
 	else
 	{
-		sinhcosh_inline(x, prec, sinh, cosh);
+		sinhcosh_inline(x, n, sinh, cosh);
 		if (sinh != NULL)  *sinh = rb_num_round(*sinh, prec);
 		if (cosh != NULL)  *cosh = rb_num_round(*cosh, prec);
 	}

@@ -3,14 +3,24 @@ log1p_ser_mercator(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
 	const ID mult = rb_intern("mult");
-	VALUE n = rb_numdiff_make_n(prec);
-	VALUE one = BIG_ONE;
-	VALUE w = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
-	VALUE t = one;
-	VALUE d = BIG_ONE;
-	VALUE y = BIG_ZERO;
+	VALUE n;
+	VALUE one;
+	VALUE w;
+	VALUE t;
+	VALUE d;
+	VALUE y;
 	int sign = 1;
 	VALUE m = Qundef;
+
+	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
+
+	one = BIG_ONE;
+	t = one;
+	d = BIG_ONE;
+	y = BIG_ZERO;
+
+	w = rb_num_canonicalize(x, n, ARG_REAL, ARG_RAWVALUE);
 
 	while (rb_numdiff_condition_p(y, d, n, &m))
 	{

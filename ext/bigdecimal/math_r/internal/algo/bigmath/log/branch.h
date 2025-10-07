@@ -1,7 +1,7 @@
 VALUE
 log_branch(VALUE x, VALUE prec, bigmath_func1 log_cb)
 {
-	VALUE y = Qundef;
+	VALUE y = Qundef, n;
 
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 
@@ -27,8 +27,12 @@ log_branch(VALUE x, VALUE prec, bigmath_func1 log_cb)
 		{
 			const ID add = rb_intern("add");
 			VALUE exp, fra;
+
+			rb_check_precise(prec);
+			n = rb_numdiff_make_n(prec);
+
 			fra = rcm2_edf(x, &exp);
-			exp = rb_funcall1(rb_bigmath_const_log2(prec), '*', exp);
+			exp = rb_funcall1(rb_bigmath_const_log2(n), '*', exp);
 			fra = log_cb(fra, prec);
 			y = rb_funcall(exp, add, 2, fra, prec);
 		}

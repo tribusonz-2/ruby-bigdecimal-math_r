@@ -17,18 +17,16 @@ VALUE
 log_mercator(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
-	VALUE fra = Qundef, exp = Qundef, y = Qundef;
-	fra = rcm2_edf(x, &exp);
+	VALUE temp = Qundef, y = Qundef, n;
 
 	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 
-	y = rb_funcall1(fra, '-', INT2FIX(1));
-        fra = rb_funcall(y, div, 2, fra, prec);
-	fra = rb_num_uminus(fra);
-	fra = log1p_ser_mercator(fra, prec);
-	fra = rb_num_uminus(fra);
+	y = rb_funcall1(temp, '-', INT2FIX(1));
+        temp = rb_funcall(y, div, 2, temp, n);
+	temp = rb_num_uminus(temp);
+	temp = log1p_ser_mercator(temp, n);
+	y = rb_num_uminus(temp);
 
-	exp = rb_funcall1(exp, '*', rb_bigmath_const_log2(prec));
-	y = rb_funcall1(exp, '+', fra);
 	return rb_num_round(y, prec);
 }

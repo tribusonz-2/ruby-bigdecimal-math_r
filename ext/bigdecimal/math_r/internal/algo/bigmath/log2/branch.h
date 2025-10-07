@@ -29,7 +29,7 @@ log2_branch(VALUE x, VALUE prec, bigmath_func1 log2_cb)
 			VALUE exp, fra;
 			fra = rcm2_edf(x, &exp);
 			exp = rb_BigDecimal1(exp);
-			fra = log2_cb(fra, prec);
+			fra = log2_cb(fra, rb_numdiff_make_n(prec));
 			y = rb_funcall(exp, add, 2, fra, prec);
 		}
 		else
