@@ -263,7 +263,7 @@ f_euler_esc(const ID func, VALUE z, VALUE prec)
 VALUE
 trig_f_euler(const ID func, VALUE theta, VALUE prec)
 {
-	VALUE h = Qundef, sc = Qundef;
+	VALUE h = Qundef, sc = Qundef, n;
 
 	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
