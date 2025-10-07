@@ -1,12 +1,15 @@
 VALUE
 acoth_logrep(VALUE x, VALUE prec)
 {
-	VALUE y;
+	VALUE y, n;
+
+	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 
 	y = rb_funcall1(
 		rb_funcall1(x, '+', BIG_ONE), '/', 
 		rb_funcall1(x, '-', BIG_ONE));
-	y = rb_bigmath_log(y, prec);
+	y = rb_bigmath_log(y, n);
 	y = rb_funcall1(rb_Rational(INT2FIX(1), INT2FIX(2)), '*', y);
 	y = rb_num_round(y, prec);
 

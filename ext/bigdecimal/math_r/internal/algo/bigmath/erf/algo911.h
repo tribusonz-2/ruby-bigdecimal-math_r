@@ -8,6 +8,7 @@ erf_algo911(VALUE x, VALUE prec)
 	VALUE zero_six = rb_BigDecimal1(rb_str_new_cstr("0.6"));
 	VALUE four_one = rb_BigDecimal1(rb_str_new_cstr("4.1"));
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	absx = rb_num_abs(x);

@@ -9,6 +9,8 @@ atan_ser_euler(VALUE x, VALUE prec)
 	VALUE m, y, w, t, s;
 	long n = 1;
 
+	rb_check_precise(prec);
+
 	if (rb_num_zero_p(x))
 		return BIG_ZERO;
 

@@ -42,7 +42,12 @@ bigmath_l2norm(VALUE vec, VALUE prec)
 VALUE
 l2norm_formula(VALUE vec, VALUE prec)
 {
-	rb_check_precise(prec);
+	VALUE y, n;
 
-	return bigmath_l2norm(vec, prec);
+	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
+
+	y = bigmath_l2norm(vec, n);
+
+	return rb_num_round(y, prec);
 }

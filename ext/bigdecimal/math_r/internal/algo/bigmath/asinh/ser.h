@@ -5,6 +5,7 @@ asinh_ser(VALUE x, VALUE prec)
 	VALUE n, m;
 	VALUE one, two, x2, c, t, f_n, f_m, d, y, i;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	one = BIG_ONE;

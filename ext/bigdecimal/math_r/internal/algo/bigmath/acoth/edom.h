@@ -1,16 +1,17 @@
 VALUE
 acoth_edom(VALUE x, VALUE prec)
 {
-	VALUE t, pi;
+	VALUE t, pi, n;
 
 	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 
 	t = rb_funcall1(
 		rb_funcall1(x, '+', BIG_ONE), '/', 
 		rb_funcall1(x, '-', BIG_ONE));
-	pi = rb_bigmath_const_pi(prec);
+	pi = rb_bigmath_const_pi(n);
 	t = rb_Complex(
-		rb_bigmath_log(rb_num_abs(t), prec), 
+		rb_bigmath_log(rb_num_abs(t), n), 
 		rb_num_negative_p(x) ? pi : rb_num_uminus(pi));
 	t = rb_funcall1(rb_Rational(INT2FIX(1), INT2FIX(2)), '*', t);
 

@@ -4,6 +4,7 @@ erfc_cf(VALUE x, VALUE prec)
 	const ID div = rb_intern("div");
 	VALUE n, zero, one, two, c, b, p1, q1, p2, q2, i, prev, t;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	zero = BIG_ZERO;

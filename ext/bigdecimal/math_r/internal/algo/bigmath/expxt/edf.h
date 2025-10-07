@@ -7,8 +7,8 @@ expxt_edf(VALUE x, VALUE t, VALUE prec)
 	long i = 0;
 
 	rb_check_precise(prec);
-
 	n = rb_numdiff_make_n(prec), m;
+
 	a = BIG_ONE;
 	xt = rb_funcall1(x, '*', t);
 	e = BIG_ZERO;

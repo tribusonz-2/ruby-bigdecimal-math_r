@@ -3,6 +3,7 @@ casinh_logrep(VALUE z, VALUE prec)
 {
 	VALUE n, t, y;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	t = rb_funcall1(rb_funcall1(z, '*', z), '+', BIG_ONE);

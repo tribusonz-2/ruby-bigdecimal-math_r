@@ -1,11 +1,15 @@
 VALUE
 cacsch_logrep(VALUE z, VALUE prec)
 {
+	VALUE n;
+
 	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 
-	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+	z = rb_num_canonicalize(z, n, ARG_COMPLEX, ARG_RAWVALUE);
 	z = rb_ImaginaryZ(z, SIGN_PLUS);
-	z = cacsc_logrep(z, prec);
+	z = cacsc_logrep(z, n);
+	z = rb_ImaginaryZ(z, SIGN_PLUS);
 
-	return rb_ImaginaryZ(z, SIGN_PLUS);
+	return rb_num_round(z, prec);
 }

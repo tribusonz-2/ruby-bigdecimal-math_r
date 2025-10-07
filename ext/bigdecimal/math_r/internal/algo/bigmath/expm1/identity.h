@@ -6,6 +6,7 @@ expm1_identity(VALUE x, VALUE prec)
 	VALUE two = rb_BigDecimal1(INT2FIX(2));
 	VALUE n;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	x = rb_funcall1(x, '/', two);

@@ -8,6 +8,7 @@ erfc_algo911(VALUE x, VALUE prec)
 	VALUE zero_seven = rb_BigDecimal1(rb_str_new_cstr("0.7"));
 	VALUE nine = rb_BigDecimal1(INT2FIX(9));
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	log10 = rb_bigmath_const_log10(n);

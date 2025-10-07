@@ -6,8 +6,8 @@ hypot_mmm(VALUE a, VALUE b, VALUE prec)
 	VALUE n, m, two, four, t;
 
 	rb_check_precise(prec);
-
 	n = rb_numdiff_make_n(prec);
+
 	m = Qundef;
         two = rb_BigDecimal1(INT2FIX(2));
 	four = rb_BigDecimal1(INT2FIX(4));

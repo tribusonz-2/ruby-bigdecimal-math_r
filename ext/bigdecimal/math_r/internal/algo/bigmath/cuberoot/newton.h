@@ -2,10 +2,11 @@ VALUE
 cuberoot_newton(VALUE x, VALUE prec)
 {
 	const ID div = rb_intern("div");
-	VALUE s = Qundef, t = Qundef, prev = Qundef;
+	VALUE s = Qundef, t = Qundef, prev = Qundef, n;
 	VALUE two, three;
 
 	rb_check_precise(prec);
+	n = rb_numdiff_make_n(prec);
 
 	if (RTEST(rb_num_coerce_cmp(x, INT2FIX(1), '>')))
 		s = x;
@@ -20,7 +21,7 @@ cuberoot_newton(VALUE x, VALUE prec)
 		t = rb_funcall1(s, '*', s);
 		t = rb_funcall1(x, '/', t);
 		t = rb_funcall1(t, '+', rb_funcall1(two, '*', s));
-		s = rb_funcall(t, div, 2, three, prec);
+		s = rb_funcall(t, div, 2, three, n);
 	} while (RTEST(rb_num_coerce_cmp(s, prev, '<')));
 
 	RB_GC_GUARD(s);
@@ -29,5 +30,5 @@ cuberoot_newton(VALUE x, VALUE prec)
 	RB_GC_GUARD(two);
 	RB_GC_GUARD(three);
 
-	return prev;
+	return rb_num_round(prev, prec);
 }

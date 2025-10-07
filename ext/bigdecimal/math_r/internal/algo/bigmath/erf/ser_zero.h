@@ -5,6 +5,7 @@ erf_ser_zero(VALUE x, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE n, m, zero, one, two, x2, f, r, i, d, y;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	zero = BIG_ZERO;

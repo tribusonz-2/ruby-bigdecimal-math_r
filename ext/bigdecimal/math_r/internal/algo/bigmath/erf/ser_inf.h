@@ -5,6 +5,7 @@ erf_ser_inf(VALUE x, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE n, m, s, zero, one, two, x2, f, r, i, i2, d, y;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	s = rb_bigmath_exp(rb_funcall1(rb_num_uminus(x), '*', x), n);

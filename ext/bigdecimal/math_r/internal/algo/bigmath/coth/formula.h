@@ -7,6 +7,7 @@ coth_formula(VALUE x, VALUE prec)
 	VALUE n, two, t, y = Qundef;
 	int sign;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	two = rb_BigDecimal1(INT2FIX(2));

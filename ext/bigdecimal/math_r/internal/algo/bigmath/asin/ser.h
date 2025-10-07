@@ -4,6 +4,7 @@ asin_ser(VALUE x, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE one, i, d, x2, y, n, m;
 
+	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
 
 	one = BIG_ONE;

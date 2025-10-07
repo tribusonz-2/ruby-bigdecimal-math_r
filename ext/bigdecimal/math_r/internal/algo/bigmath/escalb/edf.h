@@ -8,6 +8,8 @@ escalb_edf(VALUE a, VALUE x, VALUE prec, VALUE *exp, VALUE *fra)
 	const ID MAX_10_EXP = rb_intern("MAX_10_EXP");
 	VALUE max_10_exp = rb_const_get_at(rb_cFloat, MAX_10_EXP);
 
+	rb_check_precise(prec);
+
 	if (!rb_num_finite_p(a) && !rb_num_positive_p(a))
 		rb_raise(rb_eRangeError, "parameter a must be positive finite");
 	switch (TYPE(x)) {

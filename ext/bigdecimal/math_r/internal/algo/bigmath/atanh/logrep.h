@@ -5,6 +5,8 @@ atanh_logrep(VALUE x, VALUE prec)
 	const ID mult = rb_intern("mult");
 	VALUE n, half;
 
+	rb_check_precise(prec);
+
 	n = rb_numdiff_make_n(prec);
 	half = rb_BigDecimal1(rb_str_new_cstr("0.5"));
 
