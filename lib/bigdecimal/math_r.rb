@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bigdecimal/math'
-require_relative './math_r.so'
+require 'bigdecimal/math_r/math_r'
 
 require_relative 'math_r/version'
 require_relative 'math_r/const/E_euler'
