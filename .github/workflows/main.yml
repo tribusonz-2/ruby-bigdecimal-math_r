@@ -25,6 +25,7 @@ jobs:
           bundler-cache: true
       - name: Install dependencies
         run: |
+          bundle config set frozen false
           bundle install
           gem install rake-compiler
           gem install bigdecimal-math_r
