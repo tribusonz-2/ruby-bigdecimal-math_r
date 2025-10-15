@@ -12,6 +12,5 @@ asech_logrep(VALUE x, VALUE prec)
 	y = rb_funcall1(y, '+', BIG_ONE);
 	y = rb_funcall1(y, '/', x);
 	y = rb_bigmath_log(y, prec);
-
 	return y;
 }

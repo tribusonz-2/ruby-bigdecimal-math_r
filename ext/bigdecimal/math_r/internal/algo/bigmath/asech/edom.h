@@ -11,13 +11,12 @@ asech_edom(VALUE x, VALUE prec)
 	sqr = rb_funcall1(
 		rb_funcall1(BIG_ONE, '-', absx), '/', 
 		rb_funcall1(absx, '+', BIG_ONE));
-	w = rb_Complex(BIG_ZERO, rb_bigmath_sqrt(sqr, n));
+	w = rb_Complex(BIG_ZERO, rb_bigmath_sqrt(rb_num_uminus(sqr), n));
 	w = rb_funcall1(w, '*', rb_funcall1(recip_x, '+', BIG_ONE));
 	w = rb_funcall1(w, '+', recip_x);
 	y = rb_bigmath_carg(w, n);
 	if (rb_num_negative_p(x))
 		y =rb_funcall1(rb_bigmath_const_pi(n), '-', y);
 	y = rb_Complex(BIG_ZERO, y);
-
 	return rb_num_round(y, prec);
 }

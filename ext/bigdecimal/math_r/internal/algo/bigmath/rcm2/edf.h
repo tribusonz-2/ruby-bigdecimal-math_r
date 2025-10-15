@@ -36,7 +36,7 @@ rcm2_edf(VALUE x, VALUE *reso)
 		}
 		if (has_sign)
 			fra = rb_num_uminus(fra);
-		*reso = LONG2FIX(resov);
+		*reso = resov;
 	}
 	return fra;
 }

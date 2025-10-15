@@ -7,10 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [0.2.6] - 2025-10-XX
+
 ### Fix
 - A some function's branch-cut set open-ended range
 - BigMathR#asech invalid soltion
 - `solver_triginv()` and `solver_hyperbinv` an error occurs when the value is a Complex with an imaginary part of 0.
+- rcm2_edf(): type conversion error
 
 ## [0.2.5] - 2025-10-XX
 
