@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Fix
+- rcm2_edf(): Ignore Increase/Declease for exponent
+
 ## [0.2.6] - 2025-10-XX
 
 ### Fix
