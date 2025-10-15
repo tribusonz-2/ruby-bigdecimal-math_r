@@ -54,7 +54,6 @@ __impl_const_e(VALUE unused_obj, VALUE prec)
 	return rb_bigmath_const_e(prec);
 }
 
-#if 0
 /**
  * The Euler-Mascheroni constant gamma.
  * @example
@@ -69,7 +68,6 @@ __impl_const_euler_gamma(VALUE unused_obj, VALUE prec)
 {
 	return rb_bigmath_const_euler_gamma(prec);
 }
-#endif
 
 /**
  * The natural logarithm of 2.
@@ -165,7 +163,6 @@ __impl_const_e_napier(VALUE unused_obj, VALUE prec)
 	return E_napier(prec);
 }
 
-#if 0
 /**
  * Implement by Borwein-Bailey's formula (Brent-McMillan type formula)
  * 
@@ -182,7 +179,6 @@ __impl_const_euler_gamma_borwein_bailey(VALUE unused_obj, VALUE prec)
 {
 	return EulerGamma_borwein_bailey(prec);
 }
-#endif
 
 /**
  * Implement by BBP's formula (Borwein and Bailey 2002)
@@ -208,9 +204,7 @@ InitVM_Const(void)
 {
 	rb_define_module_function(rb_mBigMathR, "PI", __impl_const_pi, 1);
 	rb_define_module_function(rb_mBigMathR, "E", __impl_const_e, 1);
-#if 0
 	rb_define_module_function(rb_mBigMathR, "EulerGamma", __impl_const_euler_gamma, 1);
-#endif
 	rb_define_module_function(rb_mBigMathR, "LOG2", __impl_const_log2, 1);
 	rb_define_module_function(rb_mBigMathR, "LOG_PI", __impl_const_log_pi, 1);
 	rb_define_module_function(rb_mBigMathR, "LOG10", __impl_const_log10, 1);
@@ -220,12 +214,10 @@ InitVM_Const(void)
 	rb_define_module_function(rb_mConstPI, "machin", __impl_const_pi_machin, 1);
 	rb_define_module_function(rb_mConstE, "napier", __impl_const_e_napier, 1);
 	rb_define_module_function(rb_mConstE, "euler_number", __impl_const_e_napier, 1);
-#if 0
 	rb_define_module_function(rb_mConstEulerGamma, "borwein_bailey",
 		__impl_const_euler_gamma_borwein_bailey, 1);
 	rb_define_module_function(rb_mConstEulerGamma, "brent_mcmillan",
 		__impl_const_euler_gamma_borwein_bailey, 1);
-#endif
 	rb_define_module_function(rb_mConstLOG2, "bbp2002", __impl_const_log2_bbp2002, 1);
 }
 
