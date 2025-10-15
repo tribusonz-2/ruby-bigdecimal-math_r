@@ -3,7 +3,7 @@ acsc_branch(VALUE x, VALUE prec, bigmath_func1 acsc_cb)
 {
 	VALUE y = Qundef;
 	VALUE p_domain = rb_range_new(INT2FIX(1), DBL2NUM(HUGE_VAL), false);
-	VALUE m_domain = rb_range_new(DBL2NUM(-HUGE_VAL), INT2FIX(-1), true);
+	VALUE m_domain = rb_range_new(DBL2NUM(-HUGE_VAL), INT2FIX(-1), false);
 
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 

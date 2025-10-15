@@ -7,11 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
-<<<<<<< HEAD
-## [0.2.5] -  - 2025-10-XX
-=======
+### Fix
+
+- A some function's branch-cut set open-ended range
+
 ## [0.2.5] - 2025-10-XX
->>>>>>> 173eed6 (Version 0.2.6)
 
 ### Fix
 - Change require `./math_r.so` to `math_r`

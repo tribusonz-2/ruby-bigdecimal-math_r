@@ -4,7 +4,7 @@ asin_branch(VALUE x, VALUE prec, bigmath_func1 asin_cb)
 	const ID leq = rb_intern("<=");
 	VALUE y = Qundef;
 	VALUE p001 = rb_BigDecimal1(rb_str_new_cstr("0.001"));
-	VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), true);
+	VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), false);
 
 	x = rb_num_canonicalize(x, prec, ARG_REAL, ARG_RAWVALUE);
 

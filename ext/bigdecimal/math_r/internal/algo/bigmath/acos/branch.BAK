@@ -17,13 +17,14 @@ acos_branch(VALUE x, VALUE prec, bigmath_func1 acos_cb)
 		{
 			y = acos_ser(x, prec);
 		}
+		else if (rb_num_equal_p(absx, INT2FIX(1)))
+		{
+			y = rb_num_negative_p(x) ? 
+				rb_bigmath_const_pi(prec) : BIG_ZERO;
+		}
 		else if (rb_num_domain_p(domain, absx))
 		{
-			if (rb_num_equal_p(absx, INT2FIX(1)))
-				y = rb_num_negative_p(x) ? 
-					rb_bigmath_const_pi(prec) : BIG_ZERO;
-			else
-				y = acos_cb(x, prec);
+			y = acos_cb(x, prec);
 		}
 		else
 			y = BIG_NAN;
