@@ -1152,7 +1152,7 @@ solver_hyperbinv(ID func, VALUE z, VALUE prec)
 					w = asech_branch(z, prec, cb_asech);
 				else if (rb_num_domain_p(m_domain, z))
 				{
-					w = asech_branch(z, prec, cb_asech);
+					w = asech_branch(rb_num_uminus(z), prec, cb_asech);
 					w = rb_Complex(w, rb_bigmath_const_pi(prec));
 				}
 				else

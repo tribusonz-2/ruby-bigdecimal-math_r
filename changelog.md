@@ -8,8 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [Unreleased]
 
 ### Fix
-
 - A some function's branch-cut set open-ended range
+- BigMathR#asech invalid soltion
 
 ## [0.2.5] - 2025-10-XX
 
