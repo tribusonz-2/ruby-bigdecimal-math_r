@@ -19,7 +19,7 @@ rcm2_edf(VALUE x, VALUE *reso)
 			while (RTEST(rb_num_coerce_cmp(INT2FIX(2), fra, rb_intern("<="))))
 			{
 				fra = rb_funcall1(fra, '/', rat_two);
-				TYPE(resov) == T_FIXNUM ? 
+				resov = TYPE(resov) == T_FIXNUM ? 
 					LONG2FIX(FIX2LONG(resov) + 1) : 
 					rb_funcall(resov, succ, 0);
 			}
@@ -29,7 +29,7 @@ rcm2_edf(VALUE x, VALUE *reso)
 			while (RTEST(rb_num_coerce_cmp(INT2FIX(1), fra, '>')))
 			{
 				fra = rb_funcall1(fra, '*', rat_two);
-				TYPE(resov) == T_FIXNUM ? 
+				resov = TYPE(resov) == T_FIXNUM ? 
 					LONG2FIX(FIX2LONG(resov) - 1) : 
 					rb_funcall(resov, pred, 0);
 			}
