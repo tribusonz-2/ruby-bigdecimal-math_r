@@ -864,6 +864,8 @@ solver_triginv(ID func, VALUE z, VALUE prec)
 	{
 		if (rb_num_real_p(z) || rb_num_zero_p(rb_num_imag(z)))
 		{
+			if (RB_TYPE_P(z, T_COMPLEX))
+				z = rb_num_real(z);
 			if (func == mf_asin)
 			{
 				VALUE domain = rb_range_new(INT2FIX(-1), INT2FIX(1), 0);
@@ -1113,6 +1115,8 @@ solver_hyperbinv(ID func, VALUE z, VALUE prec)
 	{
 		if (rb_num_real_p(z) || rb_num_zero_p(rb_num_imag(z)))
 		{
+			if (RB_TYPE_P(z, T_COMPLEX))
+				z = rb_num_real(z);
 			if (func == mf_asinh)
 			{
 				w = asinh_branch(z, prec, cb_asinh);

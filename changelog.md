@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Fix
 - A some function's branch-cut set open-ended range
 - BigMathR#asech invalid soltion
+- `solver_triginv()` and `solver_hyperbinv` an error occurs when the value is a Complex with an imaginary part of 0.
 
 ## [0.2.5] - 2025-10-XX
 
