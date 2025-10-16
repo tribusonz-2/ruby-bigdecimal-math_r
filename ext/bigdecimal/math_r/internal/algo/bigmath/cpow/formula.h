@@ -5,8 +5,12 @@ cpow_formula(VALUE z, VALUE w, VALUE prec)
 
 	rb_check_precise(prec);
 	n = rb_numdiff_make_n(prec);
-
-	if (rb_num_positive_p(rb_num_real(z)) &&
+	
+	if (!rb_num_finite_p(z) || !rb_num_finite_p(w))
+	{
+		a = rb_Complex(BIG_NAN, BIG_NAN);
+	}
+	else if (rb_num_positive_p(rb_num_real(z)) &&
 	    rb_num_zero_p(rb_num_imag(z)) && rb_num_zero_p(rb_num_imag(w)))
 	{
 		a = pow_formula(rb_num_real(z), rb_num_real(w), n);
