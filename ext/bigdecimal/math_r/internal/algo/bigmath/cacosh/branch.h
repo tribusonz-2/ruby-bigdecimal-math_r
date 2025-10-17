@@ -17,14 +17,16 @@ cacosh_branch(VALUE z, VALUE prec, bigmath_func1 cacosh_cb)
 		}
 		else if (z_re_inf == 0 && z_im_inf != 0)
 		{
+			const ID div = rb_intern("div");
 			VALUE real = BIG_INF;
-			VALUE imag = BIG_ZERO;
+			VALUE imag = rb_funcall(rb_bigmath_const_pi(prec), 
+				div, 2, INT2FIX(2), prec);
+			if (z_im_inf == -1)
+				imag = rb_num_uminus(imag);
 			return rb_Complex(real, imag);
 		}
-		else if (z_re_inf == -1 && z_im_inf == 1)
-			return rb_Complex(BIG_NAN, BIG_NAN);
 		else
-			return rb_Complex(BIG_ZERO, BIG_ZERO);
+			return rb_Complex(BIG_INF, BIG_NAN);
 	}
 	else
 	{
