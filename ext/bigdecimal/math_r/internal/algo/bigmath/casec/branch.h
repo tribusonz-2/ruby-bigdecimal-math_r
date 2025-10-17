@@ -4,13 +4,18 @@ casec_branch(VALUE z, VALUE prec, bigmath_func1 casec_cb)
 	int z_re_inf = rb_num_infinite_p(rb_num_real(z));
 	int z_im_inf = rb_num_infinite_p(rb_num_imag(z));
 
+	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
+
 	if (rb_num_nan_p(z))
 	{
 		return rb_Complex(BIG_NAN, BIG_NAN);
 	}
 	else if (z_re_inf || z_im_inf)
 	{
-		return rb_Complex(BIG_ZERO, BIG_ZERO);
+		const ID div = rb_intern("div");
+		VALUE real = rb_bigmath_const_pi(prec);
+		real = rb_funcall(real, div, 2, INT2FIX(2), prec);
+		return rb_Complex(real, BIG_ZERO);
 	}
 	else if (rb_num_zero_p(z))
 	{
@@ -23,7 +28,6 @@ casec_branch(VALUE z, VALUE prec, bigmath_func1 casec_cb)
 	}
 	else
 	{
-		z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 		return casec_cb(z, prec);
 	}
 }
