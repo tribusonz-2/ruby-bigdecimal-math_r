@@ -21,9 +21,9 @@ casec_branch(VALUE z, VALUE prec, bigmath_func1 casec_cb)
 	{
 		int zero_sign = NUM2INT(rb_BigDecimal_sign(rb_num_real(z)));
 		VALUE real = 
-			(rb_num_nonzero_p(rb_num_imag(z)) || zero_sign == -1) ?
+			(rb_num_nonzero_p(rb_num_imag(z)) || zero_sign == 1) ?
 			BIG_ZERO : rb_bigmath_const_pi(prec);
-		VALUE imag = 1 == zero_sign ? BIG_MINUS_INF : BIG_INF;
+		VALUE imag = -1 == zero_sign ? BIG_MINUS_INF : BIG_INF;
 		return rb_Complex(real, imag);
 	}
 	else
