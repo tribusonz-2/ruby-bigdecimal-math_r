@@ -14,7 +14,7 @@ asec_branch(VALUE x, VALUE prec, bigmath_func1 asec_cb)
 		y = rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
 	else if (rb_num_equal_p(x, INT2FIX(-1)))
 		y = rb_bigmath_const_pi(prec);
-	else if (rb_num_equal_p(x, INT2FIX(0)))
+	else if (rb_num_equal_p(x, INT2FIX(1)))
 		y = BIG_ZERO;
 	else if (rb_num_domain_p(p_domain, x) || rb_num_domain_p(m_domain, x))
 		y = asec_cb(x, prec);
