@@ -2,7 +2,9 @@ VALUE
 ccosh_branch(VALUE z, VALUE prec, bigmath_func1 ccosh_cb)
 {
 	VALUE w = Qundef;
-	if (!rb_num_finite_p(z))
+	if (rb_num_nan_p(z))
+		w = rb_Complex(BIG_NAN, BIG_NAN);
+	else if (!rb_num_finite_p(z))
 	{
 		if (rb_num_infinite_p(z) != 0 && rb_num_zero_p(rb_num_imag(z)))
 		{
