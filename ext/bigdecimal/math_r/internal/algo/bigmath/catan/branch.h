@@ -10,27 +10,30 @@ catan_branch(VALUE z, VALUE prec, bigmath_func1 catan_cb)
 		return rb_Complex(BIG_NAN, BIG_NAN);
 	else if (z_re_inf || z_im_inf)
 	{
+		const ID mult = rb_intern("mult");
 		const ID div = rb_intern("div");
+		VALUE real, imag;
 		if (z_re_inf != 0 && z_im_inf == 0)
 		{
-			VALUE real = 
-				rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
+			real = rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
 				INT2FIX(z_re_inf * 2), prec);
-			VALUE imag = BIG_ZERO;
+			imag = BIG_ZERO;
 			return rb_Complex(real, imag);
 		}
 		else if (z_re_inf == 0 && z_im_inf != 0)
 		{
-			VALUE real = 
-				rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
+			real = rb_funcall(rb_bigmath_const_pi(prec), div, 2, 
 				INT2FIX(z_im_inf * 2), prec);
-			VALUE imag = BIG_ZERO;
+			imag = BIG_ZERO;
 			return rb_Complex(real, imag);
 		}
-		else if (z_re_inf == -1 && z_im_inf == 1)
-			return rb_Complex(BIG_NAN, BIG_NAN);
 		else
-			return rb_Complex(BIG_ZERO, BIG_ZERO);
+		{
+			real = rb_funcall(rb_bigmath_const_pi(prec), mult, 2, 
+				rb_rational_new(INT2FIX(z_im_inf * 3), INT2FIX(4)), prec);
+			imag = BIG_ZERO;
+			return rb_Complex(real, imag);
+		}
 	}
 	else if (rb_num_equal_p(z, rb_Complex_I))
 		return rb_Complex(BIG_ZERO, BIG_INF);
