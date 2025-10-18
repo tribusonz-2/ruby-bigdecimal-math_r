@@ -23,7 +23,8 @@ Mathematical functions are compatible with both real and complex solutions.
 
 Constants:  
 ```
-:E (Constant e), 
+:E (Constant e)
+:EulerGamma (Euler-Mascheroni Constant)
 :LOG2 (Natural logarithm of 2)
 :LOG_PI (Natural logarithm of pi)
 :LOG10 (Natural logarithm of 10)
