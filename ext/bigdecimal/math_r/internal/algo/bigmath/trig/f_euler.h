@@ -1,3 +1,4 @@
+// Make euler's formula, e^i(theta) as *exppz and e^-i(theta) as *expmz
 static inline void
 f_euler2(VALUE theta, VALUE prec, VALUE *exppz, VALUE *expmz)
 {
@@ -6,7 +7,7 @@ f_euler2(VALUE theta, VALUE prec, VALUE *exppz, VALUE *expmz)
 	*expmz = rb_funcall(*exppz, conj, 0);
 }
 
-
+// Make euler's formula of complex exponent, e^(theta) as *exppz and e^-(theta) as *expmz
 static inline void
 f_euler_e2(VALUE theta, VALUE prec, VALUE *exppz, VALUE *expmz)
 {
@@ -33,7 +34,7 @@ f_euler_e2(VALUE theta, VALUE prec, VALUE *exppz, VALUE *expmz)
 	}
 }
 
-
+// Euler's formula for cos()
 static inline VALUE
 f_euler_cos(VALUE exppz, VALUE expmz)
 {
@@ -44,6 +45,7 @@ f_euler_cos(VALUE exppz, VALUE expmz)
 	return y;
 }
 
+// Euler's formula for sin(), when argument is infinite
 static inline VALUE
 f_euler_sin_infinite(VALUE y)
 {
@@ -97,6 +99,7 @@ f_euler_sin_infinite(VALUE y)
 	return w;
 }
 
+// Euler's formula for sin()
 static inline VALUE
 f_euler_sin(VALUE exppz, VALUE expmz)
 {
@@ -112,6 +115,7 @@ f_euler_sin(VALUE exppz, VALUE expmz)
 	return y;
 }
 
+// Euler's formula for tan()
 static inline VALUE
 f_euler_tan(VALUE exppz, VALUE expmz)
 {
@@ -128,6 +132,7 @@ f_euler_tan(VALUE exppz, VALUE expmz)
 	return rb_funcall1(sin, '/', cos);
 }
 
+// Euler's formula for sin and cos
 static inline VALUE
 f_euler_sc(const ID func, VALUE theta, VALUE prec)
 {
@@ -208,7 +213,7 @@ f_euler_t(VALUE theta, VALUE prec)
 	return rb_ImaginaryZ(y, SIGN_MINUS);
 }
 
-
+// For hyperbolic
 static inline VALUE
 f_euler_h(const ID func, VALUE theta, VALUE prec)
 {
@@ -230,6 +235,7 @@ f_euler_h(const ID func, VALUE theta, VALUE prec)
 	return rb_num_round(y, prec);
 }
 
+// Mix Euler's formula of exponent and sincos
 static inline VALUE
 f_euler_esc(const ID func, VALUE z, VALUE prec)
 {
