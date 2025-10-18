@@ -8,7 +8,9 @@ casinh_branch(VALUE z, VALUE prec, bigmath_func1 casinh_cb)
 
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 
-	if (!rb_num_finite_p(z))
+	if (rb_num_nan_p(z))
+		y = rb_Complex(BIG_NAN, BIG_NAN);
+	else if (!rb_num_finite_p(z))
 	{
 		if (z_re_inf != 0 && z_im_inf == 0)
 		{
