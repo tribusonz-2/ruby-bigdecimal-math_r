@@ -3,13 +3,16 @@ casinh_branch(VALUE z, VALUE prec, bigmath_func1 casinh_cb)
 {
 	VALUE y = Qundef;
 
+	int z_re_inf = rb_num_infinite_p(rb_num_real(z));
+	int z_im_inf = rb_num_infinite_p(rb_num_imag(z));
+
 	z = rb_num_canonicalize(z, prec, ARG_COMPLEX, ARG_RAWVALUE);
 
 	if (!rb_num_finite_p(z))
 	{
-		if (rb_num_infinite_p(rb_num_imag(z)) == 0)
+		if (z_re_inf != 0 && z_im_inf == 0)
 		{
-			switch (rb_num_infinite_p(rb_num_real(z))) {
+			switch (z_re_inf) {
 			case 1:
 				y = rb_Complex(BIG_INF, BIG_ZERO);
 				break;
@@ -18,37 +21,27 @@ casinh_branch(VALUE z, VALUE prec, bigmath_func1 casinh_cb)
 				break;
 			}
 		}
-		else if (rb_num_infinite_p(rb_num_real(z)) == 0)
+		else if (z_re_inf == 0 && z_im_inf != 0)
 		{
-			if (rb_num_zero_p(rb_num_real(z)))
-			{
-				switch (rb_num_infinite_p(rb_num_imag(z))) {
-				case 1:
-					y = rb_Complex(BIG_INF, rb_bigmath_const_pi(prec));
-					break;
-				case -1:
-					y = rb_Complex(BIG_ZERO, BIG_ZERO);
-					break;
-				}
-			}
-			else
-			{
-				const ID div = rb_intern("div");
-				VALUE pi_2 = rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
-				switch (rb_num_infinite_p(rb_num_imag(z))) {
-				case 1:
-					y = rb_Complex(BIG_INF, pi_2);
-					break;
-				case -1:
-					pi_2 = rb_num_uminus(pi_2);
-					y = rb_Complex(BIG_ZERO, pi_2);
-					break;
-				}
+			const ID div = rb_intern("div");
+			VALUE pi_2 = rb_funcall(rb_bigmath_const_pi(prec), div, 2, INT2FIX(2), prec);
+			switch (z_im_inf) {
+			case 1:
+				y = rb_Complex(BIG_INF, pi_2);
+				break;
+			case -1:
+				pi_2 = rb_num_uminus(pi_2);
+				y = rb_Complex(BIG_INF, pi_2);
+				break;
 			}
 		}
 		else
 		{
-			y = rb_Complex(BIG_NAN, BIG_NAN);
+			VALUE real = BIG_INF;
+			VALUE imag = BIG_NAN;
+			if (z_re_inf == -1)
+				real = rb_num_uminus(real);
+			y = rb_Complex(real, imag);
 		}
 	}
 	if (y == Qundef)
